@@ -25,7 +25,7 @@
     "execall": "^2.0.0",
     "fast-json-stable-stringify": "^2.1.0",
     "file-type": "^16.5.4",
-    "filesize": "^6.4.0",
+    "filesize": "^10.1.2",
     "fs-extra": "^11.2.0",
     "gatsby-core-utils": "^4.14.0-next.2",
     "gatsby-plugin-catch-links": "^5.14.0-next.2",
