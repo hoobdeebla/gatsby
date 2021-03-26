@@ -1,4 +1,4 @@
-import detectPort from "detect-port"
+import { detect as detectPort } from "detect-port"
 import report from "gatsby-cli/lib/reporter"
 import prompts from "prompts"
 
