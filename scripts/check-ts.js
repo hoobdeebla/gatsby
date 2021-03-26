@@ -7,7 +7,7 @@
 "use strict"
 
 const fs = require(`fs`)
-const glob = require(`glob`)
+const { globSync } = require(`glob`)
 const path = require(`path`)
 const chalk = require(`chalk`)
 const yargs = require(`yargs`)
@@ -31,7 +31,7 @@ let packagesWithTs = packages
   .filter(p => fs.existsSync(path.resolve(p, `tsconfig.json`)))
   .filter(
     project =>
-      glob.sync(`/**/*.ts`, {
+      globSync(`/**/*.ts`, {
         root: project,
         ignore: `**/node_modules/**`,
       }).length
@@ -64,13 +64,13 @@ let totalTsFiles = 0
 let totalJsFiles = 0
 
 packagesWithTs.forEach(project => {
-  const tsFiles = glob.sync(
+  const tsFiles = globSync(
     toAbsolutePath(
       `./packages/${project.split(/.*packages[/\\]/)[1]}/src/**/*.ts`
     )
   ).length
 
-  const jsFiles = glob.sync(
+  const jsFiles = globSync(
     toAbsolutePath(
       `./packages/${project.split(/.*packages[/\\]/)[1]}/src/**/*.js`
     )
