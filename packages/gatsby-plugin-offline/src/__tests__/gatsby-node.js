@@ -12,10 +12,18 @@ describe(`getPrecachePages`, () => {
     const base = `${__dirname}/fixtures/public`
 
     const allPages = getPrecachePages([`**/*`], base)
-    expect(allPages.map(page => path.normalize(page))).toMatchSnapshot()
+    expect(
+      allPages
+        .sort((a, b) => a.localeCompare(b)) // glob v9+ does not sort results
+        .map(page => path.normalize(page))
+    ).toMatchSnapshot()
 
     const dir1Pages = getPrecachePages([`/dir1/*`], base)
-    expect(dir1Pages.map(page => path.normalize(page))).toMatchSnapshot()
+    expect(
+      dir1Pages
+        .sort((a, b) => a.localeCompare(b)) // glob v9+ does not sort results
+        .map(page => path.normalize(page))
+    ).toMatchSnapshot()
   })
 })
 

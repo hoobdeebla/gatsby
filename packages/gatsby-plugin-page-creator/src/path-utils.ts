@@ -1,4 +1,4 @@
-import glob from "globby"
+import { glob } from "tinyglobby"
 
 // Regex created with: https://spec.graphql.org/draft/#sec-Names
 // First char only letter, underscore; rest letter, underscore, digit
