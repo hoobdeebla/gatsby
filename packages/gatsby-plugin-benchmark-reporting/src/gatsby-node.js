@@ -1,6 +1,6 @@
 const { performance } = require(`perf_hooks`)
 
-const { sync: glob } = require(`fast-glob`)
+const { globSync } = require(`tinyglobby`)
 const nodeFetch = require(`node-fetch`)
 const { uuid } = require(`gatsby-core-utils`)
 const { execSync } = require(`child_process`)
@@ -142,10 +142,9 @@ class BenchMeta {
 
     const webpackVersion = require(`webpack/package.json`).version
 
-    const publicJsSize = glob(`public/*.js`).reduce(
-      (t, file) => t + fs.statSync(file).size,
-      0
-    )
+    const publicJsSize = globSync(`public/*.js`, {
+      expandDirectories: false,
+    }).reduce((t, file) => t + fs.statSync(file).size, 0)
 
     const jpgCount = execToInt(
       `find public .cache  -type f -iname "*.jpg" -or -iname "*.jpeg" | wc -l`
