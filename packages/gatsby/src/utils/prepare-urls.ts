@@ -1,4 +1,4 @@
-import address from "address"
+import { ip } from "address"
 import chalk from "chalk"
 import url from "url"
 
@@ -38,7 +38,7 @@ export function prepareUrls(
 
     try {
       // This can only return an IPv4 address
-      lanUrlForConfig = address.ip()
+      lanUrlForConfig = ip()
       if (lanUrlForConfig) {
         // Check if the address is a private ip
         // https://en.wikipedia.org/wiki/Private_network#Private_IPv4_address_spaces
