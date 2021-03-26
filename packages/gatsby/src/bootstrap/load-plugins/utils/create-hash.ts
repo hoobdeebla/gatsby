@@ -1,6 +1,6 @@
 import fs from "fs"
 import crypto from "crypto"
-import glob from "glob"
+import { globSync } from "glob"
 
 export function createFileContentHash(
   root: string,
@@ -8,7 +8,7 @@ export function createFileContentHash(
 ): string {
   // TODO: Use hash-wasm
   const hash = crypto.createHash(`md5`)
-  const files = glob.sync(`${root}/${globPattern}`, { nodir: true })
+  const files = globSync(`${root}/${globPattern}`, { nodir: true })
 
   files.forEach(filepath => {
     hash.update(fs.readFileSync(filepath))

@@ -1,5 +1,5 @@
 const path = require(`path`)
-const glob = require(`glob`)
+const { globSync } = require(`glob`)
 const fs = require(`fs-extra`)
 
 const ROOT_DIR = path.join(__dirname, `..`)
@@ -245,9 +245,9 @@ const defaultPackageRules = [
 
   ...globalPackageRules,
 ]
-const monorepoPackages = glob
-  .sync(`packages/*/package.json`)
-  .map(file => file.match(/packages\/([^/]+)/)[1])
+const monorepoPackages = globSync(`packages/*/package.json`).map(
+  file => file.match(/packages\/([^/]+)/)[1]
+)
 
 // generate package specific groups
 monorepoPackages.forEach(pkg => {
