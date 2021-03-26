@@ -1,5 +1,5 @@
 import fs from "fs-extra"
-import glob from "glob"
+import { glob as globAsync } from "glob"
 import path from "path"
 import webpack from "webpack"
 import _ from "lodash"
@@ -122,21 +122,6 @@ const createGlobArray = (siteDirectoryPath, plugins): Array<IGlobPattern> => {
 
   // Only return unique paths
   return _.union(globs)
-}
-
-async function globAsync(
-  pattern: string,
-  options: glob.IOptions = {}
-): Promise<Array<string>> {
-  return await new Promise((resolve, reject) => {
-    glob(pattern, options, (err, files) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(files)
-      }
-    })
-  })
 }
 
 const createWebpackConfig = async ({
