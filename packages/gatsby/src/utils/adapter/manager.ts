@@ -4,7 +4,7 @@ import { generateHtmlPath } from "gatsby-core-utils/page-html"
 import { slash } from "gatsby-core-utils/path"
 import { generatePageDataPath } from "gatsby-core-utils/page-data"
 import { posix } from "path"
-import { sync as globSync } from "glob"
+import { globSync } from "tinyglobby"
 import { copy, pathExists, unlink } from "fs-extra"
 import pathToRegexp from "path-to-regexp"
 import type {
@@ -348,7 +348,7 @@ function getRoutesManifest(): {
   const fileAssets = new Set(
     globSync(`**/**`, {
       cwd: posix.join(process.cwd(), `public`),
-      nodir: true,
+      onlyFiles: true,
       dot: true,
     }).map(filePath => slash(filePath))
   )
@@ -662,7 +662,7 @@ function getFunctionsManifest(): FunctionsManifest {
     function getFilesFrom(dir: string): Array<string> {
       return globSync(`**/**`, {
         cwd: posix.join(process.cwd(), dir),
-        nodir: true,
+        onlyFiles: true,
         dot: true,
       }).map(file => posix.join(dir, file))
     }

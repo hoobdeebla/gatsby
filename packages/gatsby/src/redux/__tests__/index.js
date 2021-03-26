@@ -63,9 +63,9 @@ jest.mock(`fs-extra`, () => {
     removeSync: jest.fn(file => mockWrittenContent.delete(file)),
   }
 })
-jest.mock(`glob`, () => {
+jest.mock(`tinyglobby`, () => {
   return {
-    sync: jest.fn(pattern => {
+    globSync: jest.fn(pattern => {
       // Tricky.
       // Expecting a path prefix, ending with star. Else this won't work :/
       if (pattern.slice(-1) !== `*`) {
