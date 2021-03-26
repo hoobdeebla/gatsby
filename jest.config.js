@@ -1,28 +1,29 @@
-const path = require(`path`)
-const glob = require(`glob`)
-const fs = require(`fs`)
+const { join } = require(`node:path`)
+const { sync: globSync } = require(`glob`)
+const { existsSync } = require(`node:fs`)
 
-const pkgs = glob.sync(`./packages/*`).map(p => p.replace(/^\./, `<rootDir>`))
+const pkgs = globSync(`./packages/*`).map(p => p.replace(/^\./, `<rootDir>`))
 
 const reGatsby = /gatsby$/
 const gatsbyDir = pkgs.find(p => reGatsby.exec(p))
-const gatsbyBuildDirs = [`dist`].map(dir => path.join(gatsbyDir, dir))
+const gatsbyBuildDirs = [`dist`].map(dir => join(gatsbyDir, dir))
 const builtTestsDirs = pkgs
-  .filter(p => fs.existsSync(path.join(p, `src`)))
-  .map(p => path.join(p, `__tests__`))
-const distDirs = pkgs.map(p => path.join(p, `dist`))
+  .filter(p => existsSync(join(p, `src`)))
+  .map(p => join(p, `__tests__`))
+const distDirs = pkgs.map(p => join(p, `dist`))
 const ignoreDirs = [`<rootDir>/packages/gatsby-dev-cli/verdaccio`].concat(
   gatsbyBuildDirs,
   builtTestsDirs,
   distDirs
 )
 
-const coverageDirs = pkgs.map(p => path.join(p, `src/**/*.js`))
+const coverageDirs = pkgs.map(p => join(p, `src/**/*.js`))
 const useJestUnit = !!process.env.GENERATE_JEST_REPORT
 
 // list to add ESM to ignore
 const esModules = [
   `@mdx-js/mdx`,
+  `@mdx-js/react`,
   `@sindresorhus/is`,
   `@szmarczak/http-timer`,
   `aggregate-error`,
@@ -172,7 +173,7 @@ const config = {
     : [`default`].concat(useJestUnit ? `jest-junit` : []),
   moduleFileExtensions: [`js`, `jsx`, `ts`, `tsx`, `json`],
   setupFiles: [`<rootDir>/.jestSetup.js`],
-  setupFilesAfterEnv: [`jest-extended/all`],
+  setupFilesAfterEnv: [`<rootDir>/jest-extended.js`],
   testEnvironment: `<rootDir>/jest.environment.ts`,
 }
 

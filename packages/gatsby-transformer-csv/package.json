@@ -15,7 +15,7 @@
     "@babel/core": "^7.25.8",
     "babel-preset-gatsby-package": "^3.14.0-next.2",
     "cross-env": "^7.0.3",
-    "json2csv": "^5.0.7"
+    "@json2csv/plainjs": "^7.0.6"
   },
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-transformer-csv#readme",
   "keywords": [
