@@ -4,7 +4,7 @@ import { generateHtmlPath } from "gatsby-core-utils/page-html"
 import { slash } from "gatsby-core-utils/path"
 import { generatePageDataPath } from "gatsby-core-utils/page-data"
 import { posix } from "path"
-import { sync as globSync } from "glob"
+import { globSync } from "glob"
 import { copy, pathExists, unlink } from "fs-extra"
 import pathToRegexp from "path-to-regexp"
 import type {
