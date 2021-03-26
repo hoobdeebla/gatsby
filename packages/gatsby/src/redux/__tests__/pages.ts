@@ -8,7 +8,6 @@ jest.mock(`fs-extra`, () => {
   }
 })
 jest.mock(`gatsby-core-utils/murmurhash`)
-import glob from "glob"
 
 import { pagesReducer as reducer } from "../reducers/pages"
 import { actions } from "../actions"
@@ -25,8 +24,6 @@ Date.now = jest.fn(
     // const diff = new Date().getTime() - start
     1482363367071 // + diff
 )
-
-glob.sync = jest.fn()
 
 describe(`Add pages`, () => {
   it(`allows you to add pages`, () => {
