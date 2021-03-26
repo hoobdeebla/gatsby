@@ -1,5 +1,5 @@
 import _ from "lodash"
-import glob from "globby"
+import { glob } from "tinyglobby"
 import systemPath from "path"
 import { sync as existsSync } from "fs-exists-cached"
 import {
