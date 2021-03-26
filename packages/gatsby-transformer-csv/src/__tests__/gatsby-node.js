@@ -1,4 +1,4 @@
-const { parse: json2csv } = require(`json2csv`)
+const { Parser: Json2csv } = require(`@json2csv/plainjs`)
 const os = require(`os`)
 const { cloneDeep } = require(`lodash`)
 
@@ -27,8 +27,7 @@ describe(`Process nodes correctly`, () => {
       { blue: true, funny: `yup` },
       { blue: false, funny: `nope` },
     ]
-    const csv = json2csv(data, { fields })
-    node.content = csv
+    node.content = new Json2csv({fields}).parse(data)
 
     const createNode = jest.fn()
     const createParentChildLink = jest.fn()

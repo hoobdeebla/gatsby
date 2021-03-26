@@ -1,8 +1,8 @@
 const path = require(`path`)
-const glob = require(`glob`)
+const { globSync } = require(`glob`)
 const fs = require(`fs`)
 
-const pkgs = glob.sync(`./packages/*`).map(p => p.replace(/^\./, `<rootDir>`))
+const pkgs = globSync(`./packages/*`).map(p => p.replace(/^\./, `<rootDir>`))
 
 const reGatsby = /gatsby$/
 const gatsbyDir = pkgs.find(p => reGatsby.exec(p))
@@ -23,6 +23,7 @@ const useJestUnit = !!process.env.GENERATE_JEST_REPORT
 // list to add ESM to ignore
 const esModules = [
   `@mdx-js/mdx`,
+  `@mdx-js/react`,
   `@sindresorhus/is`,
   `@szmarczak/http-timer`,
   `aggregate-error`,
@@ -35,7 +36,9 @@ const esModules = [
   `character-entities-legacy`,
   `character-reference-invalid`,
   `clean-stack`,
+  `clone-regexp`,
   `comma-separated-tokens`,
+  `convert-hrtime`,
   `decode-named-character-reference`,
   `escape-string-regexp`,
   `estree-util-attach-comments`,
@@ -45,6 +48,7 @@ const esModules = [
   `estree-util-visit`,
   `estree-walker`,
   `form-data-encoder`,
+  `function-timeout`,
   `github-slugger`,
   `got`,
   `hast-util-from-parse5`,
@@ -56,13 +60,16 @@ const esModules = [
   `hastscript`,
   `html-void-elements`,
   `indent-string`,
+  `ip-regex`,
   `is-alphabetical`,
   `is-alphanumerical`,
   `is-decimal`,
   `is-hexadecimal`,
+  `is-ip`,
   `is-online`,
   `is-plain-obj`,
   `is-reference`,
+  `is-regexp`,
   `longest-streak`,
   `lowercase-keys`,
   `mdast-util-definitions`,
@@ -112,7 +119,9 @@ const esModules = [
   `remark-stringify`,
   `responselike`,
   `space-separated-tokens`,
+  `super-regex`,
   `stringify-entities`,
+  `time-span`,
   `trim-lines`,
   `trough`,
   `unified`,
@@ -172,7 +181,7 @@ const config = {
     : [`default`].concat(useJestUnit ? `jest-junit` : []),
   moduleFileExtensions: [`js`, `jsx`, `ts`, `tsx`, `json`],
   setupFiles: [`<rootDir>/.jestSetup.js`],
-  setupFilesAfterEnv: [`jest-extended/all`],
+  setupFilesAfterEnv: [`<rootDir>/jest-extended.js`],
   testEnvironment: `<rootDir>/jest.environment.ts`,
 }
 

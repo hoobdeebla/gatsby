@@ -16,7 +16,7 @@ import {
   IGatsbyPage,
   GatsbyStateKeys,
 } from "./types"
-import { sync as globSync } from "glob"
+import { globSync } from "glob"
 import { createContentDigest } from "gatsby-core-utils"
 import report from "gatsby-cli/lib/reporter"
 import { DeepPartial } from "redux"

@@ -65,7 +65,7 @@ jest.mock(`fs-extra`, () => {
 })
 jest.mock(`glob`, () => {
   return {
-    sync: jest.fn(pattern => {
+    globSync: jest.fn(pattern => {
       // Tricky.
       // Expecting a path prefix, ending with star. Else this won't work :/
       if (pattern.slice(-1) !== `*`) {

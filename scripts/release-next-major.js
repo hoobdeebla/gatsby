@@ -15,7 +15,7 @@
 const path = require(`path`)
 const { spawn, execSync } = require(`child_process`)
 const yargs = require(`yargs`)
-const glob = require(`glob`)
+const { globSync } = require(`glob`)
 
 const gatsbyPKG = require(`../packages/gatsby/package.json`)
 const nextMajor = String(Number(gatsbyPKG.version.match(/[^.]+/)[0]) + 1)
@@ -58,7 +58,7 @@ function promiseSpawn(command, args, options) {
   })
 }
 
-const patchFiles = glob.sync(`patches/v${nextMajor}/*.patch`, {
+const patchFiles = globSync(`patches/v${nextMajor}/*.patch`, {
   cwd: path.join(__dirname, `..`),
 })
 let commitCreated = false

@@ -1,7 +1,7 @@
 jest.mock(`glob`, () => {
-  const sync = jest.fn().mockImplementation(() => [])
+  const globSync = jest.fn(() => [])
   return {
-    sync,
+    globSync,
   }
 })
 
@@ -9,7 +9,7 @@ const _ = require(`lodash`)
 const { parse, buildSchema } = require(`graphql`)
 const fs = require(`fs-extra`)
 const path = require(`path`)
-const glob = require(`glob`)
+const { globSync } = require(`glob`)
 const {
   resolveThemes,
   parseQueries,
@@ -20,7 +20,7 @@ const base = path.resolve(``)
 
 describe(`Runner`, () => {
   beforeEach(() => {
-    glob.sync.mockClear()
+    globSync.mockClear()
   })
 
   describe(`expected directories`, () => {
@@ -36,7 +36,7 @@ describe(`Runner`, () => {
 
       expect(errors).toEqual([])
 
-      expect(glob.sync).toHaveBeenCalledWith(
+      expect(globSync).toHaveBeenCalledWith(
         expect.stringContaining(path.join(base, `src`)),
         expect.any(Object)
       )
@@ -54,7 +54,7 @@ describe(`Runner`, () => {
 
       expect(errors).toEqual([])
 
-      expect(glob.sync).toHaveBeenCalledWith(
+      expect(globSync).toHaveBeenCalledWith(
         expect.stringContaining(path.join(base, `src`)),
         expect.any(Object)
       )
@@ -73,7 +73,7 @@ describe(`Runner`, () => {
 
       expect(errors).toEqual([])
 
-      expect(glob.sync).toHaveBeenCalledWith(
+      expect(globSync).toHaveBeenCalledWith(
         expect.stringContaining(path.join(base, `node_modules`, theme)),
         expect.any(Object)
       )

@@ -9,7 +9,7 @@ const _ = require(`lodash`)
 
 const path = require(`path`)
 const normalize = require(`normalize-path`)
-const glob = require(`glob`)
+const { globSync } = require(`glob`)
 
 const {
   validate,
@@ -128,7 +128,7 @@ export const parseQueries = async ({
     ...modulesThatUseGatsby.map(module => module.path),
   ].reduce((merged, folderPath) => {
     merged.push(
-      ...glob.sync(path.join(folderPath, pathRegex), {
+      ...globSync(path.join(folderPath, pathRegex), {
         nodir: true,
       })
     )
