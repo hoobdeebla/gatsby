@@ -1,5 +1,5 @@
 import path from "path"
-import glob from "glob"
+import { globSync } from "glob"
 import debug from "debug"
 import report from "gatsby-cli/lib/reporter"
 
@@ -18,7 +18,7 @@ export const hasLocalEslint = (directory: string): boolean => {
   }
 
   log(`Checking for eslint config file`)
-  const eslintFiles = glob.sync(`.eslintrc?(.js|.json|.yaml|.yml)`, {
+  const eslintFiles = globSync(`.eslintrc?(.js|.json|.yaml|.yml)`, {
     cwd: directory,
   })
 
