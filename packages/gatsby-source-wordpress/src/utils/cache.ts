@@ -1,9 +1,8 @@
 import { GatsbyHelpers } from "~/utils/gatsby-types"
 import manager from "cache-manager"
-import fs from "fs-extra"
+import fs from "fs"
 import fsStore from "cache-manager-fs-hash"
 import path from "path"
-import { rm } from "fs/promises"
 
 import { getStore, withPluginKey } from "~/store"
 import { getGatsbyApi } from "~/utils/get-gatsby-api"
@@ -48,7 +47,7 @@ export default class Cache {
   }
 
   init(): Cache {
-    fs.ensureDirSync(this.directory)
+    fs.mkdirSync(this.directory, { recursive: true })
 
     const configs: Array<manager.StoreConfig> = [
       {
@@ -175,11 +174,15 @@ const staticFileCacheDirectory = `${process.cwd()}/.wordpress-cache/caches/publi
 const staticFileDirectory = `${process.cwd()}/public/static`
 
 export const restoreStaticDirectory = async (): Promise<void> => {
-  await fs.copy(staticFileCacheDirectory, staticFileDirectory)
+  await fs.promises.cp(staticFileCacheDirectory, staticFileDirectory, {
+    recursive: true,
+  })
 }
 
 const copyStaticDirectory = async (): Promise<void> => {
-  await fs.copy(staticFileDirectory, staticFileCacheDirectory)
+  await fs.promises.cp(staticFileDirectory, staticFileCacheDirectory, {
+    recursive: true,
+  })
 }
 
 export const setHardCachedNodes = async ({
@@ -211,7 +214,7 @@ export const setHardCachedNodes = async ({
 
 export const clearHardCache = async (): Promise<void> => {
   const directory = new Cache().cacheBase
-  await rm(directory, { recursive: true, force: true })
+  await fs.promises.rm(directory, { recursive: true, force: true })
 }
 
 export const clearHardCachedNodes = async (): Promise<void> => {

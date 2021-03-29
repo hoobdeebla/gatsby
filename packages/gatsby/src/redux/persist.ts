@@ -2,14 +2,14 @@ import path from "path"
 import os from "os"
 import v8 from "v8"
 import {
+  readFileSync,
   existsSync,
   mkdtempSync,
-  moveSync, // Note: moveSync over renameSync because /tmp may be on other mount
-  readFileSync,
-  removeSync,
+  mkdirSync,
   writeFileSync,
-  outputFileSync,
-} from "fs-extra"
+  rmSync,
+} from "fs"
+import { moveSync } from "fs-extra" // Note: must use fse.moveSync over renameSync because /tmp may be on other mount
 import {
   ICachedReduxState,
   IGatsbyNode,
@@ -222,12 +222,12 @@ export function writeToCache(
   if (slices) {
     const cacheFolder = getWorkerSlicesFolder()
 
-    outputFileSync(
+    const cachePath =
       reduxWorkerSlicesPrefix(cacheFolder) +
-        `${optionalPrefix}_` +
-        createContentDigest(slices),
-      v8.serialize(contents)
-    )
+      `${optionalPrefix}_` +
+      createContentDigest(slices)
+    mkdirSync(path.dirname(cachePath), { recursive: true })
+    writeFileSync(cachePath, v8.serialize(contents))
     return
   }
 
@@ -256,7 +256,7 @@ export function writeToCache(
   // Now try to yolorimraf the old cache folder
   try {
     if (bakName !== ``) {
-      removeSync(bakName)
+      rmSync(bakName, { recursive: true, force: true })
     }
   } catch (e) {
     report.warn(

@@ -33,6 +33,7 @@ exports.onPostBuild = async (
     )
   }
 
+  // same as above
   const allPages = await Promise.resolve(resolvePages(queryRecords)).catch(
     err => reporter.panic(`${REPORTER_PREFIX} Error resolving Pages`, err)
   )
@@ -66,6 +67,7 @@ exports.onPostBuild = async (
 
   for (const page of filteredPages) {
     try {
+      // same as above
       const { url, ...rest } = await Promise.resolve(
         serialize(page, { resolvePagePath })
       )

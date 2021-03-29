@@ -1,6 +1,6 @@
 import { createErrorFromString } from "gatsby-cli/lib/reporter/errors"
-import * as sysPath from "path"
-import * as fs from "fs-extra"
+import sysPath from "path"
+import fs from "fs"
 import { slash } from "gatsby-core-utils/path"
 
 const getPosition = function (stackObject: Array<string>): {
@@ -113,9 +113,8 @@ export const parseError = function ({
   // if it points to existing file and try to remove project name if it's first segment
   if (!fs.existsSync(filename)) {
     try {
-      const projectName = fs.readJsonSync(
-        sysPath.join(directory, `package.json`),
-        `utf8`
+      const projectName = JSON.parse(
+        fs.readFileSync(sysPath.join(directory, `package.json`), `utf8`)
       ).name
 
       if (relativeFileName.startsWith(projectName + sysPath.sep)) {

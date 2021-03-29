@@ -1,4 +1,3 @@
-import fetch from "node-fetch"
 import opn from "better-opn"
 import reporter from "./reporter"
 import { getToken, setToken } from "./util/manage-token"

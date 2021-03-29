@@ -1,6 +1,6 @@
-jest.mock(`fs-extra`, () => {
+jest.mock(`fs/promises`, () => {
   return {
-    ensureDir: jest.fn(() => true),
+    mkdir: jest.fn(() => true),
     writeFile: jest.fn((_f, _b, cb) => cb()),
     stat: jest.fn(() => {
       return {
@@ -17,7 +17,7 @@ jest.mock(`../create-file-node`, () => {
   }
 })
 
-const { ensureDir, writeFile } = require(`fs-extra`)
+const { mkdir, writeFile } = require(`fs/promises`)
 const { createContentDigest } = require(`gatsby-core-utils`)
 const { createFileNode } = require(`../create-file-node`)
 const createFileNodeFromBuffer = require(`../create-file-node-from-buffer`)
@@ -77,7 +77,7 @@ describe(`create-file-node-from-buffer`, () => {
       const buffer = createMockBuffer(`buffer-content`)
       await setup({ buffer, hash: `some-hash` })
 
-      expect(ensureDir).toBeCalledTimes(1)
+      expect(mkdir).toBeCalledTimes(1)
       expect(bufferEq(buffer, output)).toBe(true)
     })
 

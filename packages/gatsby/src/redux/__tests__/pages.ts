@@ -1,9 +1,11 @@
-import { readFile } from "fs-extra"
+import { readFile } from "fs/promises"
 import { murmurhash } from "gatsby-core-utils/murmurhash"
 
-jest.mock(`fs-extra`, () => {
+jest.mock(`fs`, () => {
   return {
-    readFile: jest.fn(() => `contents`),
+    promises: {
+      readFile: jest.fn(() => `contents`),
+    },
     readFileSync: jest.fn(() => `foo`), // createPage action reads the page template file trying to find `getServerData`
   }
 })

@@ -1,6 +1,6 @@
 import path from "path"
 import openurl from "better-opn"
-import fs from "fs-extra"
+import fs from "fs"
 import compression from "compression"
 import express from "express"
 import chalk from "chalk"
@@ -44,7 +44,7 @@ const readMatchPaths = async (
   const filePath = path.join(program.directory, `.cache`, `match-paths.json`)
   let rawJSON = `[]`
   try {
-    rawJSON = await fs.readFile(filePath, `utf8`)
+    rawJSON = await fs.promises.readFile(filePath, `utf8`)
   } catch (error) {
     report.warn(error)
     report.warn(

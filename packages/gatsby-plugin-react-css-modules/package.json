@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
-    "babel-plugin-react-css-modules": "^3.4.2"
+    "@dr.pogodin/babel-plugin-react-css-modules": "6.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.20.7",

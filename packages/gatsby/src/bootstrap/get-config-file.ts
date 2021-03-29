@@ -1,4 +1,4 @@
-import fs from "fs-extra"
+import fs from "fs/promises"
 import { testImportError } from "../utils/test-import-error"
 import report from "gatsby-cli/lib/reporter"
 import path from "path"

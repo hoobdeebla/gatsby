@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-namespace */
-
-import fs from "fs-extra"
-import * as path from "path"
+import fs from "fs"
+import path from "path"
 import { mapWithConcurrency } from "../../async-utils"
 import { generateHtmlPath } from "gatsby-core-utils/page-html"
 import { generatePageDataPath } from "gatsby-core-utils/page-data"
@@ -32,6 +30,7 @@ const { join } = path.posix
 type IUnsafeBuiltinUsage = Array<string> | undefined
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     interface Global {
@@ -407,8 +406,9 @@ export const renderHTMLProd = async ({
         if (unsafeBuiltinsUsage.length > 0) {
           unsafeBuiltinsUsageByPagePath[pagePath] = unsafeBuiltinsUsage
         }
-
-        await fs.outputFile(generateHtmlPath(publicDir, pagePath), html)
+        const htmlPath = generateHtmlPath(publicDir, pagePath)
+        await fs.promises.mkdir(path.dirname(htmlPath), { recursive: true })
+        await fs.promises.writeFile(htmlPath, html)
       } catch (e) {
         if (e.unsafeBuiltinsUsage && e.unsafeBuiltinsUsage.length > 0) {
           unsafeBuiltinsUsageByPagePath[pagePath] = e.unsafeBuiltinsUsage
@@ -429,7 +429,9 @@ export const renderHTMLProd = async ({
             error: htmlRenderError,
           })
 
-          await fs.outputFile(generateHtmlPath(publicDir, pagePath), html)
+          const htmlPath = generateHtmlPath(publicDir, pagePath)
+          await fs.promises.mkdir(path.dirname(htmlPath), { recursive: true })
+          await fs.promises.writeFile(htmlPath, html)
           previewErrors[pagePath] = {
             e: htmlRenderError,
             name: htmlRenderError.name,
@@ -490,7 +492,9 @@ export const renderHTMLDev = async ({
             isDuringBuild: true,
           },
         })
-        return fs.outputFile(generateHtmlPath(outputDir, pagePath), htmlString)
+        const htmlPath = generateHtmlPath(outputDir, pagePath)
+        await fs.promises.mkdir(path.dirname(htmlPath), { recursive: true })
+        return await fs.promises.writeFile(htmlPath, htmlString)
       } catch (e) {
         // add some context to error so we can display more helpful message
         e.context = {
@@ -549,7 +553,9 @@ export async function renderPartialHydrationProd({
           `slice-data`,
           `${sliceName}.json`
         )
-        const sliceData = await fs.readJSON(sliceDataPath)
+        const sliceData = await fs.promises
+          .readFile(sliceDataPath, `utf8`)
+          .then(JSON.parse)
         for (const staticQueryHash of sliceData.staticQueryHashes) {
           staticQueryHashes.add(staticQueryHash)
         }

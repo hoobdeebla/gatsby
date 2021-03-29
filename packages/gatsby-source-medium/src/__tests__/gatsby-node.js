@@ -1,10 +1,9 @@
-const axios = require(`axios`)
 const { sourceNodes } = require(`../gatsby-node`)
 
 const fixture = require(`./__fixtures__/medium.json`)
 const fakeMediumData = `])}while(1);</x>${JSON.stringify(fixture)}`
 
-jest.mock(`axios`)
+jest.mock(`fetch`)
 
 describe(`gatsby-source-medium`, () => {
   describe(`sourceNodes`, () => {
@@ -12,7 +11,7 @@ describe(`gatsby-source-medium`, () => {
     let createNodeId
     let createContentDigest
     beforeEach(() => {
-      axios.get.mockResolvedValue({ data: fakeMediumData })
+      fetch.mockResolvedValue({ body: fakeMediumData })
       actions = {
         createNode: jest.fn(),
       }
@@ -36,7 +35,7 @@ describe(`gatsby-source-medium`, () => {
         { actions, createNodeId, createContentDigest },
         { username, limit }
       )
-      expect(axios.get).toBeCalledWith(
+      expect(fetch).toBeCalledWith(
         `https://medium.com/${username}/?format=json&limit=${limit}`
       )
     })

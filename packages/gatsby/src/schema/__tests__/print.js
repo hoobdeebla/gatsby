@@ -10,11 +10,12 @@ const { actions: publicActions } = require(`../../redux/actions/public`)
 const { createParentChildLink } = publicActions
 const { printTypeDefinitions } = actions
 
-jest.mock(`fs-extra`)
-const fs = require(`fs-extra`)
+jest.mock(`fs`)
+const fs = require(`fs/promises`)
 afterEach(() => {
   fs.writeFile.mockClear()
 })
+const { existsSync } = require(`fs`)
 
 jest.mock(`gatsby-cli/lib/reporter`, () => {
   return {
@@ -213,14 +214,14 @@ describe(`Print type definitions`, () => {
   })
 
   it(`shows error message when file already exists`, async () => {
-    fs.existsSync.mockImplementation(() => true)
+    existsSync.mockImplementation(() => true)
     store.dispatch(printTypeDefinitions({ path: `typedefs.gql` }))
     await build({})
     expect(report.error).toHaveBeenCalledTimes(1)
     expect(report.error).toHaveBeenCalledWith(
       `Printing type definitions aborted. The file \`typedefs.gql\` already exists.`
     )
-    fs.existsSync.mockReset()
+    existsSync.mockReset()
   })
 
   it(`saves correct type definitions`, async () => {
