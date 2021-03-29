@@ -25,7 +25,7 @@ function getHashes(
 
   for (const childChunkGroup of chunkGroup.childrenIterable) {
     const isNotImportedByAsyncRequires = childChunkGroup.origins.every(
-      origin => !origin.module.identifier().includes(`async-requires`)
+      origin => !origin.module?.identifier().includes(`async-requires`)
     )
 
     if (isNotImportedByAsyncRequires) {
