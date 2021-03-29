@@ -16,7 +16,7 @@ describe(`pluginOptionsSchema`, () => {
       `"linkImagesToOriginal" must be a boolean`,
       `"showCaptions" must be one of [boolean, array]`,
       `"markdownCaptions" must be a boolean`,
-      `"wrapperStyle" must be one of [object, string]`,
+      `"wrapperStyle" must be one of [object, function, string]`,
       `"backgroundColor" must be a string`,
       `"quality" must be a number`,
       `"withWebp" must be one of [object, boolean]`,
