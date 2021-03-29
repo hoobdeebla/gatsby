@@ -1,7 +1,8 @@
 import type { IFunctionDefinition } from "gatsby"
 import packageJson from "gatsby-adapter-netlify/package.json"
-import fs from "fs-extra"
-import * as path from "path"
+import { mkdir, writeFile } from "fs/promises"
+import { join, posix } from "path"
+const { relative } = posix
 import { slash } from "gatsby-core-utils/path"
 
 interface INetlifyFunctionConfig {
@@ -38,14 +39,14 @@ export async function prepareFunction(
     isODB = true
   }
 
-  const internalFunctionsDir = path.join(
+  const internalFunctionsDir = join(
     process.cwd(),
     `.netlify`,
     `functions-internal`,
     functionId
   )
 
-  await fs.ensureDir(internalFunctionsDir)
+  await mkdir(internalFunctionsDir, { recursive: true })
 
   // This is a temporary hacky approach, eventually it should be just `fun.name`
   const displayName = isODB
@@ -67,18 +68,15 @@ export async function prepareFunction(
     version: 1,
   }
 
-  await fs.writeJSON(
-    path.join(internalFunctionsDir, `${functionId}.json`),
-    functionManifest
+  await writeFile(
+    join(internalFunctionsDir, `${functionId}.json`),
+    JSON.stringify(functionManifest)
   )
 
   function getRelativePathToModule(modulePath: string): string {
     const absolutePath = require.resolve(modulePath)
 
-    return (
-      `./` +
-      path.posix.relative(slash(internalFunctionsDir), slash(absolutePath))
-    )
+    return `./` + relative(slash(internalFunctionsDir), slash(absolutePath))
   }
 
   const handlerSource = /* javascript */ `
@@ -97,7 +95,7 @@ ${
 const preferDefault = m => (m && m.default) || m
 
 const functionModule = require("${getRelativePathToModule(
-    path.join(process.cwd(), fun.pathToEntryPoint)
+    join(process.cwd(), fun.pathToEntryPoint)
   )}")
 
 const functionHandler = preferDefault(functionModule)
@@ -352,10 +350,7 @@ const handler = async (event, context) => {
 exports.handler = ${isODB ? `builder(handler)` : `handler`}
 `
 
-  await fs.writeFile(
-    path.join(internalFunctionsDir, `${functionId}.js`),
-    handlerSource
-  )
+  await writeFile(join(internalFunctionsDir, `${functionId}.js`), handlerSource)
 }
 
 export async function prepareFunctionVariants(

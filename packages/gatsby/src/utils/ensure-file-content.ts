@@ -1,4 +1,5 @@
-import { outputFile, readFile } from "fs-extra"
+import { readFile } from "fs/promises"
+import { outputFile } from "fs-extra" // must use
 
 export async function ensureFileContent(
   file: string,

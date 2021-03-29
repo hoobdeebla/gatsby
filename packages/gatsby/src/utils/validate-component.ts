@@ -1,5 +1,5 @@
 import path from "path"
-import fs from "fs-extra"
+import { existsSync, readFileSync } from "fs"
 import { getPathToLayoutComponent } from "gatsby-core-utils/parse-component-path"
 import { IPageInput as ICreatePageInput } from "../redux/actions/public"
 import { ICreateSliceInput } from "../redux/actions/restricted"
@@ -67,7 +67,7 @@ export function validateComponent(args: {
 
   // Component path must exist
   if (isNotTestEnv) {
-    if (!fs.existsSync(componentPath)) {
+    if (!existsSync(componentPath)) {
       return {
         error: {
           id: errorIdMap.doesNotExist,
@@ -78,7 +78,7 @@ export function validateComponent(args: {
   }
 
   if (!componentPath.includes(`/.cache/`) && isProductionEnv) {
-    const fileContent = fs.readFileSync(componentPath, `utf-8`)
+    const fileContent = readFileSync(componentPath, `utf-8`)
 
     // Component must not be empty
     if (fileContent === ``) {

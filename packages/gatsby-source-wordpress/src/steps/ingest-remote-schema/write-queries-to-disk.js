@@ -1,4 +1,5 @@
-import fs from "fs-extra"
+import { rmSync } from "fs"
+import { mkdir, writeFile } from "fs/promises"
 import { getStore } from "~/store"
 import prettier from "prettier"
 import { formatLogMessage } from "~/utils/format-log-message"
@@ -24,7 +25,7 @@ export const writeQueriesToDisk = async ({ reporter }, pluginOptions) => {
   const wordPressGraphQLDirectory = `${process.cwd()}/WordPress/GraphQL`
 
   // remove before writing in case there are old types
-  fs.rmSync(wordPressGraphQLDirectory, {
+  rmSync(wordPressGraphQLDirectory, {
     recursive: true,
     force: true,
   })
@@ -37,21 +38,21 @@ export const writeQueriesToDisk = async ({ reporter }, pluginOptions) => {
   } of Object.values(remoteSchema.nodeQueries)) {
     const directory = `${wordPressGraphQLDirectory}/${typeInfo.nodesTypeName}`
 
-    await fs.ensureDir(directory)
+    await mkdir(directory, { recursive: true })
 
-    await fs.writeFile(
+    await writeFile(
       `${directory}/node-list-query.graphql`,
       prettier.format(nodeListQueries[0], { parser: `graphql` }),
       `utf8`
     )
 
-    await fs.writeFile(
+    await writeFile(
       `${directory}/node-single-query.graphql`,
       prettier.format(nodeQuery, { parser: `graphql` }),
       `utf8`
     )
 
-    await fs.writeFile(
+    await writeFile(
       `${directory}/node-preview-query.graphql`,
       prettier.format(previewQuery, { parser: `graphql` }),
       `utf8`
@@ -60,9 +61,9 @@ export const writeQueriesToDisk = async ({ reporter }, pluginOptions) => {
 
   const directory = `${wordPressGraphQLDirectory}/RootQuery`
 
-  await fs.ensureDir(directory)
+  await mkdir(directory, { recursive: true })
 
-  await fs.writeFile(
+  await writeFile(
     `${directory}/non-node-root-query.graphql`,
     prettier.format(remoteSchema.nonNodeQuery, { parser: `graphql` })
   )

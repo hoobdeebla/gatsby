@@ -1,6 +1,6 @@
-const cheerio = require(`cheerio`)
-const path = require(`path`)
-const fs = require(`fs`)
+const { load } = require(`cheerio`)
+const { resolve } = require(`path`)
+const { readFileSync } = require(`fs`)
 const _ = require(`lodash`)
 
 module.exports = (htmlPath, pathPrefix) => {
@@ -8,7 +8,7 @@ module.exports = (htmlPath, pathPrefix) => {
   let html
   try {
     // load index.html to pull scripts/links necessary for proper offline reload
-    html = fs.readFileSync(path.resolve(htmlPath))
+    html = readFileSync(resolve(htmlPath))
   } catch (err) {
     // ENOENT means the file doesn't exist, which is to be expected when trying
     // to open 404.html if the user hasn't created a custom 404 page -- return
@@ -21,7 +21,7 @@ module.exports = (htmlPath, pathPrefix) => {
   }
 
   // party like it's 2006
-  const $ = cheerio.load(html)
+  const $ = load(html)
 
   // holds any paths for scripts and links
   const criticalFilePaths = []

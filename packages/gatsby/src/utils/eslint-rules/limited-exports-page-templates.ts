@@ -243,23 +243,49 @@ const limitedExports: Rule.RuleModule = {
         return undefined
       },
       ExportNamedDeclaration: (node): void => {
-        if (hasOneValidNamedDeclaration(node, queryVariableName)) {
+        if (
+          hasOneValidNamedDeclaration(
+            node as ExportNamedDeclaration & Rule.NodeParentExtension,
+            queryVariableName
+          )
+        ) {
           return undefined
         }
 
-        if (isTemplateQuery(node, graphqlTagName, namespaceSpecifierName)) {
+        if (
+          isTemplateQuery(
+            node as ExportNamedDeclaration & Rule.NodeParentExtension,
+            graphqlTagName,
+            namespaceSpecifierName
+          )
+        ) {
           return undefined
         }
 
-        if (isApiExport(node, `getServerData`)) {
+        if (
+          isApiExport(
+            node as ExportNamedDeclaration & Rule.NodeParentExtension,
+            `getServerData`
+          )
+        ) {
           return undefined
         }
 
-        if (isApiExport(node, `config`)) {
+        if (
+          isApiExport(
+            node as ExportNamedDeclaration & Rule.NodeParentExtension,
+            `config`
+          )
+        ) {
           return undefined
         }
 
-        if (isApiExport(node, `Head`)) {
+        if (
+          isApiExport(
+            node as ExportNamedDeclaration & Rule.NodeParentExtension,
+            `Head`
+          )
+        ) {
           return undefined
         }
 

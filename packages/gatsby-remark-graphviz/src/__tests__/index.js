@@ -1,7 +1,7 @@
 const Remark = require(`remark`)
 const toHAST = require(`mdast-util-to-hast`)
 const hastToHTML = require(`hast-util-to-html`)
-const cheerio = require(`cheerio`)
+const { load } = require(`cheerio`)
 const plugin = require(`../`)
 
 const remark = new Remark().data(`settings`, {
@@ -33,7 +33,7 @@ describe(`gatsby-remark-graphviz`, () => {
   }
 \`\`\``)
 
-      const $ = cheerio.load(test)
+      const $ = load(test)
 
       expect($(`svg`).length).toBe(1)
       expect($(`pre`).length).toBe(0)
@@ -50,7 +50,7 @@ describe(`gatsby-remark-graphviz`, () => {
   }
 \`\`\``)
 
-      const $ = cheerio.load(test)
+      const $ = load(test)
 
       expect($(`svg`).length).toBe(1)
       expect($(`pre`).length).toBe(0)
@@ -66,7 +66,7 @@ digraph graphname {
 }
 \`\`\``)
 
-    const $ = cheerio.load(test)
+    const $ = load(test)
 
     expect($(`svg`).length).toBe(0)
     expect($(`pre`).length).toBe(1)
@@ -83,7 +83,7 @@ digraph graphname {
   }
 \`\`\``)
 
-    const $ = cheerio.load(test)
+    const $ = load(test)
 
     expect($(`svg`).attr(`id`)).toBe(`my-test-id`)
     expect($(`svg`).attr(`class`)).toBe(`my-test-class`)

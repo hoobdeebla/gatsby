@@ -1,7 +1,7 @@
 const prettier = require(`prettier`)
 const Joi = require(`@hapi/joi`)
 const Handlebars = require(`handlebars`)
-const fs = require(`fs-extra`)
+const { writeFile } = require(`fs/promises`)
 const _ = require(`lodash`)
 const toc = require(`markdown-toc`)
 const prettierConfig = require(`../../.prettierrc.js`)
@@ -187,7 +187,7 @@ async function getPluginOptionsMdString() {
 async function writePluginOptionsMdFile() {
   console.info(`writing out plugin options schema docs to plugin-options.md`)
   const mdString = await getPluginOptionsMdString()
-  await fs.writeFile(`./docs/plugin-options.md`, mdString)
+  await writeFile(`./docs/plugin-options.md`, mdString)
 }
 
 if (process.env.NODE_ENV !== `test`) {

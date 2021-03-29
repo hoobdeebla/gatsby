@@ -1,5 +1,5 @@
 const crypto = require(`crypto`)
-const fs = require(`fs-extra`)
+import { readFileSync, statSync } from "fs"
 const path = require(`path`)
 const dotenv = require(`dotenv`)
 const { CoreJSResolver } = require(`./webpack/plugins/corejs-resolver`)
@@ -78,7 +78,7 @@ module.exports = async (
     const envFile = path.join(process.cwd(), `./.env.${configEnv}`)
     let parsed = {}
     try {
-      parsed = dotenv.parse(fs.readFileSync(envFile, { encoding: `utf8` }))
+      parsed = dotenv.parse(readFileSync(envFile, { encoding: `utf8` }))
     } catch (err) {
       if (err.code !== `ENOENT`) {
         reporter.error(
@@ -535,7 +535,7 @@ module.exports = async (
     const userLoaderDirectoryPath = path.resolve(directory, `loaders`)
 
     try {
-      if (fs.statSync(userLoaderDirectoryPath).isDirectory()) {
+      if (statSync(userLoaderDirectoryPath).isDirectory()) {
         root.push(userLoaderDirectoryPath)
       }
     } catch (err) {

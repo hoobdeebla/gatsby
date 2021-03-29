@@ -1,5 +1,5 @@
 const addLineNumbers = require(`../add-line-numbers`)
-const cheerio = require(`cheerio`)
+const { load } = require(`cheerio`)
 
 describe(`returns the line numbers container`, () => {
   it(`should return the <span> container with the right classes`, () => {
@@ -13,7 +13,7 @@ describe(`returns the line numbers container`, () => {
 
     const basicCodeLinesWithLineNumbers = addLineNumbers(basicCodeLines)
 
-    const $ = cheerio.load(basicCodeLinesWithLineNumbers)
+    const $ = load(basicCodeLinesWithLineNumbers)
     const numberOfLineNumbers = $(`.line-numbers-rows > span`).length
 
     expect(numberOfLineNumbers).toEqual(3)
@@ -30,7 +30,7 @@ describe(`returns the line numbers container`, () => {
 
     const highlightedCodeWithLineNumbers = addLineNumbers(highlightedCode)
 
-    const $ = cheerio.load(highlightedCodeWithLineNumbers)
+    const $ = load(highlightedCodeWithLineNumbers)
     const numberOfLineNumbers = $(`.line-numbers-rows > span`).length
 
     expect(numberOfLineNumbers).toEqual(4 + 2)

@@ -1,15 +1,17 @@
-import path from "path"
-import os from "os"
-import v8 from "v8"
+import { join } from "path"
+import { tmpdir } from "os"
+import { deserialize, serialize } from "v8"
 import {
   existsSync,
   mkdtempSync,
-  moveSync, // Note: moveSync over renameSync because /tmp may be on other mount
   readFileSync,
-  removeSync,
+  rmSync,
   writeFileSync,
+} from "fs"
+import {
+  moveSync, // Note: moveSync over renameSync because /tmp may be on other mount
   outputFileSync,
-} from "fs-extra"
+} from "fs-extra" // must use
 import {
   ICachedReduxState,
   IGatsbyNode,
@@ -23,23 +25,23 @@ import { DeepPartial } from "redux"
 
 const getReduxCacheFolder = (): string =>
   // This is a function for the case that somebody does a process.chdir (#19800)
-  path.join(process.cwd(), `.cache/redux`)
+  join(process.cwd(), `.cache/redux`)
 
 const getWorkerSlicesFolder = (): string =>
   // This is a function for the case that somebody does a process.chdir (#19800)
-  path.join(process.cwd(), `.cache/worker`)
+  join(process.cwd(), `.cache/worker`)
 
 function reduxSharedFile(dir: string): string {
-  return path.join(dir, `redux.rest.state`)
+  return join(dir, `redux.rest.state`)
 }
 function reduxChunkedNodesFilePrefix(dir: string): string {
-  return path.join(dir, `redux.node.state_`)
+  return join(dir, `redux.node.state_`)
 }
 function reduxChunkedPagesFilePrefix(dir: string): string {
-  return path.join(dir, `redux.page.state_`)
+  return join(dir, `redux.page.state_`)
 }
 function reduxWorkerSlicesPrefix(dir: string): string {
-  return path.join(dir, `redux.worker.slices_`)
+  return join(dir, `redux.worker.slices_`)
 }
 
 export function readFromCache(
@@ -57,7 +59,7 @@ export function readFromCache(
   if (slices) {
     cacheFolder = getWorkerSlicesFolder()
 
-    return v8.deserialize(
+    return deserialize(
       readFileSync(
         reduxWorkerSlicesPrefix(cacheFolder) +
           `${optionalPrefix}_` +
@@ -66,14 +68,14 @@ export function readFromCache(
     )
   }
 
-  const obj: ICachedReduxState = v8.deserialize(
+  const obj: ICachedReduxState = deserialize(
     readFileSync(reduxSharedFile(cacheFolder))
   )
 
   // Note: at 1M pages, this will be 1M/chunkSize chunks (ie. 1m/10k=100)
   const nodesChunks = globSync(
     reduxChunkedNodesFilePrefix(cacheFolder) + `*`
-  ).map(file => v8.deserialize(readFileSync(file)))
+  ).map(file => deserialize(readFileSync(file)))
 
   const nodes: Array<[string, IGatsbyNode]> = [].concat(...nodesChunks)
 
@@ -89,7 +91,7 @@ export function readFromCache(
   // Note: at 1M pages, this will be 1M/chunkSize chunks (ie. 1m/10k=100)
   const pagesChunks = globSync(
     reduxChunkedPagesFilePrefix(cacheFolder) + `*`
-  ).map(file => v8.deserialize(readFileSync(file)))
+  ).map(file => deserialize(readFileSync(file)))
 
   const pages: Array<[string, IGatsbyPage]> = [].concat(...pagesChunks)
 
@@ -113,7 +115,7 @@ export function guessSafeChunkSize(
   const step = Math.max(1, Math.ceil(valueCount / nodesToTest))
   let maxSize = 0
   for (let i = 0; i < valueCount; i += step) {
-    const size = v8.serialize(values[i]).length
+    const size = serialize(values[i]).length
     maxSize = Math.max(size, maxSize)
   }
 
@@ -142,7 +144,7 @@ function prepareCacheFolder(
   const pagesMap = contents.pages
   contents.pages = undefined
 
-  writeFileSync(reduxSharedFile(targetDir), v8.serialize(contents))
+  writeFileSync(reduxSharedFile(targetDir), serialize(contents))
 
   // Now restore them on the redux store
   contents.nodes = nodesMap
@@ -175,7 +177,7 @@ function prepareCacheFolder(
     for (let i = 0; i < chunks; ++i) {
       writeFileSync(
         reduxChunkedNodesFilePrefix(targetDir) + i,
-        v8.serialize(values.slice(i * chunkSize, i * chunkSize + chunkSize))
+        serialize(values.slice(i * chunkSize, i * chunkSize + chunkSize))
       )
     }
   }
@@ -189,7 +191,7 @@ function prepareCacheFolder(
     for (let i = 0; i < chunks; ++i) {
       writeFileSync(
         reduxChunkedPagesFilePrefix(targetDir) + i,
-        v8.serialize(values.slice(i * chunkSize, i * chunkSize + chunkSize))
+        serialize(values.slice(i * chunkSize, i * chunkSize + chunkSize))
       )
     }
   }
@@ -226,7 +228,7 @@ export function writeToCache(
       reduxWorkerSlicesPrefix(cacheFolder) +
         `${optionalPrefix}_` +
         createContentDigest(slices),
-      v8.serialize(contents)
+      serialize(contents)
     )
     return
   }
@@ -234,7 +236,7 @@ export function writeToCache(
   // Note: this should be a transactional operation. So work in a tmp dir and
   // make sure the cache cannot be left in a corruptable state due to errors.
 
-  const tmpDir = mkdtempSync(path.join(os.tmpdir(), `reduxcache`)) // linux / windows
+  const tmpDir = mkdtempSync(join(tmpdir(), `reduxcache`)) // linux / windows
 
   prepareCacheFolder(tmpDir, contents)
 
@@ -256,7 +258,7 @@ export function writeToCache(
   // Now try to yolorimraf the old cache folder
   try {
     if (bakName !== ``) {
-      removeSync(bakName)
+      rmSync(bakName)
     }
   } catch (e) {
     report.warn(

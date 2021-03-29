@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-namespace */
-
-import fs from "fs-extra"
-import * as path from "path"
+import { createWriteStream, readFileSync } from "fs"
+import { readFile } from "fs/promises"
+import { outputFile } from "fs-extra" // must use
+import { join as joinPath, posix } from "path"
 import { mapWithConcurrency } from "../../async-utils"
 import { generateHtmlPath } from "gatsby-core-utils/page-html"
 import { generatePageDataPath } from "gatsby-core-utils/page-data"
@@ -27,11 +27,12 @@ import { ServerLocation } from "@gatsbyjs/reach-router"
 import { IGatsbySlice } from "../../../internal"
 import { ensureFileContent } from "../../ensure-file-content"
 // we want to force posix-style joins, so Windows doesn't produce backslashes for urls
-const { join } = path.posix
+const { join: posixPath } = posix
 
 type IUnsafeBuiltinUsage = Array<string> | undefined
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     interface Global {
@@ -356,7 +357,7 @@ export const renderHTMLProd = async ({
   sessionId: number
   webpackCompilationHash: string
 }): Promise<IRenderHtmlResult> => {
-  const publicDir = join(process.cwd(), `public`)
+  const publicDir = posixPath(process.cwd(), `public`)
   const isPreview = process.env.GATSBY_IS_PREVIEW === `true`
 
   const unsafeBuiltinsUsageByPagePath = {}
@@ -408,7 +409,7 @@ export const renderHTMLProd = async ({
           unsafeBuiltinsUsageByPagePath[pagePath] = unsafeBuiltinsUsage
         }
 
-        await fs.outputFile(generateHtmlPath(publicDir, pagePath), html)
+        await outputFile(generateHtmlPath(publicDir, pagePath), html)
       } catch (e) {
         if (e.unsafeBuiltinsUsage && e.unsafeBuiltinsUsage.length > 0) {
           unsafeBuiltinsUsageByPagePath[pagePath] = e.unsafeBuiltinsUsage
@@ -429,7 +430,7 @@ export const renderHTMLProd = async ({
             error: htmlRenderError,
           })
 
-          await fs.outputFile(generateHtmlPath(publicDir, pagePath), html)
+          await outputFile(generateHtmlPath(publicDir, pagePath), html)
           previewErrors[pagePath] = {
             e: htmlRenderError,
             name: htmlRenderError.name,
@@ -464,7 +465,7 @@ export const renderHTMLDev = async ({
   envVars: Array<[string, string | undefined]>
   sessionId: number
 }): Promise<Array<unknown>> => {
-  const outputDir = join(process.cwd(), `.cache`, `develop-html`)
+  const outputDir = posixPath(process.cwd(), `.cache`, `develop-html`)
 
   // Check if we need to do setup and cache clearing. Within same session we can reuse memoized data,
   // but it's not safe to reuse them in different sessions. Check description of `lastSessionId` for more details
@@ -490,7 +491,7 @@ export const renderHTMLDev = async ({
             isDuringBuild: true,
           },
         })
-        return fs.outputFile(generateHtmlPath(outputDir, pagePath), htmlString)
+        return outputFile(generateHtmlPath(outputDir, pagePath), htmlString)
       } catch (e) {
         // add some context to error so we can display more helpful message
         e.context = {
@@ -514,7 +515,7 @@ export async function renderPartialHydrationProd({
   sessionId: number
   pathPrefix
 }): Promise<void> {
-  const publicDir = join(process.cwd(), `public`)
+  const publicDir = posixPath(process.cwd(), `public`)
 
   const unsafeBuiltinsUsageByPagePath = {}
 
@@ -544,12 +545,12 @@ export async function renderPartialHydrationProd({
     const staticQueryHashes = new Set(pageData.staticQueryHashes)
     if (pageData.slicesMap) {
       for (const sliceName of Object.values(pageData.slicesMap)) {
-        const sliceDataPath = path.join(
+        const sliceDataPath = joinPath(
           publicDir,
           `slice-data`,
           `${sliceName}.json`
         )
-        const sliceData = await fs.readJSON(sliceDataPath)
+        const sliceData = await readFile(sliceDataPath, `utf8`).then(JSON.parse)
         for (const staticQueryHash of sliceData.staticQueryHashes) {
           staticQueryHashes.add(staticQueryHash)
         }
@@ -560,7 +561,7 @@ export async function renderPartialHydrationProd({
       Array.from(staticQueryHashes)
     )
 
-    const pageRenderer = path.join(
+    const pageRenderer = joinPath(
       process.cwd(),
       `.cache`,
       `partial-hydration`,
@@ -577,11 +578,11 @@ export async function renderPartialHydrationProd({
       componentChunkName: pageData.componentChunkName,
     })
     const outputPath = generatePageDataPath(
-      path.join(process.cwd(), `public`),
+      joinPath(process.cwd(), `public`),
       pagePath
     ).replace(`.json`, `-rsc.json`)
 
-    const stream = fs.createWriteStream(outputPath)
+    const stream = createWriteStream(outputPath)
 
     const prefixedPagePath = pathPrefix
       ? `${pathPrefix}${pageData.path}`
@@ -614,8 +615,8 @@ export async function renderPartialHydrationProd({
         ]
       ),
       JSON.parse(
-        fs.readFileSync(
-          path.join(
+        readFileSync(
+          joinPath(
             process.cwd(),
             `.cache`,
             `partial-hydration`,
@@ -730,7 +731,7 @@ export async function renderSlices({
       let index = 1
       for (const htmlChunk of split) {
         await ensureFileContent(
-          path.join(publicDir, `_gatsby`, `slices`, `${sliceId}-${index}.html`),
+          joinPath(publicDir, `_gatsby`, `slices`, `${sliceId}-${index}.html`),
           htmlChunk
         )
         index++

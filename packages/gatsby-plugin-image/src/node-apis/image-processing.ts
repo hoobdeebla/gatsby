@@ -5,8 +5,9 @@ import {
   Actions,
   Store,
 } from "gatsby"
-import fs from "fs-extra"
-import path from "path"
+import { existsSync } from "fs"
+import { writeFile } from "fs/promises"
+import { resolve, join } from "path"
 import { watchImage } from "./watcher"
 import type { FileSystemNode } from "gatsby-source-filesystem"
 import { IStaticImageProps } from "../components/static-image.server"
@@ -31,7 +32,7 @@ export async function createImageNode({
   createNode: Actions["createNode"]
   reporter: Reporter
 }): Promise<FileSystemNode | undefined> {
-  if (!fs.existsSync(fullPath)) {
+  if (!existsSync(fullPath)) {
     return undefined
   }
 
@@ -121,9 +122,9 @@ export async function writeImages({
           return
         }
       } else {
-        fullPath = path.resolve(sourceDir, src)
+        fullPath = resolve(sourceDir, src)
 
-        if (!fs.existsSync(fullPath)) {
+        if (!existsSync(fullPath)) {
           reporter.warn(
             `Could not find image "${src}" in "${filename}". Looked for ${fullPath}.`
           )
@@ -158,7 +159,7 @@ export async function writeImages({
         (await cache.get(cacheKey)) || {}
 
       // Different cache: this is the one with the image properties
-      const cacheFilename = path.join(cacheDir, `${hash}.json`)
+      const cacheFilename = join(cacheDir, `${hash}.json`)
       imageRefs[hash] = {
         contentDigest: file.internal?.contentDigest,
         args,
@@ -211,7 +212,7 @@ export async function writeImage(
 
     if (sharpData) {
       // Write the image properties to the cache
-      await fs.writeJSON(filename, sharpData)
+      await writeFile(filename, JSON.stringify(sharpData))
     } else {
       reporter.warn(`Could not process image ${file.relativePath}`)
     }

@@ -2,16 +2,16 @@ import opn from "better-opn"
 import { execSync } from "child_process"
 import execa from "execa"
 import { sync as existsSync } from "fs-exists-cached"
-import fs from "fs-extra"
+import { rmSync } from "fs"
+import { writeFile, rm, mkdir, cp, readFile } from "fs/promises"
 import hostedGitInfo from "hosted-git-info"
 import isValid from "is-valid-path"
-import sysPath from "path"
+import { join, basename, resolve } from "path"
 import prompts from "prompts"
-import url from "url"
+import { parse } from "url"
 import { updateInternalSiteMetadata } from "gatsby-core-utils"
 import report from "./reporter"
 import { getPackageManager, setPackageManager } from "./util/package-manager"
-import reporter from "./reporter"
 
 const spawnWithArgs = (
   file: string,
@@ -61,13 +61,13 @@ const gitInit = async (
 
 // Create a .gitignore file if it is missing in the new directory
 const maybeCreateGitIgnore = async (rootPath: string): Promise<void> => {
-  if (existsSync(sysPath.join(rootPath, `.gitignore`))) {
+  if (existsSync(join(rootPath, `.gitignore`))) {
     return
   }
 
   report.info(`Creating minimal .gitignore in ${rootPath}`)
-  await fs.writeFile(
-    sysPath.join(rootPath, `.gitignore`),
+  await writeFile(
+    join(rootPath, `.gitignore`),
     `.cache\nnode_modules\npublic\n`
   )
 }
@@ -89,7 +89,7 @@ const createInitialGitCommit = async (
   } catch {
     // Remove git support if initial commit fails
     report.info(`Initial git commit failed - removing git support\n`)
-    fs.removeSync(sysPath.join(rootPath, `.git`))
+    rmSync(join(rootPath, `.git`))
   }
 }
 
@@ -111,10 +111,10 @@ const install = async (rootPath: string): Promise<void> => {
       }
     }
     if (getPackageManager() === `yarn` && checkForYarn()) {
-      await fs.remove(`package-lock.json`)
+      await rm(`package-lock.json`, { force: true })
       await spawn(`yarnpkg`)
     } else {
-      await fs.remove(`yarn.lock`)
+      await rm(`yarn.lock`, { force: true })
       await spawn(
         `npm install --loglevel error --color always --legacy-peer-deps --no-audit`
       )
@@ -124,8 +124,7 @@ const install = async (rootPath: string): Promise<void> => {
   }
 }
 
-const ignored = (path: string): boolean =>
-  !/^\.(git|hg)$/.test(sysPath.basename(path))
+const ignored = (path: string): boolean => !/^\.(git|hg)$/.test(basename(path))
 
 // Copy starter from file system.
 const copy = async (
@@ -134,7 +133,7 @@ const copy = async (
 ): Promise<boolean> => {
   // Chmod with 755.
   // 493 = parseInt('755', 8)
-  await fs.ensureDir(rootPath, { mode: 493 })
+  await mkdir(rootPath, { mode: 493, recursive: true })
 
   if (!existsSync(starterPath)) {
     throw new Error(`starter ${starterPath} doesn't exist`)
@@ -153,7 +152,7 @@ const copy = async (
 
   report.log(`Copying local starter to ${rootPath} ...`)
 
-  await fs.copy(starterPath, rootPath, { filter: ignored })
+  await cp(starterPath, rootPath, { filter: ignored })
 
   report.success(`Created starter directory layout`)
 
@@ -193,7 +192,7 @@ const clone = async (
 
   report.success(`Created starter directory layout`)
 
-  await fs.remove(sysPath.join(rootPath, `.git`))
+  await rm(join(rootPath, `.git`), { force: true })
 
   await install(rootPath)
   const isGit = await isAlreadyGitRepository()
@@ -279,7 +278,7 @@ export async function initStarter(
     root
   )
 
-  const urlObject = url.parse(rootPath)
+  const urlObject = parse(rootPath)
 
   if (selectedOtherStarter) {
     report.info(
@@ -290,7 +289,7 @@ export async function initStarter(
   }
   if (urlObject.protocol && urlObject.host) {
     const isStarterAUrl =
-      starter && !url.parse(starter).hostname && !url.parse(starter).protocol
+      starter && !parse(starter).hostname && !parse(starter).protocol
 
     if (/gatsby-starter/gi.test(rootPath) && isStarterAUrl) {
       report.panic({
@@ -315,13 +314,13 @@ export async function initStarter(
     report.panic({
       id: `11612`,
       context: {
-        path: sysPath.resolve(rootPath),
+        path: resolve(rootPath),
       },
     })
     return
   }
 
-  if (existsSync(sysPath.join(rootPath, `package.json`))) {
+  if (existsSync(join(rootPath, `package.json`))) {
     report.panic({
       id: `11613`,
       context: {
@@ -339,14 +338,12 @@ export async function initStarter(
     await copy(starterPath, rootPath)
   }
 
-  const sitePath = sysPath.resolve(rootPath)
+  const sitePath = resolve(rootPath)
 
-  const sitePackageJson = await fs
-    .readJSON(sysPath.join(sitePath, `package.json`))
+  const sitePackageJson = await readFile(join(sitePath, `package.json`), `utf8`)
+    .then(JSON.parse)
     .catch(() => {
-      reporter.verbose(
-        `Could not read "${sysPath.join(sitePath, `package.json`)}"`
-      )
+      report.verbose(`Could not read "${join(sitePath, `package.json`)}"`)
     })
 
   await updateInternalSiteMetadata(

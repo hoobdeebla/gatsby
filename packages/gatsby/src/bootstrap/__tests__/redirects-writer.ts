@@ -1,11 +1,14 @@
 import { writeRedirects } from "../redirects-writer"
-import * as fs from "fs-extra"
+import { writeFile } from "fs/promises"
 import reporter from "gatsby-cli/lib/reporter"
 import { store } from "../../redux"
 import { actions } from "../../redux/actions"
 
-jest.mock(`fs-extra`, () => {
-  return { writeFile: jest.fn(), readFileSync: jest.fn(() => `foo`) }
+jest.mock(`fs/promises`, () => {
+  return { writeFile: jest.fn() }
+})
+jest.mock(`fs`, () => {
+  return { readFileSync: jest.fn(() => `foo`) }
 })
 
 jest.mock(`gatsby-cli/lib/reporter`, () => {
@@ -14,7 +17,7 @@ jest.mock(`gatsby-cli/lib/reporter`, () => {
   }
 })
 
-const writeFileMock = fs.writeFile as jest.MockedFunction<typeof fs.writeFile>
+const writeFileMock = writeFile as jest.MockedFunction<typeof writeFile>
 const reporterWarnMock = reporter.warn as jest.MockedFunction<
   typeof reporter.warn
 >

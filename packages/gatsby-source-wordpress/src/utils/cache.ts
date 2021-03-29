@@ -1,8 +1,9 @@
 import { GatsbyHelpers } from "~/utils/gatsby-types"
 import manager from "cache-manager"
-import fs from "fs-extra"
+import { mkdirSync } from "fs"
+import { cp } from "fs/promises"
 import fsStore from "cache-manager-fs-hash"
-import path from "path"
+import { join } from "path"
 import { rimraf } from "rimraf"
 
 import { getStore, withPluginKey } from "~/store"
@@ -40,7 +41,7 @@ export default class Cache {
   }
 
   get cacheBase(): string {
-    return path.join(process.cwd(), this.cacheDirectory)
+    return join(process.cwd(), this.cacheDirectory)
   }
 
   get directory(): string {
@@ -48,7 +49,7 @@ export default class Cache {
   }
 
   init(): Cache {
-    fs.ensureDirSync(this.directory)
+    mkdirSync(this.directory, { recursive: true })
 
     const configs: Array<manager.StoreConfig> = [
       {
@@ -175,11 +176,11 @@ const staticFileCacheDirectory = `${process.cwd()}/.wordpress-cache/caches/publi
 const staticFileDirectory = `${process.cwd()}/public/static`
 
 export const restoreStaticDirectory = async (): Promise<void> => {
-  await fs.copy(staticFileCacheDirectory, staticFileDirectory)
+  await cp(staticFileCacheDirectory, staticFileDirectory)
 }
 
 const copyStaticDirectory = async (): Promise<void> => {
-  await fs.copy(staticFileDirectory, staticFileCacheDirectory)
+  await cp(staticFileDirectory, staticFileCacheDirectory)
 }
 
 export const setHardCachedNodes = async ({

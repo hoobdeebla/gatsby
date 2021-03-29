@@ -1,8 +1,8 @@
-import * as path from "path"
-import * as fs from "fs-extra"
+import { posix } from "path"
+import { readFile } from "fs/promises"
 
 // we want to force posix-style joins, so Windows doesn't produce backslashes for urls
-const { join } = path.posix
+const { join } = posix
 
 export interface IScriptsAndStyles {
   scripts: Array<any>
@@ -22,7 +22,7 @@ const inlineCssPromiseCache = new Map<string, Promise<string>>()
 
 export async function readWebpackStats(publicDir: string): Promise<any> {
   const filePath = join(publicDir, `webpack.stats.json`)
-  const rawPageData = await fs.readFile(filePath, `utf-8`)
+  const rawPageData = await readFile(filePath, `utf-8`)
 
   return JSON.parse(rawPageData)
 }
@@ -140,7 +140,7 @@ export async function getScriptsAndStylesForTemplate(
     if (styleAsset.rel !== `prefetch`) {
       let getInlineCssPromise = inlineCssPromiseCache.get(styleAsset.name)
       if (!getInlineCssPromise) {
-        getInlineCssPromise = fs.readFile(
+        getInlineCssPromise = readFile(
           join(process.cwd(), `public`, styleAsset.name),
           `utf-8`
         )

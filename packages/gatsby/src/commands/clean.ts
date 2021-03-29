@@ -1,4 +1,4 @@
-import fs from "fs-extra"
+import { rm } from "fs/promises"
 import path from "path"
 import { cache as findCacheDir } from "empathic/package"
 
@@ -24,7 +24,7 @@ module.exports = async function clean(program: IProgram): Promise<void> {
   report.info(`Deleting ${directories.join(`, `)}`)
 
   await Promise.all(
-    directories.map(dir => fs.remove(path.join(directory, dir)))
+    directories.map(dir => rm(path.join(directory, dir!), { force: true }))
   )
 
   report.info(`Successfully deleted directories`)

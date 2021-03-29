@@ -1,6 +1,6 @@
 import { createErrorFromString } from "gatsby-cli/lib/reporter/errors"
-import * as sysPath from "path"
-import * as fs from "fs-extra"
+import { join, sep, relative } from "path"
+import { existsSync, readFileSync } from "fs"
 import { slash } from "gatsby-core-utils/path"
 
 const getPosition = function (stackObject: Array<string>): {
@@ -106,25 +106,24 @@ export const parseError = function ({
     relativeFileName = relativeFileName.substring(1)
   }
 
-  let filename = sysPath.join(directory, relativeFileName)
+  let filename = join(directory, relativeFileName)
 
   // webpack tends to inject project name as first segment in stack traces
   // so the filename / relativeFileName might not be correct - so we are checking
   // if it points to existing file and try to remove project name if it's first segment
-  if (!fs.existsSync(filename)) {
+  if (!existsSync(filename)) {
     try {
-      const projectName = fs.readJsonSync(
-        sysPath.join(directory, `package.json`),
-        `utf8`
+      const projectName = JSON.parse(
+        readFileSync(join(directory, `package.json`), `utf8`)
       ).name
 
-      if (relativeFileName.startsWith(projectName + sysPath.sep)) {
+      if (relativeFileName.startsWith(projectName + sep)) {
         relativeFileName = relativeFileName.substring(
-          (projectName + sysPath.sep).length
+          (projectName + sep).length
         )
       }
 
-      filename = sysPath.join(directory, relativeFileName)
+      filename = join(directory, relativeFileName)
     } catch (e) {
       // nothing more we can do here
     }
@@ -132,7 +131,7 @@ export const parseError = function ({
 
   let sourceContent
   try {
-    sourceContent = fs.readFileSync(filename, `utf-8`)
+    sourceContent = readFileSync(filename, `utf-8`)
   } catch (e) {
     sourceContent = null
   }
@@ -146,7 +145,7 @@ export const parseError = function ({
     : filename
 
   return {
-    filename: slash(sysPath.relative(directory, trueFileName)),
+    filename: slash(relative(directory, trueFileName)),
     sourceContent,
     message: err.message,
     stack: stack,

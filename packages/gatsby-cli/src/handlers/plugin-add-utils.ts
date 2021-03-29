@@ -1,4 +1,4 @@
-import * as fs from "fs-extra"
+import { writeFile } from "fs/promises"
 import execa from "execa"
 import _ from "lodash"
 import {
@@ -83,7 +83,7 @@ export const GatsbyPluginCreate = async ({
     options,
     key,
   })
-  await fs.writeFile(getConfigPath(root), code)
+  await writeFile(getConfigPath(root), code)
   release()
 }
 

@@ -1,7 +1,8 @@
 import { fork } from "child_process"
-import fs from "fs-extra"
-import os from "os"
-import path from "path"
+import { mkdtempSync } from "fs"
+import { access, readFile, rm } from "fs/promises"
+import { tmpdir } from "os"
+import { join } from "path"
 
 import { TaskQueue } from "./task-queue"
 import {
@@ -177,10 +178,10 @@ export class WorkerPool<
 
   private startAll(): void {
     this.counter = 0
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), `gatsby-worker`))
+    const tmpDir = mkdtempSync(join(tmpdir(), `gatsby-worker`))
     const options = this.options
     for (let workerId = 1; workerId <= (options?.numWorkers ?? 1); workerId++) {
-      const workerInFlightsDumpLocation = path.join(
+      const workerInFlightsDumpLocation = join(
         tmpDir,
         `worker-${workerId}.json`
       )
@@ -311,15 +312,24 @@ export class WorkerPool<
 
       worker.on(`message`, workerProcessMessageHandler)
       worker.on(`exit`, async (code, signal) => {
-        if (await fs.pathExists(workerInFlightsDumpLocation)) {
-          const pendingMessages = await fs.readJSON(workerInFlightsDumpLocation)
+        // inline fs-extra.pathExists()
+        if (
+          await access(workerInFlightsDumpLocation).then(
+            () => true,
+            () => false
+          )
+        ) {
+          const pendingMessages = await readFile(
+            workerInFlightsDumpLocation,
+            `utf8`
+          ).then(JSON.parse)
           if (Array.isArray(pendingMessages)) {
             for (const msg of pendingMessages) {
               workerProcessMessageHandler(msg)
             }
           }
           try {
-            await fs.remove(workerInFlightsDumpLocation)
+            await rm(workerInFlightsDumpLocation, { force: true })
           } catch {
             // this is just cleanup, failing to delete this file
             // won't cause

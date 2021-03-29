@@ -1,7 +1,9 @@
-import * as path from "path"
-import * as fs from "fs-extra"
+import { join } from "path"
+import { readFileSync } from "fs"
+import { mkdir, cp, copyFile, readFile } from "fs/promises"
+import { emptyDir, outputFile } from "fs-extra" // must use
 import webpack from "webpack"
-import mod from "module"
+import { builtinModules } from "module"
 import { WebpackLoggingPlugin } from "../../utils/webpack/plugins/webpack-logging"
 import reporter from "gatsby-cli/lib/reporter"
 import type { EnginePage, ITemplateDetails } from "./entry"
@@ -18,8 +20,8 @@ import { getPageMode } from "../page-mode"
 type Reporter = typeof reporter
 
 const extensions = [`.mjs`, `.js`, `.json`, `.node`, `.ts`, `.tsx`]
-const outputDir = path.join(process.cwd(), `.cache`, `page-ssr`)
-const cacheLocation = path.join(process.cwd(), `.cache`, `webpack`, `page-ssr`)
+const outputDir = join(process.cwd(), `.cache`, `page-ssr`)
+const cacheLocation = join(process.cwd(), `.cache`, `webpack`, `page-ssr`)
 
 export async function copyStaticQueriesToEngine({
   engineTemplatePaths,
@@ -45,18 +47,18 @@ export async function copyStaticQueriesToEngine({
     }
   }
 
-  const sourceDir = path.join(process.cwd(), `public`, `page-data`, `sq`, `d`)
-  const destDir = path.join(outputDir, `sq`)
+  const sourceDir = join(process.cwd(), `public`, `page-data`, `sq`, `d`)
+  const destDir = join(outputDir, `sq`)
 
-  await fs.ensureDir(destDir)
-  await fs.emptyDir(destDir)
+  await mkdir(destDir, { recursive: true })
+  await emptyDir(destDir)
 
   const promisesToAwait: Array<Promise<void>> = []
   for (const hash of staticQueriesToCopy) {
-    const sourcePath = path.join(sourceDir, `${hash}.json`)
-    const destPath = path.join(destDir, `${hash}.json`)
+    const sourcePath = join(sourceDir, `${hash}.json`)
+    const destPath = join(destDir, `${hash}.json`)
 
-    promisesToAwait.push(fs.copy(sourcePath, destPath))
+    promisesToAwait.push(cp(sourcePath, destPath))
   }
 
   await Promise.all(promisesToAwait)
@@ -96,7 +98,7 @@ export async function createPageSSRBundle({
     slicesByTemplateStateObject[template] = recordsObject
   }
 
-  const webpackStats = await readWebpackStats(path.join(rootDir, `public`))
+  const webpackStats = await readWebpackStats(join(rootDir, `public`))
 
   const toInline: Record<string, ITemplateDetails> = {}
   for (const pageTemplate of components.values()) {
@@ -135,7 +137,7 @@ export async function createPageSSRBundle({
   const compiler = webpack({
     name: `Page Engine`,
     mode: `none`,
-    entry: path.join(__dirname, `entry.js`),
+    entry: join(__dirname, `entry.js`),
     output: {
       path: outputDir,
       filename: `index.js`,
@@ -157,7 +159,7 @@ export async function createPageSSRBundle({
     externals: [
       /^\.\/routes/,
       `electron`, // :shrug: `got` seems to have electron specific code path
-      mod.builtinModules.reduce((acc, builtinModule) => {
+      builtinModules.reduce((acc, builtinModule) => {
         if (builtinModule === `fs`) {
           acc[builtinModule] = `global _actualFsWrapper`
         } else {
@@ -218,8 +220,8 @@ export async function createPageSSRBundle({
         GATSBY_SLICES_BY_TEMPLATE: JSON.stringify(slicesByTemplateStateObject),
         GATSBY_SLICES_SCRIPT: JSON.stringify(
           _CFLAGS_.GATSBY_MAJOR === `5` && process.env.GATSBY_SLICES
-            ? fs.readFileSync(
-                path.join(
+            ? readFileSync(
+                join(
                   rootDir,
                   `public`,
                   `_gatsby`,
@@ -246,26 +248,23 @@ export async function createPageSSRBundle({
 
   let IMAGE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH = ``
   if (global.__GATSBY?.imageCDNUrlGeneratorModulePath) {
-    await fs.copyFile(
+    await copyFile(
       global.__GATSBY.imageCDNUrlGeneratorModulePath,
-      path.join(outputDir, `image-cdn-url-generator.js`)
+      join(outputDir, `image-cdn-url-generator.js`)
     )
     IMAGE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH = `./image-cdn-url-generator.js`
   }
 
   let FILE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH = ``
   if (global.__GATSBY?.fileCDNUrlGeneratorModulePath) {
-    await fs.copyFile(
+    await copyFile(
       global.__GATSBY.fileCDNUrlGeneratorModulePath,
-      path.join(outputDir, `file-cdn-url-generator.js`)
+      join(outputDir, `file-cdn-url-generator.js`)
     )
     FILE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH = `./file-cdn-url-generator.js`
   }
 
-  let functionCode = await fs.readFile(
-    path.join(__dirname, `lambda.js`),
-    `utf-8`
-  )
+  let functionCode = await readFile(join(__dirname, `lambda.js`), `utf-8`)
 
   functionCode = functionCode
     .replaceAll(
@@ -286,7 +285,7 @@ export async function createPageSSRBundle({
       FILE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH
     )
 
-  await fs.outputFile(path.join(outputDir, `lambda.js`), functionCode)
+  await outputFile(join(outputDir, `lambda.js`), functionCode)
 
   return new Promise((resolve, reject) => {
     compiler.run((err, stats) => {

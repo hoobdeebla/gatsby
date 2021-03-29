@@ -1,8 +1,9 @@
 import { walkStream as fsWalkStream, Entry } from "@nodelib/fs.walk"
-import fs from "fs-extra"
+import { existsSync } from "fs"
+import { readFile, rm, access } from "fs/promises"
 import reporter from "gatsby-cli/lib/reporter"
 import fastq from "fastq"
-import path from "path"
+import { join } from "path"
 import { createContentDigest, generatePageDataPath } from "gatsby-core-utils"
 import { websocketManager } from "./websocket-manager"
 import { isWebpackStatusPending } from "./webpack-status"
@@ -40,7 +41,7 @@ export async function readPageData(
   pagePath: string
 ): Promise<IPageDataWithQueryResult> {
   const filePath = generatePageDataPath(publicDir, pagePath)
-  const rawPageData = await fs.readFile(filePath, `utf-8`)
+  const rawPageData = await readFile(filePath, `utf-8`)
   return JSON.parse(rawPageData)
 }
 
@@ -50,15 +51,15 @@ export async function removePageData(
 ): Promise<void> {
   const filePath = generatePageDataPath(publicDir, pagePath)
 
-  if (fs.existsSync(filePath)) {
-    return await fs.remove(filePath)
+  if (existsSync(filePath)) {
+    return await rm(filePath, { force: true })
   }
 
   return Promise.resolve()
 }
 
 export function pageDataExists(publicDir: string, pagePath: string): boolean {
-  return fs.existsSync(generatePageDataPath(publicDir, pagePath))
+  return existsSync(generatePageDataPath(publicDir, pagePath))
 }
 
 let lmdbPageQueryResultsCache: GatsbyCacheLmdb
@@ -140,7 +141,7 @@ export async function writeSliceData(
     (await readPageQueryResult(`slice--${name}`)).toString()
   )
 
-  const outputFilePath = path.join(publicDir, `slice-data`, `${name}.json`)
+  const outputFilePath = join(publicDir, `slice-data`, `${name}.json`)
 
   const sliceData: ISliceData = {
     componentChunkName,
@@ -170,8 +171,8 @@ export async function readSliceData(
   publicDir: string,
   sliceName: string
 ): Promise<IPageDataWithQueryResult> {
-  const filePath = path.join(publicDir, `slice-data`, `${sliceName}.json`)
-  const rawPageData = await fs.readFile(filePath, `utf-8`)
+  const filePath = join(publicDir, `slice-data`, `${sliceName}.json`)
+  const rawPageData = await readFile(filePath, `utf-8`)
   return JSON.parse(rawPageData)
 }
 
@@ -302,7 +303,7 @@ export async function flush(parentSpan?: Span): Promise<void> {
 
           try {
             const result = await writePageData(
-              path.join(program.directory, `public`),
+              join(program.directory, `public`),
               {
                 ...page,
                 staticQueryHashes,
@@ -344,7 +345,7 @@ export async function flush(parentSpan?: Span): Promise<void> {
           staticQueriesByTemplate.get(slice.componentPath) || []
 
         const result = await writeSliceData(
-          path.join(program.directory, `public`),
+          join(program.directory, `public`),
           slice,
           staticQueryHashes
         )
@@ -403,7 +404,13 @@ export function enqueueFlush(parentSpan?: Span): void {
 }
 
 export async function handleStalePageData(parentSpan: Span): Promise<void> {
-  if (!(await fs.pathExists(`public/page-data`))) {
+  // inline fs-extra.pathExists()
+  if (
+    !(await access(`public/page-data`).then(
+      () => true,
+      () => false
+    ))
+  ) {
     return
   }
 
@@ -444,7 +451,7 @@ export async function handleStalePageData(parentSpan: Span): Promise<void> {
   const deletionPromises: Array<Promise<void>> = []
   pageDataFilesFromPreviousBuilds.forEach(pageDataFilePath => {
     if (!expectedPageDataFiles.has(pageDataFilePath)) {
-      deletionPromises.push(fs.remove(pageDataFilePath))
+      deletionPromises.push(rm(pageDataFilePath, { force: true }))
     }
   })
 

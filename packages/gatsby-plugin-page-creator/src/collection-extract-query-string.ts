@@ -1,5 +1,5 @@
 import { generateQueryFromString } from "./extract-query"
-import fs from "fs-extra"
+import { readFileSync } from "fs"
 import { Reporter } from "gatsby/reporter"
 import { extractModel } from "./path-utils"
 import { CODES, prefixId } from "./error-utils"
@@ -20,7 +20,7 @@ export function collectionExtractQueryString(
   if (!modelType) return null
 
   // 1.  Read the file and scan for a use of collectionGraphql
-  const fileContents = fs.readFileSync(absolutePath).toString()
+  const fileContents = readFileSync(absolutePath).toString()
 
   // 2.  If the user is using the collectionGraphql function, we have to
   //     warn that this functionality was removed

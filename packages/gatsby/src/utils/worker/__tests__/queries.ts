@@ -1,6 +1,7 @@
 import "jest-extended"
-import * as path from "path"
-import fs from "fs-extra"
+import { join } from "path"
+import { readFile } from "fs/promises"
+import { emptyDir } from "fs-extra"
 import type { watch as ChokidarWatchType } from "chokidar"
 import { build } from "../../../schema"
 import sourceNodesAndRemoveStaleNodes from "../../source-nodes"
@@ -110,12 +111,12 @@ const queryIdsBig: IGroupedQueryIds = {
 describe(`worker (queries)`, () => {
   beforeAll(async () => {
     store.dispatch({ type: `DELETE_CACHE` })
-    const fileDir = path.join(process.cwd(), `.cache/worker`)
-    await fs.emptyDir(fileDir)
+    const fileDir = join(process.cwd(), `.cache/worker`)
+    await emptyDir(fileDir)
 
     worker = createTestWorker()
 
-    const siteDirectory = path.join(__dirname, `fixtures`, `sample-site`)
+    const siteDirectory = join(__dirname, `fixtures`, `sample-site`)
     await compileGatsbyFiles(siteDirectory)
     const config = await loadConfig({
       siteDirectory,
@@ -238,9 +239,10 @@ describe(`worker (queries)`, () => {
     await worker.single.runQueries(queryIdsSmall)
     const stateFromWorker = await worker.single.getState()
 
-    const staticQueryResult = await fs.readJson(
-      `${stateFromWorker.program.directory}/public/page-data/sq/d/${dummyStaticQuery.hash}.json`
-    )
+    const staticQueryResult = await readFile(
+      `${stateFromWorker.program.directory}/public/page-data/sq/d/${dummyStaticQuery.hash}.json`,
+      `utf8`
+    ).then(JSON.parse)
 
     expect(staticQueryResult).toStrictEqual({
       data: {

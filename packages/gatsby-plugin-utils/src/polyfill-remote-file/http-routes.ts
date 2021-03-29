@@ -1,5 +1,5 @@
-import path from "path"
-import fs from "fs-extra"
+import { join, extname } from "path"
+import { createReadStream } from "fs"
 import { fetchRemoteFile } from "gatsby-core-utils/fetch-remote-file"
 import { hasFeature } from "../has-feature"
 import { ImageCDNUrlKeys } from "./utils/url-generator"
@@ -23,7 +23,7 @@ export function polyfillImageServiceDevRoutes(
 
 export function addImageRoutes(app: Application, store?: Store): Application {
   app.get(`/_gatsby/file/:url/:filename`, async (req, res) => {
-    const outputDir = path.join(
+    const outputDir = join(
       global.__GATSBY?.root || process.cwd(),
       `public`,
       `_gatsby`,
@@ -39,7 +39,7 @@ export function addImageRoutes(app: Application, store?: Store): Application {
       httpHeaders: getRequestHeadersForUrl(url, store),
     })
 
-    fs.createReadStream(filePath).pipe(res)
+    createReadStream(filePath).pipe(res)
   })
 
   app.get(`/_gatsby/image/:url/:params/:filename`, async (req, res) => {
@@ -84,7 +84,7 @@ export function addImageRoutes(app: Application, store?: Store): Application {
       }
     }
 
-    const outputDir = path.join(
+    const outputDir = join(
       global.__GATSBY?.root || process.cwd(),
       `public`,
       `_gatsby`,
@@ -109,10 +109,10 @@ export function addImageRoutes(app: Application, store?: Store): Application {
 
     res.setHeader(
       `content-type`,
-      getFileExtensionFromMimeType(path.extname(filename))
+      getFileExtensionFromMimeType(extname(filename))
     )
 
-    fs.createReadStream(filePath).pipe(res)
+    createReadStream(filePath).pipe(res)
   })
 
   return app

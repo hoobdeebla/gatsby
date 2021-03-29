@@ -1,7 +1,7 @@
 import React from "react"
 import { collectedScriptsByPage } from "gatsby-script"
 import { getForwards } from "./utils/get-forwards"
-import { partytownSnippet } from "@builder.io/partytown/integration"
+import { partytownSnippet } from "@qwik.dev/partytown/integration"
 import type { GatsbySSR } from "gatsby"
 
 export const onRenderBody: GatsbySSR[`onRenderBody`] = ({

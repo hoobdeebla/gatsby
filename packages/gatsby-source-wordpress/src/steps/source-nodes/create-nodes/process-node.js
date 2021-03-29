@@ -5,10 +5,11 @@ import React from "react"
 import ReactDOMServer from "react-dom/server"
 import stringify from "fast-json-stable-stringify"
 import execall from "execall"
-import cheerio from "cheerio"
-import url from "url"
-import path from "path"
-import fs from "fs-extra"
+import { load } from "cheerio"
+import { parse } from "url"
+import { join, basename } from "path"
+import { existsSync } from "fs"
+import { cp } from "fs/promises"
 import { supportedExtensions } from "gatsby-transformer-sharp/supported-extensions"
 import replaceAll from "replaceall"
 import { usingGatsbyV4OrGreater } from "~/utils/gatsby-version"
@@ -114,7 +115,7 @@ const getCheerioImgRelayId = cheerioImg =>
   dbIdToMediaItemRelayId(getCheerioImgDbId(cheerioImg))
 
 export const ensureSrcHasHostname = ({ src, wpUrl }) => {
-  const { protocol, host } = url.parse(wpUrl)
+  const { protocol, host } = parse(wpUrl)
 
   if (src.startsWith(`/wp-content`)) {
     src = `${protocol}//${host}${src}`
@@ -289,7 +290,7 @@ const getCheerioElementFromMatch =
     const parsedMatch = JSON.parse(`"${match}"`)
 
     // load our matching img tag into cheerio
-    const $ = cheerio.load(parsedMatch, {
+    const $ = load(parsedMatch, {
       xml: {
         // make sure it's not wrapped in <body></body>
         withDomLvl1: false,
@@ -387,7 +388,7 @@ const getFileNodeRelativePathname = fileNode => {
 const getFileNodePublicPath = fileNode => {
   const fileName = getFileNodeRelativePathname(fileNode)
 
-  const publicPath = path.join(process.cwd(), `public`, `static`, fileName)
+  const publicPath = join(process.cwd(), `public`, `static`, fileName)
 
   return publicPath
 }
@@ -395,20 +396,15 @@ const getFileNodePublicPath = fileNode => {
 const copyFileToStaticAndReturnUrlPath = async (fileNode, helpers) => {
   const publicPath = getFileNodePublicPath(fileNode)
 
-  if (!fs.existsSync(publicPath)) {
-    await fs.copy(
-      fileNode.absolutePath,
-      publicPath,
-      { dereference: true },
-      err => {
-        if (err) {
-          console.error(
-            `error copying file from ${fileNode.absolutePath} to ${publicPath}`,
-            err
-          )
-        }
+  if (!existsSync(publicPath)) {
+    await cp(fileNode.absolutePath, publicPath, { dereference: true }, err => {
+      if (err) {
+        console.error(
+          `error copying file from ${fileNode.absolutePath} to ${publicPath}`,
+          err
+        )
       }
-    )
+    })
   }
 
   const fileName = getFileNodeRelativePathname(fileNode)
@@ -600,7 +596,7 @@ export const replaceNodeHtmlImages = async ({
                 mimeType: imageNode.mimeType,
                 width: imageNode.mediaDetails.width,
                 height: imageNode.mediaDetails.height,
-                filename: path.basename(imageNode.mediaDetails.file),
+                filename: basename(imageNode.mediaDetails.file),
                 internal: {
                   contentDigest: imageNode.modifiedGmt,
                 },
@@ -622,7 +618,7 @@ export const replaceNodeHtmlImages = async ({
               {
                 url: imageUrl,
                 mimeType: imageNode.mimeType,
-                filename: path.basename(imageNode.sourceUrl || imageNode.url),
+                filename: basename(imageNode.sourceUrl || imageNode.url),
                 internal: {
                   contentDigest: imageNode.modifiedGmt,
                 },

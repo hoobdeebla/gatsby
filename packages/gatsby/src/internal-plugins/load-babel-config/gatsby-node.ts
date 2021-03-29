@@ -1,8 +1,6 @@
-/* @flow */
+import { writeFile } from "fs/promises"
 
-const fs = require(`fs-extra`)
-
-const apiRunnerNode = require(`../../utils/api-runner-node`)
+import apiRunnerNode from "../../utils/api-runner-node"
 import { withBasePath } from "../../utils/path"
 
 exports.onPreBootstrap = async ({ store, parentSpan }) => {
@@ -35,5 +33,5 @@ exports.onPreBootstrap = async ({ store, parentSpan }) => {
     2
   )
 
-  await fs.writeFile(directoryPath(`.cache/babelState.json`), babelState)
+  await writeFile(directoryPath(`.cache/babelState.json`), babelState)
 }

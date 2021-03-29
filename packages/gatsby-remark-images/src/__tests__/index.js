@@ -26,7 +26,7 @@ jest.mock(`gatsby-plugin-sharp`, () => {
 
 const Remark = require(`remark`)
 const queryString = require(`query-string`)
-const cheerio = require(`cheerio`)
+const { load } = require(`cheerio`)
 const toHAST = require(`mdast-util-to-hast`)
 const hastToHTML = require(`hast-util-to-html`)
 
@@ -482,7 +482,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).text()).toEqual(`some title`)
     expect(node.value).toMatchSnapshot()
   })
@@ -497,7 +497,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).length).toBe(0)
   })
 
@@ -511,7 +511,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).length).toBe(0)
   })
 
@@ -525,7 +525,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).text()).toEqual(`some alt`)
     expect(node.value).toMatchSnapshot()
   })
@@ -540,7 +540,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).length).toBe(0)
   })
 
@@ -554,7 +554,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).text()).toEqual(`some alt`)
     expect(node.value).toMatchSnapshot()
   })
@@ -569,7 +569,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).text()).toEqual(`some title`)
     expect(node.value).toMatchSnapshot()
   })
@@ -584,7 +584,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).text()).toEqual(`some alt`)
     expect(node.value).toMatchSnapshot()
   })
@@ -599,7 +599,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).text()).toEqual(`some title`)
     expect(node.value).toMatchSnapshot()
   })
@@ -614,7 +614,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).text()).toEqual(`some alt`)
     expect(node.value).toMatchSnapshot()
   })
@@ -629,7 +629,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).text()).toEqual(`some title`)
     expect(node.value).toMatchSnapshot()
   })
@@ -645,7 +645,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).length).toBe(0)
   })
 
@@ -659,7 +659,7 @@ describe(`showCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).html()).toEqual(`my image`)
     expect(node.value).toMatchSnapshot()
   })
@@ -677,7 +677,7 @@ describe(`markdownCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).html()).toEqual(`<p>some <em>title</em></p>`)
     expect(node.value).toMatchSnapshot()
   })
@@ -693,7 +693,7 @@ describe(`markdownCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).html()).toEqual(`some _title_`)
     expect(node.value).toMatchSnapshot()
   })
@@ -709,7 +709,7 @@ describe(`markdownCaptions`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`figcaption`).length).toBe(0)
   })
 })
@@ -783,7 +783,7 @@ describe(`image alt attribute`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`img`).attr(`alt`)).toEqual(`testing-if-alt-is-correct`)
   })
 
@@ -795,7 +795,7 @@ describe(`image alt attribute`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`img`).attr(`alt`)).toEqual(`my image`)
   })
 
@@ -807,7 +807,7 @@ describe(`image alt attribute`, () => {
     expect(nodes.length).toBe(1)
 
     const node = nodes.pop()
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     expect($(`img`).attr(`alt`)).toEqual(``)
   })
 })

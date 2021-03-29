@@ -1,5 +1,5 @@
-import * as path from "path"
-import fs from "fs-extra"
+import { relative } from "path"
+import { existsSync, readFileSync } from "fs"
 import { createNormalizedModuleKey } from "../utils/create-normalized-module-key"
 import webpack, {
   Module,
@@ -295,7 +295,7 @@ export class PartialHydrationPlugin {
           .map(
             module =>
               `./` +
-              path.relative(
+              relative(
                 compilation.options.context as string,
                 module.userRequest
               )
@@ -361,14 +361,14 @@ export class PartialHydrationPlugin {
     // Restore manifest from the previous compilation, otherwise it will be wiped since files aren't visited on cached builds
     compiler.hooks.beforeCompile.tap(this.name, () => {
       try {
-        const previousManifest = fs.existsSync(this._manifestPath)
+        const previousManifest = existsSync(this._manifestPath)
 
         if (!previousManifest) {
           return
         }
 
         this._previousManifest = JSON.parse(
-          fs.readFileSync(this._manifestPath, `utf-8`)
+          readFileSync(this._manifestPath, `utf-8`)
         )
       } catch (error) {
         this._reporter.panic({

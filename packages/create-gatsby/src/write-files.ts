@@ -1,5 +1,6 @@
-import * as fs from "fs-extra"
-import path from "path"
+import { readFile } from "fs/promises"
+import { outputFile } from "fs-extra" // must use
+import { join, resolve } from "path"
 
 export interface IFile {
   source: string
@@ -8,9 +9,9 @@ export interface IFile {
 
 async function writeFile({ source, targetPath }: IFile): Promise<void> {
   // Read the stub
-  const stubData = await fs.readFile(source)
+  const stubData = await readFile(source)
   // Write stub to targetPath
-  await fs.outputFile(targetPath, stubData)
+  await outputFile(targetPath, stubData)
 }
 
 export async function writeFiles(
@@ -22,13 +23,13 @@ export async function writeFiles(
   }
 
   // Necessary to grab files from the stub/ dir
-  const createGatsbyRoot = path.join(__dirname, `..`)
+  const createGatsbyRoot = join(__dirname, `..`)
   // Creating files in parallel
   const results = []
 
   for (const file of files) {
-    const source = path.resolve(createGatsbyRoot, file.source)
-    const targetPath = path.resolve(rootPath, file.targetPath)
+    const source = resolve(createGatsbyRoot, file.source)
+    const targetPath = resolve(rootPath, file.targetPath)
 
     results.push(writeFile({ source, targetPath }))
   }

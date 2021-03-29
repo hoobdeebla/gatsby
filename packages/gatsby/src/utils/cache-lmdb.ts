@@ -1,6 +1,7 @@
 import { open, RootDatabase, Database, DatabaseOptions } from "lmdb"
-import * as fs from "fs-extra"
-import * as path from "path"
+import { mkdirSync } from "fs"
+import { emptyDir } from "fs-extra" // must use
+import { join } from "path"
 
 // Since the regular GatsbyCache saves to "caches" this should be "caches-lmdb"
 const cacheDbFile =
@@ -13,7 +14,7 @@ const cacheDbFile =
       }`
     : `caches-lmdb`
 
-const dbPath = path.join(
+const dbPath = join(
   global.__GATSBY?.root || process.cwd(),
   `.cache/${cacheDbFile}`
 )
@@ -45,12 +46,12 @@ export default class GatsbyCacheLmdb {
   }) {
     this.name = name
     this.encoding = encoding
-    this.directory = path.join(process.cwd(), `.cache/caches/${name}`)
+    this.directory = join(process.cwd(), `.cache/caches/${name}`)
     this.cache = this
   }
 
   init(): GatsbyCacheLmdb {
-    fs.ensureDirSync(this.directory)
+    mkdirSync(this.directory, { recursive: true })
     return this
   }
 
@@ -103,5 +104,5 @@ export async function resetCache(): Promise<void> {
     globalThis.__GATSBY_OPEN_ROOT_LMDBS.delete(dbPath)
   }
 
-  await fs.emptyDir(dbPath)
+  await emptyDir(dbPath)
 }

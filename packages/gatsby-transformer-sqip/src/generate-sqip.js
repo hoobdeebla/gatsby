@@ -1,7 +1,7 @@
 const { resolve, parse } = require(`path`)
 
 const Debug = require(`debug`)
-const { exists, readFile, writeFile } = require(`fs-extra`)
+const { access, readFile, writeFile } = require(`fs/promises`)
 const svgToMiniDataURI = require(`mini-svg-data-uri`)
 const { default: PQueue } = require(`p-queue`)
 const sqip = require(`sqip`)
@@ -55,7 +55,11 @@ module.exports = async function generateSqip(options) {
       )
 
       try {
-        if (await exists(cachePath)) {
+        if (
+          await access(cachePath)
+            .then(() => true)
+            .catch(() => false)
+        ) {
           debug(
             `Primitive result file already exists for ${name} (${contentDigest}-${optionsHash})`
           )

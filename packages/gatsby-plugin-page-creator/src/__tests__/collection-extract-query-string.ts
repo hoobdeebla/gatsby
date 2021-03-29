@@ -1,5 +1,5 @@
-import sysPath from "path"
-import fs from "fs-extra"
+import { sep } from "path"
+import { readFileSync } from "fs"
 import { collectionExtractQueryString } from "../collection-extract-query-string"
 import reporter from "gatsby/reporter"
 
@@ -10,17 +10,18 @@ jest.mock(`gatsby/reporter`, () => {
 })
 
 // This makes the tests work on windows properly
-const createPath = (path: string): string => path.replace(/\//g, sysPath.sep)
+const createPath = (path: string): string => path.replace(/\//g, sep)
 
-const originalReadFileSync = fs.readFileSync
+const originalReadFileSync = readFileSync
 const patchReadFileSync = (string: string): void => {
   // @ts-ignore
-  fs.readFileSync = (): string => string
+  readFileSync = (): string => string
 }
 
 describe(`collectionExtractQueryString`, () => {
   afterEach(() => {
-    fs.readFileSync = originalReadFileSync
+    // @ts-ignore
+    readFileSync = originalReadFileSync
   })
   it(`will create a basic query from the route`, async () => {
     // @ts-ignore

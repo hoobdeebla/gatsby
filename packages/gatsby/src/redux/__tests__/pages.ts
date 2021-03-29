@@ -1,4 +1,4 @@
-import { readFile } from "fs-extra"
+import { readFile } from "fs-extra" // must use
 import { murmurhash } from "gatsby-core-utils/murmurhash"
 
 jest.mock(`fs-extra`, () => {

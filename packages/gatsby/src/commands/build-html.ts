@@ -1,9 +1,9 @@
-import fs from "fs-extra"
+import { rm } from "fs/promises"
 import reporter from "gatsby-cli/lib/reporter"
 import { createErrorFromString } from "gatsby-cli/lib/reporter/errors"
 import { chunk } from "lodash"
 import { build, watch } from "../utils/webpack/bundle"
-import * as path from "path"
+import { join } from "path"
 import fastq from "fastq"
 
 import { emitter, store } from "../redux"
@@ -167,7 +167,7 @@ const runWebpack = (
           // this runs multiple times
           emitter.emit(`DEV_SSR_COMPILATION_DONE`)
           if (isFirstCompile) {
-            watcher.suspend()
+            watcher!.suspend()
             isFirstCompile = false
           }
 
@@ -190,7 +190,7 @@ const runWebpack = (
               stats: stats as webpack.Stats,
               close: () =>
                 new Promise((resolve, reject): void =>
-                  watcher.close(err => (err ? reject(err) : resolve()))
+                  watcher!.close(err => (err ? reject(err) : resolve()))
                 ),
             })
           }
@@ -216,7 +216,10 @@ const doBuildRenderer = async (
   const { stats, close } = await runWebpack(webpackConfig, stage, directory)
   if (stats?.hasErrors()) {
     reporter.panicOnBuild(
-      structureWebpackErrors(stage, stats.compilation.errors)
+      structureWebpackErrors(
+        stage,
+        stats.compilation.errors as Array<webpack.WebpackError>
+      )
     )
   }
 
@@ -240,7 +243,10 @@ const doBuildPartialHydrationRenderer = async (
   const { stats, close } = await runWebpack(webpackConfig, stage, directory)
   if (stats?.hasErrors()) {
     reporter.panicOnBuild(
-      structureWebpackErrors(stage, stats.compilation.errors)
+      structureWebpackErrors(
+        stage,
+        stats.compilation.errors as Array<webpack.WebpackError>
+      )
     )
   }
 
@@ -292,11 +298,7 @@ export const buildPartialHydrationRenderer = async (
   // TODO add caching
   config.cache = false
 
-  config.output.path = path.join(
-    program.directory,
-    `.cache`,
-    `partial-hydration`
-  )
+  config.output.path = join(program.directory, `.cache`, `partial-hydration`)
 
   // require.resolve might fail the build if the package is not installed
   // Instead of failing it'll be ignored
@@ -315,8 +317,8 @@ export const buildPartialHydrationRenderer = async (
 // TODO remove after v4 release and update cloud internals
 export const deleteRenderer = async (rendererPath: string): Promise<void> => {
   try {
-    await fs.remove(rendererPath)
-    await fs.remove(`${rendererPath}.map`)
+    await rm(rendererPath, { force: true })
+    await rm(`${rendererPath}.map`, { force: true })
   } catch (e) {
     // This function will fail on Windows with no further consequences.
   }
@@ -729,13 +731,13 @@ export async function buildHTMLPagesAndDeleteStaleArtifacts({
     })
 
     await stitchSlicesIntoPagesHTML({
-      publicDir: path.join(program.directory, `public`),
+      publicDir: join(program.directory, `public`),
       parentSpan,
     })
   }
 
   if (toDelete.length > 0) {
-    const publicDir = path.join(program.directory, `public`)
+    const publicDir = join(program.directory, `public`)
     const deletePageDataActivityTimer = reporter.activityTimer(
       `Delete previous page data`
     )
@@ -795,7 +797,7 @@ export async function buildSlices({
       }
 
       await workerPool.single.renderSlices({
-        publicDir: path.join(program.directory, `public`),
+        publicDir: join(program.directory, `public`),
         htmlComponentRendererPath,
         slices,
         slicesProps,

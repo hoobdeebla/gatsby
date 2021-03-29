@@ -23,6 +23,7 @@ const pageTemplatePath = `/Users/username/dev/site/src/templates/my-sweet-new-pa
 const mockWrittenContent = new Map()
 const mockCompatiblePath = path
 jest.mock(`fs-extra`, () => {
+  // must use
   return {
     writeFileSync: jest.fn((file, content) =>
       mockWrittenContent.set(file, content)

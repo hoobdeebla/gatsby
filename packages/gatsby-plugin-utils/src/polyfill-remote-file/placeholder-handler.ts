@@ -1,5 +1,6 @@
-import path from "path"
-import { createReadStream, readFile, mkdtemp } from "fs-extra"
+import { join } from "path"
+import { createReadStream } from "fs"
+import { readFile, mkdtemp } from "fs/promises"
 import { fetchRemoteFile } from "gatsby-core-utils/fetch-remote-file"
 import { createMutex } from "gatsby-core-utils/mutex"
 import Queue from "fastq"
@@ -55,7 +56,7 @@ const queue = Queue<
 
   if (!tmpDir) {
     const cache = getCache()
-    tmpDir = await mkdtemp(path.join(cache.directory, `placeholder-`))
+    tmpDir = await mkdtemp(join(cache.directory, `placeholder-`))
   }
 
   const httpHeaders = getRequestHeadersForUrl(url, store)

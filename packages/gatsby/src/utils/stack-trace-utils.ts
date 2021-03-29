@@ -9,7 +9,7 @@ import {
   sourceContentFor,
 } from "@jridgewell/trace-mapping"
 
-const fs = require(`fs-extra`)
+import { readFileSync } from "fs"
 const path = require(`path`)
 const chalk = require(`chalk`)
 const { isNodeInternalModulePath } = require(`gatsby-core-utils`)
@@ -77,7 +77,7 @@ export const getNonGatsbyCodeFrame = ({
     : fileName
 
   try {
-    const code = fs.readFileSync(normalizedFileName, { encoding: `utf-8` })
+    const code = readFileSync(normalizedFileName, { encoding: `utf-8` })
     return {
       fileName,
       line,

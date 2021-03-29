@@ -1,8 +1,8 @@
 import type { GatsbyNode, NodeInput } from "gatsby"
 import type { FileSystemNode } from "gatsby-source-filesystem"
 import type { Options } from "rehype-infer-description-meta"
-import path from "path"
-import fs from "fs-extra"
+import { join, extname } from "path"
+import { readFile } from "fs/promises"
 import { getPathToContentComponent } from "gatsby-core-utils/parse-component-path"
 import { defaultOptions, enhanceMdxOptions } from "./plugin-options"
 import type { IGatsbyLayoutLoaderOptions } from "./gatsby-layout-loader"
@@ -69,7 +69,7 @@ export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] =
                 resourceQuery,
               }),
               {
-                loader: path.join(__dirname, `gatsby-mdx-loader`),
+                loader: join(__dirname, `gatsby-mdx-loader`),
                 options: mdxLoaderOptions,
               },
             ],
@@ -83,7 +83,7 @@ export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] =
                 resourceQuery,
               }),
               {
-                loader: path.join(__dirname, `gatsby-layout-loader`),
+                loader: join(__dirname, `gatsby-layout-loader`),
                 options: layoutLoaderOptions,
               },
             ],
@@ -126,13 +126,13 @@ export const preprocessSource: GatsbyNode["preprocessSource"] = async (
     store,
   })
 
-  const ext = path.extname(mdxPath)
+  const ext = extname(mdxPath)
 
   if (!extensions.includes(ext)) {
     return undefined
   }
 
-  const contents = await fs.readFile(mdxPath)
+  const contents = await readFile(mdxPath)
 
   const compileRes = await compileMDX(
     {
@@ -335,7 +335,7 @@ export const onCreatePage: GatsbyNode["onCreatePage"] = async (
   const { extensions } = defaultOptions(pluginOptions)
 
   const mdxPath = getPathToContentComponent(page.component)
-  const ext = path.extname(mdxPath)
+  const ext = extname(mdxPath)
 
   // Only apply on pages based on .mdx files
   if (!extensions.includes(ext)) {
@@ -351,7 +351,7 @@ export const onCreatePage: GatsbyNode["onCreatePage"] = async (
 
   // Avoid loops
   if (!page.context?.frontmatter) {
-    const content = await fs.readFile(mdxPath, `utf8`)
+    const content = await readFile(mdxPath, `utf8`)
     const { frontmatter } = parseFrontmatter(
       fileNode.internal.contentDigest,
       content

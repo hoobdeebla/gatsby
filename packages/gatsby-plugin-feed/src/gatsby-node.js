@@ -1,5 +1,5 @@
-import fs from "fs-extra"
-import path from "path"
+import { access, mkdir, writeFile } from "fs/promises"
+import { join, dirname } from "path"
 import RSS from "rss"
 import merge from "lodash.merge"
 
@@ -44,12 +44,16 @@ exports.onPostBuild = async ({ graphql, reporter }, pluginOptions) => {
         return merged
       }, new RSS(setup(locals)))
 
-      const outputPath = path.join(publicPath, feed.output)
-      const outputDir = path.dirname(outputPath)
-      if (!(await fs.pathExists(outputDir))) {
-        await fs.mkdirp(outputDir)
+      const outputPath = join(publicPath, feed.output)
+      const outputDir = dirname(outputPath)
+      if (
+        !(await access(outputDir)
+          .then(() => true)
+          .catch(() => false))
+      ) {
+        await mkdir(outputDir, { recursive: true })
       }
-      await fs.writeFile(outputPath, rssFeed.xml())
+      await writeFile(outputPath, rssFeed.xml())
     }
   }
 }

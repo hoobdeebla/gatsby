@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { execSync } from "child_process"
 import execa from "execa"
-import fs from "fs-extra"
+import { rm } from "fs/promises"
+import fs from "fs-extra" // must use for test
 import path from "path"
 import { initStarter } from "../init-starter"
 import { reporter } from "../utils/reporter"
@@ -15,6 +16,7 @@ jest.mock(`../utils/clear-line`)
 jest.mock(`../utils/make-npm-safe`)
 jest.mock(`execa`)
 jest.mock(`child_process`)
+jest.mock(`fs/promises`)
 jest.mock(`fs-extra`)
 jest.mock(`path`)
 jest.mock(`../utils/reporter`)
@@ -73,7 +75,7 @@ describe(`init-starter`, () => {
         expect(reporter.success).not.toBeCalledWith(
           `Created site from template`
         )
-        expect(fs.remove).toBeCalledWith(`/somewhere-here`)
+        expect(rm).toBeCalledWith(`/somewhere-here`)
       }
     })
 
@@ -100,7 +102,7 @@ describe(`init-starter`, () => {
       ])
       expect(reporter.panic).not.toBeCalled()
       expect(reporter.success).toBeCalledWith(`Created site from template`)
-      expect(fs.remove).toBeCalledWith(`/somewhere-here`)
+      expect(rm).toBeCalledWith(`/somewhere-here`)
     })
   })
 
@@ -120,7 +122,7 @@ describe(`init-starter`, () => {
         `A site`
       )
 
-      expect(fs.remove).toBeCalledWith(`package-lock.json`)
+      expect(rm).toBeCalledWith(`package-lock.json`)
       expect(reporter.success).toBeCalledWith(`Installed plugins`)
       expect(reporter.panic).not.toBeCalled()
       expect(execa).toBeCalledWith(`yarnpkg`, [`--silent`], {
@@ -143,7 +145,7 @@ describe(`init-starter`, () => {
         `A site`
       )
 
-      expect(fs.remove).toBeCalledWith(`yarn.lock`)
+      expect(rm).toBeCalledWith(`yarn.lock`)
       expect(reporter.success).toBeCalledWith(`Installed Gatsby`)
       expect(reporter.success).toBeCalledWith(`Installed plugins`)
       expect(reporter.panic).not.toBeCalled()

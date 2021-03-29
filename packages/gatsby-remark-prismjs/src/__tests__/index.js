@@ -1,5 +1,5 @@
 const remark = require(`remark`)
-const cheerio = require(`cheerio`)
+const { load } = require(`cheerio`)
 let plugin
 
 describe(`remark prism plugin`, () => {
@@ -150,7 +150,7 @@ describe(`remark prism plugin`, () => {
       plugin({ markdownAST }, { showLineNumbers: true })
 
       const htmlResult = markdownAST.children[0].value
-      const $ = cheerio.load(htmlResult)
+      const $ = load(htmlResult)
       const numberOfLineNumbers = $(`.line-numbers-rows > span`).length
       expect(numberOfLineNumbers).toEqual(3)
     })

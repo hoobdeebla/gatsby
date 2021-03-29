@@ -1,5 +1,5 @@
-import * as path from "path"
-import fs from "fs-extra"
+import { join } from "path"
+import { emptyDir } from "fs-extra" // must use
 import type { watch as ChokidarWatchType } from "chokidar"
 import { DocumentNode } from "graphql"
 import { CombinedState } from "redux"
@@ -40,12 +40,12 @@ describe(`worker (schema)`, () => {
 
   beforeAll(async () => {
     store.dispatch({ type: `DELETE_CACHE` })
-    const fileDir = path.join(process.cwd(), `.cache/worker`)
-    await fs.emptyDir(fileDir)
+    const fileDir = join(process.cwd(), `.cache/worker`)
+    await emptyDir(fileDir)
 
     worker = createTestWorker()
 
-    const siteDirectory = path.join(__dirname, `fixtures`, `sample-site`)
+    const siteDirectory = join(__dirname, `fixtures`, `sample-site`)
     await compileGatsbyFiles(siteDirectory)
     const config = await loadConfig({
       siteDirectory,

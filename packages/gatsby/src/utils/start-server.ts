@@ -14,7 +14,8 @@ import https from "https"
 import cors from "cors"
 import launchEditor from "react-dev-utils/launchEditor"
 import { codeFrameColumns } from "@babel/code-frame"
-import * as fs from "fs-extra"
+import { readFileSync } from "fs"
+import { readFile } from "fs/promises"
 
 import { withBasePath } from "../utils/path"
 import webpackConfig from "../utils/webpack.config"
@@ -33,7 +34,7 @@ import {
 import { getPageData as getPageDataExperimental } from "./get-page-data"
 import { findPageByPath } from "./find-page-by-path"
 import apiRunnerNode from "../utils/api-runner-node"
-import * as path from "path"
+import { join, resolve } from "path"
 
 import { Stage, IProgram } from "../commands/types"
 import { findOriginalSourcePositionAndContent } from "./stack-trace-utils"
@@ -70,7 +71,7 @@ export async function startServer(
   workerPool: WorkerPool.GatsbyWorkerPool = WorkerPool.create()
 ): Promise<IServer> {
   const directory = program.directory
-  const PAGE_RENDERER_PATH = path.join(
+  const PAGE_RENDERER_PATH = join(
     program.directory,
     ROUTES_DIRECTORY,
     `render-page.js`
@@ -261,7 +262,7 @@ export async function startServer(
 
   app.get(`/__open-stack-frame-in-editor`, (req, res) => {
     if (req.query.fileName) {
-      const fileName = path.resolve(process.cwd(), req.query.fileName as string)
+      const fileName = resolve(process.cwd(), req.query.fileName as string)
       const lineNumber = parseInt(req.query.lineNumber as string, 10)
       launchEditor(fileName, isNaN(lineNumber) ? 1 : lineNumber)
     }
@@ -314,7 +315,7 @@ export async function startServer(
             pageData = await getPageDataExperimental(page.path)
           } else {
             pageData = await readPageData(
-              path.join(store.getState().program.directory, `public`),
+              join(store.getState().program.directory, `public`),
               page.path
             )
           }
@@ -398,7 +399,7 @@ export async function startServer(
         return
       }
 
-      const absolutePath = path.resolve(
+      const absolutePath = resolve(
         store.getState().program.directory,
         req.query.moduleId as string
       )
@@ -416,7 +417,7 @@ export async function startServer(
       }
 
       try {
-        sourceContent = fs.readFileSync(absolutePath, `utf-8`)
+        sourceContent = readFileSync(absolutePath, `utf-8`)
       } catch (e) {
         res.json(emptyResponse)
         return
@@ -542,10 +543,7 @@ export async function startServer(
       return
     }
 
-    const absolutePath = path.resolve(
-      store.getState().program.directory,
-      filePath
-    )
+    const absolutePath = resolve(store.getState().program.directory, filePath)
 
     const compilation: Compilation =
       res.locals?.webpack?.devMiddleware?.stats?.compilation
@@ -559,7 +557,7 @@ export async function startServer(
       return
     }
 
-    const sourceContent = await fs.readFile(absolutePath, `utf-8`)
+    const sourceContent = await readFile(absolutePath, `utf-8`)
 
     const codeFrame = codeFrameColumns(
       sourceContent,

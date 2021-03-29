@@ -18,8 +18,8 @@ import type { Request } from "express"
 import type { Span, SpanContext } from "opentracing"
 
 // actual imports
-import * as path from "path"
-import * as fs from "fs-extra"
+import { join } from "path"
+import { readFile } from "fs/promises"
 import {
   constructPageDataString,
   getPagePathFromPageDataPath,
@@ -386,16 +386,16 @@ export async function renderPageData({
 const readStaticQuery = async (
   staticQueryHash: string
 ): Promise<Record<string, { data: unknown }>> => {
-  const filePath = path.join(__dirname, `sq`, `${staticQueryHash}.json`)
-  const rawSQContext = await fs.readFile(filePath, `utf-8`)
+  const filePath = join(__dirname, `sq`, `${staticQueryHash}.json`)
+  const rawSQContext = await readFile(filePath, `utf-8`)
 
   return JSON.parse(rawSQContext)
 }
 
 const readSliceData = async (sliceName: string): Promise<ISliceData> => {
-  const filePath = path.join(__dirname, `slice-data`, `${sliceName}.json`)
+  const filePath = join(__dirname, `slice-data`, `${sliceName}.json`)
 
-  const rawSliceData = await fs.readFile(filePath, `utf-8`)
+  const rawSliceData = await readFile(filePath, `utf-8`)
   return JSON.parse(rawSliceData)
 }
 

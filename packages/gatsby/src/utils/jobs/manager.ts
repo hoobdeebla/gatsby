@@ -1,6 +1,7 @@
-import path from "path"
+import { isAbsolute } from "path"
 import hasha from "hasha"
-import fs from "fs-extra"
+import { existsSync } from "fs"
+import { mkdir } from "fs/promises"
 import pDefer from "p-defer"
 import _ from "lodash"
 import { createContentDigest, slash, uuid } from "gatsby-core-utils"
@@ -43,7 +44,7 @@ const externalJobsMap: Map<
  * We want to use absolute paths to make sure they are on the filesystem
  */
 function convertPathsToAbsolute(filePath: string): string {
-  if (!path.isAbsolute(filePath)) {
+  if (!isAbsolute(filePath)) {
     throw new Error(`${filePath} should be an absolute path.`)
   }
 
@@ -72,7 +73,7 @@ async function runLocalWorker<T>(
   workerFn: { ({ inputPaths, outputDir, args }: InternalJob): T },
   job: InternalJob
 ): Promise<T> {
-  await fs.ensureDir(job.outputDir)
+  await mkdir(job.outputDir, { recursive: true })
 
   return new Promise((resolve, reject) => {
     // execute worker nextTick
@@ -370,7 +371,7 @@ export function isJobStale(
 ): boolean {
   const areInputPathsStale = job.inputPaths.some(inputPath => {
     // does the inputPath still exists?
-    if (!fs.existsSync(inputPath.path)) {
+    if (!existsSync(inputPath.path)) {
       return true
     }
 

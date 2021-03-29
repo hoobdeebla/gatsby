@@ -1,10 +1,10 @@
-import path from "path"
-import * as fs from "fs-extra"
+import { join } from "path"
+import { access, writeFile, readFile } from "fs/promises"
 import axios from "axios"
 import { IAdapterManifestEntry } from "./adapter/types"
 import { preferDefault } from "../bootstrap/prefer-default"
 
-const ROOT = path.join(__dirname, `..`, `..`)
+const ROOT = join(__dirname, `..`, `..`)
 const UNPKG_ROOT = `https://unpkg.com/gatsby/`
 const GITHUB_ROOT = `https://raw.githubusercontent.com/gatsbyjs/gatsby/master/packages/gatsby/`
 
@@ -14,8 +14,8 @@ const FILE_NAMES = {
 }
 
 const OUTPUT_FILES = {
-  APIS: path.join(ROOT, `latest-apis.json`),
-  ADAPTERS: path.join(ROOT, `latest-adapters.js`),
+  APIS: join(ROOT, `latest-apis.json`),
+  ADAPTERS: join(ROOT, `latest-adapters.js`),
 }
 
 export interface IAPIResponse {
@@ -48,7 +48,7 @@ const _getFile = async <T>({
   tryGithubBeforeUnpkg?: boolean
   forcedContent?: string
 }): Promise<T> => {
-  let fileToUse = path.join(ROOT, fileName)
+  let fileToUse = join(ROOT, fileName)
 
   let dataToUse = forcedContent
 
@@ -60,7 +60,7 @@ const _getFile = async <T>({
   }
 
   if (dataToUse) {
-    await fs.writeFile(
+    await writeFile(
       outputFileName,
       typeof dataToUse === `string`
         ? dataToUse
@@ -70,14 +70,21 @@ const _getFile = async <T>({
 
     fileToUse = outputFileName
   } else {
-    // if file was previously cached, use it
-    if (await fs.pathExists(outputFileName)) {
+    // if file was previously cached, use it - inline fs-extra.pathExists()
+    if (
+      await access(outputFileName).then(
+        () => true,
+        () => false
+      )
+    ) {
       fileToUse = outputFileName
     }
   }
 
   if (fileToUse.endsWith(`.json`)) {
-    return fs.readJSON(fileToUse).catch(() => defaultReturn)
+    return await readFile(fileToUse, `utf8`)
+      .then(JSON.parse)
+      .catch(() => defaultReturn)
   } else {
     try {
       const importedFile = await import(fileToUse)

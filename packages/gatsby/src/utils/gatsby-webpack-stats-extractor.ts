@@ -1,5 +1,5 @@
-import fs from "fs-extra"
-import path from "path"
+import { writeFile, mkdir } from "fs/promises"
+import { join } from "path"
 import { Compiler } from "webpack"
 import { PARTIAL_HYDRATION_CHUNK_REASON } from "./webpack/plugins/partial-hydration"
 import { store } from "../redux"
@@ -91,7 +91,7 @@ export class GatsbyWebpackStatsExtractor {
                   assets.add(relatedAsset)
                 }
               } else {
-                assets.add(relatedAssets)
+                assets.add(relatedAssets!)
               }
             }
           }
@@ -101,10 +101,7 @@ export class GatsbyWebpackStatsExtractor {
 
       const newChunkMapJson = JSON.stringify(assetsMap)
       if (newChunkMapJson !== previousChunkMapJson) {
-        await fs.writeFile(
-          path.join(`public`, `chunk-map.json`),
-          newChunkMapJson
-        )
+        await writeFile(join(`public`, `chunk-map.json`), newChunkMapJson)
 
         if (_CFLAGS_.GATSBY_MAJOR === `5` && process.env.GATSBY_SLICES) {
           // Add chunk mapping metadata to scripts slice
@@ -120,7 +117,9 @@ export class GatsbyWebpackStatsExtractor {
           </script>
         `
 
-          await fs.ensureDir(path.join(`public`, `_gatsby`, `slices`))
+          await mkdir(join(`public`, `_gatsby`, `slices`), {
+            recursive: true,
+          })
 
           const hashSliceContents = `<script>window.___webpackCompilationHash="${stats.hash}";</script>`
 
@@ -147,7 +146,7 @@ export class GatsbyWebpackStatsExtractor {
           }
 
           const scriptsSliceHtmlChanged = await ensureFileContent(
-            path.join(`public`, `_gatsby`, `slices`, `_gatsby-scripts-1.html`),
+            join(`public`, `_gatsby`, `slices`, `_gatsby-scripts-1.html`),
             chunkSliceContents + hashSliceContents + assetSliceContents.join(``)
           )
 
@@ -163,8 +162,8 @@ export class GatsbyWebpackStatsExtractor {
 
       const newWebpackStatsJson = JSON.stringify(webpackStats)
       if (newWebpackStatsJson !== previousWebpackStatsJson) {
-        await fs.writeFile(
-          path.join(`public`, `webpack.stats.json`),
+        await writeFile(
+          join(`public`, `webpack.stats.json`),
           newWebpackStatsJson
         )
         previousWebpackStatsJson = newWebpackStatsJson

@@ -1,4 +1,4 @@
-import fs from "fs-extra"
+import { mkdtemp, writeFile, readFile } from "fs/promises"
 import { tmpdir } from "os"
 import { join } from "path"
 import type { IRedirectRoute, RoutesManifest } from "gatsby"
@@ -55,17 +55,17 @@ const customContent3 =
 
 async function getContent(previousContent?: string): Promise<string> {
   const filePath = join(
-    await fs.mkdtemp(join(tmpdir(), `inject-entries`)),
+    await mkdtemp(join(tmpdir(), `inject-entries`)),
     `out.txt`
   )
 
   if (typeof previousContent !== `undefined`) {
-    await fs.writeFile(filePath, previousContent)
+    await writeFile(filePath, previousContent)
   }
 
   await injectEntries(filePath, newAdapterContent)
 
-  return fs.readFile(filePath, `utf8`)
+  return readFile(filePath, `utf8`)
 }
 
 jest.setTimeout(60_000)

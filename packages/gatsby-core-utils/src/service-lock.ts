@@ -5,9 +5,9 @@
  *
  * NOTE(@mxstbr): This is NOT EXPORTED from the main index.ts due to this relying on Node.js-specific APIs but core-utils also being used in browser environments. See https://github.com/jprichardson/node-fs-extra/issues/743
  */
-import path from "path"
+import { join } from "path"
 import tmp from "tmp"
-import fs from "fs-extra"
+import { mkdir, writeFile, readFile, readdir } from "fs/promises"
 import xdgBasedir from "xdg-basedir"
 import { createContentDigest } from "./create-content-digest"
 import { isCI } from "./ci"
@@ -17,12 +17,12 @@ const globalConfigPath = xdgBasedir.config || tmp.fileSync().name
 const getSiteDir = (programPath: string): string => {
   const hash = createContentDigest(programPath)
 
-  return path.join(globalConfigPath, `gatsby`, `sites`, hash)
+  return join(globalConfigPath, `gatsby`, `sites`, hash)
 }
 
 const DATA_FILE_EXTENSION = `.json`
 const getDataFilePath = (siteDir: string, serviceName: string): string =>
-  path.join(siteDir, `${serviceName}${DATA_FILE_EXTENSION}`)
+  join(siteDir, `${serviceName}${DATA_FILE_EXTENSION}`)
 
 const lockfileOptions = {
   // Use the minimum stale duration
@@ -55,12 +55,12 @@ export const createServiceLock = async (
 
   const siteDir = getSiteDir(programPath)
 
-  await fs.ensureDir(siteDir)
+  await mkdir(siteDir, { recursive: true })
 
   const serviceDataFile = getDataFilePath(siteDir, serviceName)
 
   try {
-    await fs.writeFile(serviceDataFile, JSON.stringify(content))
+    await writeFile(serviceDataFile, JSON.stringify(content))
 
     const lockfile = await getLockFileInstance()
     const unlock = await lockfile.lock(serviceDataFile, lockfileOptions)
@@ -88,7 +88,7 @@ export const getService = async <T = Record<string, unknown>>(
       (await lockfile.check(serviceDataFile, lockfileOptions))
     ) {
       return JSON.parse(
-        await fs.readFile(serviceDataFile, `utf8`).catch(() => `null`)
+        await readFile(serviceDataFile, `utf8`).catch(() => `null`)
       )
     }
 
@@ -102,7 +102,7 @@ export const getServices = async (programPath: string): Promise<any> => {
   if (isCI()) return memoryServices
   const siteDir = getSiteDir(programPath)
 
-  const serviceNames = (await fs.readdir(siteDir))
+  const serviceNames = (await readdir(siteDir))
     .filter(file => file.endsWith(DATA_FILE_EXTENSION))
     .map(file => file.replace(DATA_FILE_EXTENSION, ``))
 

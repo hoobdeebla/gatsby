@@ -1,10 +1,11 @@
 // NOTE(@mxstbr): Do not use the reporter in this file, as that has side-effects on import which break structured logging
-import path from "path"
+import { join } from "path"
 import tmp from "tmp"
 import { ChildProcess } from "child_process"
 import execa from "execa"
 import { detectPortInUseAndPrompt } from "../utils/detect-port-in-use-and-prompt"
-import fs from "fs-extra"
+import { mkdirSync } from "fs"
+import { outputFileSync } from "fs-extra" // must use
 import onExit from "signal-exit"
 import { v4 } from "gatsby-core-utils/uuid"
 import { slash } from "gatsby-core-utils/path"
@@ -58,12 +59,12 @@ class ControllableScript {
   start(): void {
     const args: Array<string> = []
 
-    const dotCachePath = path.join(process.cwd(), `.cache`)
-    fs.mkdirpSync(dotCachePath)
+    const dotCachePath = join(process.cwd(), `.cache`)
+    mkdirSync(dotCachePath, { recursive: true })
     const tmpFileName = tmp.tmpNameSync({
       tmpdir: dotCachePath,
     })
-    fs.outputFileSync(tmpFileName, this.script)
+    outputFileSync(tmpFileName, this.script)
     this.isRunning = true
     // Passing --inspect isn't necessary for the child process to launch a port but it allows some editors to automatically attach
     if (this.debugInfo) {
@@ -184,7 +185,7 @@ module.exports = async (program: IProgram): Promise<void> => {
   // which users will access
   const debugInfo = getDebugInfo(program)
 
-  const rootFile = (file: string): string => path.join(program.directory, file)
+  const rootFile = (file: string): string => join(program.directory, file)
 
   // Require gatsby-config.js before accessing process.env, to enable the user to change
   // environment variables from the config file.

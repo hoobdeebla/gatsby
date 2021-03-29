@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { IBuildContext } from "./types"
-import * as fs from "fs-extra"
+import { access, lstat, readFile } from "fs/promises"
 import { Stats } from "webpack"
 import reporter from "gatsby-cli/lib/reporter"
 import { emitter } from "../redux"
@@ -69,11 +69,15 @@ async function includesSSRComponent(
 
 async function isSSRPageComponent(filename: string): Promise<boolean> {
   if (
-    !(await fs.pathExists(filename)) ||
-    !(await fs.lstat(filename)).isFile()
+    // inline fs-extra.pathExists()
+    !(await access(filename).then(
+      () => true,
+      () => false
+    )) ||
+    !(await lstat(filename)).isFile()
   ) {
     return false
   }
-  const text = await fs.readFile(filename, `utf8`)
+  const text = await readFile(filename, `utf8`)
   return text.includes(`getServerData`)
 }

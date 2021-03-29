@@ -1,4 +1,4 @@
-const fs = require(`fs-extra`)
+const { readFileSync } = require(`fs`)
 const _ = require(`lodash`)
 const {
   getMonorepoPackageJsonPath,
@@ -38,7 +38,7 @@ exports.checkDepsChanges = async ({
   let localPKGjson
   let packageNotInstalled = false
   try {
-    localPKGjson = JSON.parse(fs.readFileSync(newPath, `utf-8`))
+    localPKGjson = JSON.parse(readFileSync(newPath, `utf-8`))
   } catch {
     packageNotInstalled = true
     // there is no local package - so we still need to install deps
@@ -82,10 +82,7 @@ exports.checkDepsChanges = async ({
     packageName,
     packageNameToPath,
   })
-  const monorepoPKGjsonString = fs.readFileSync(
-    monoRepoPackageJsonPath,
-    `utf-8`
-  )
+  const monorepoPKGjsonString = readFileSync(monoRepoPackageJsonPath, `utf-8`)
   const monorepoPKGjson = JSON.parse(monorepoPKGjsonString)
   if (ignoredPackageJSON.has(packageName)) {
     if (ignoredPackageJSON.get(packageName).includes(monorepoPKGjsonString)) {
@@ -184,9 +181,7 @@ exports.checkDepsChanges = async ({
 }
 
 function getPackageVersion(packageName) {
-  const projectPackageJson = JSON.parse(
-    fs.readFileSync(`./package.json`, `utf-8`)
-  )
+  const projectPackageJson = JSON.parse(readFileSync(`./package.json`, `utf-8`))
   const { dependencies = {}, devDependencies = {} } = projectPackageJson
   const version = dependencies[packageName] || devDependencies[packageName]
   return version || `latest`

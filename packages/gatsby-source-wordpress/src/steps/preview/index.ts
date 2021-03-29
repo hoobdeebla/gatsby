@@ -1,9 +1,9 @@
 import { getPluginOptions } from "./../../utils/get-gatsby-api"
 import { GatsbyHelpers } from "~/utils/gatsby-types"
-import path from "path"
-import fs from "fs-extra"
+import { join } from "path"
+import { mkdir, access, writeFile } from "fs/promises"
 import chalk from "chalk"
-import urlUtil from "url"
+import { parse } from "url"
 import PQueue from "p-queue"
 import { dump } from "dumper.js"
 import { actions as gatsbyActions } from "gatsby/dist/redux/actions/public"
@@ -109,22 +109,29 @@ const writeDummyPageDataJsonIfNeeded = async ({
     return
   }
 
-  const pageDataDirectory = path.join(
+  const pageDataDirectory = join(
     process.cwd(),
     `public/page-data`,
     pageNode.path
   )
 
-  await fs.ensureDir(pageDataDirectory)
+  await mkdir(pageDataDirectory, { recursive: true })
 
-  const pageDataPath = path.join(pageDataDirectory, `page-data.json`)
+  const pageDataPath = join(pageDataDirectory, `page-data.json`)
 
-  const pageDataExists = await fs.pathExists(pageDataPath)
+  // inline fs-extra.pathExists()
+  const pageDataExists = await access(pageDataPath).then(
+    () => true,
+    () => false
+  )
 
   if (!pageDataExists) {
-    await fs.writeJSON(pageDataPath, {
-      isDraft: previewData.isDraft,
-    })
+    await writeFile(
+      pageDataPath,
+      JSON.stringify({
+        isDraft: previewData.isDraft,
+      })
+    )
   }
 }
 
@@ -317,8 +324,8 @@ export const sourcePreviews = async (helpers: GatsbyHelpers): Promise<void> => {
   // if we check this for every webhookBody errors will occur!
   if (webhookBody.remoteUrl) {
     // check if we're receiving preview data fromt the right WP backend
-    const { hostname: settingsHostname } = urlUtil.parse(url)
-    const { hostname: remoteHostname } = urlUtil.parse(webhookBody.remoteUrl)
+    const { hostname: settingsHostname } = parse(url)
+    const { hostname: remoteHostname } = parse(webhookBody.remoteUrl)
 
     if (settingsHostname !== remoteHostname) {
       const sendPreviewStatus = createPreviewStatusCallback({

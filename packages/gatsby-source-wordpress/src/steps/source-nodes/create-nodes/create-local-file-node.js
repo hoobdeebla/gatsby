@@ -1,6 +1,6 @@
-import fs from "fs-extra"
-import path from "path"
-import url from "url"
+import { readFile, mkdir, copyFile } from "fs/promises"
+import { extname, dirname } from "path"
+import { parse } from "url"
 import { bold } from "chalk"
 
 import retry from "async-retry"
@@ -25,7 +25,7 @@ export const getFileNodeMetaBySourceUrl = sourceUrl => {
 export const getMediaItemEditLink = node => {
   const { helpers, pluginOptions } = getStore().getState().gatsbyApi
 
-  const { protocol, hostname } = url.parse(node?.link || pluginOptions.url)
+  const { protocol, hostname } = parse(node?.link || pluginOptions.url)
   const baseUrl = `${protocol}//${hostname}`
 
   const databaseId = node.databaseId
@@ -279,11 +279,11 @@ export const createLocalFileNode = async ({
     // if it exists, use that to create a node from instead of
     // fetching from wp
     try {
-      const buffer = await fs.readFile(hardCachedFilePath)
+      const buffer = await readFile(hardCachedFilePath)
       remoteFileNode = await createFileNodeFromBuffer({
         buffer,
         name: title,
-        ext: path.extname(mediaItemUrl),
+        ext: extname(mediaItemUrl),
         ...createFileNodeRequirements,
       })
     } catch (e) {
@@ -300,8 +300,8 @@ export const createLocalFileNode = async ({
           return null
         }
 
-        const { hostname: wpUrlHostname } = url.parse(wpUrl)
-        const { hostname: mediaItemHostname } = url.parse(mediaItemUrl)
+        const { hostname: wpUrlHostname } = parse(wpUrl)
+        const { hostname: mediaItemHostname } = parse(mediaItemUrl)
 
         const htaccessCredentials = pluginOptions.auth.htaccess
 
@@ -360,9 +360,9 @@ export const createLocalFileNode = async ({
   if (hardCacheMediaFiles) {
     try {
       // make sure the directory exists
-      await fs.ensureDir(path.dirname(hardCachedFilePath))
+      await mkdir(dirname(hardCachedFilePath), { recursive: true })
       // copy our downloaded file to our existing directory
-      await fs.copyFile(remoteFileNode.absolutePath, hardCachedFilePath)
+      await copyFile(remoteFileNode.absolutePath, hardCachedFilePath)
     } catch (e) {
       helpers.reporter.panic(e)
     }

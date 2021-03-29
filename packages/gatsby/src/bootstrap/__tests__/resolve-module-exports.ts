@@ -11,8 +11,8 @@ jest.mock(`gatsby-cli/lib/reporter`, () => {
   }
 })
 
-import * as fs from "fs-extra"
-import path from "path"
+import { readFileSync } from "fs"
+import { resolve, join } from "path"
 import reporter from "gatsby-cli/lib/reporter"
 import { resolveModuleExports } from "../resolve-module-exports"
 
@@ -129,12 +129,12 @@ describe(`Resolve module exports`, () => {
     "/export/function": `export function foo() {}`,
   }
 
-  const mockDir = path.resolve(__dirname, `..`, `__mocks__`)
+  const mockDir = resolve(__dirname, `..`, `__mocks__`)
 
   beforeEach(() => {
     resolver = jest.fn(arg => arg)
     // @ts-ignore
-    fs.readFileSync.mockImplementation(file => {
+    readFileSync.mockImplementation(file => {
       const existing = MOCK_FILE_INFO[file]
       return existing
     })
@@ -260,7 +260,7 @@ describe(`Resolve module exports`, () => {
     jest.mock(`import/exports`)
 
     const result = await resolveModuleExports(
-      path.join(mockDir, `import`, `exports`),
+      join(mockDir, `import`, `exports`),
       {
         mode: `import`,
       }
@@ -272,7 +272,7 @@ describe(`Resolve module exports`, () => {
     jest.mock(`import/unusual-exports`)
 
     const result = await resolveModuleExports(
-      path.join(mockDir, `import`, `unusual-exports`),
+      join(mockDir, `import`, `unusual-exports`),
       {
         mode: `import`,
       }
@@ -282,7 +282,7 @@ describe(`Resolve module exports`, () => {
 
   it(`Resolves exports when using import mode - returns empty array when module doesn't exist`, async () => {
     const result = await resolveModuleExports(
-      path.join(mockDir, `import`, `not-existing-module`),
+      join(mockDir, `import`, `not-existing-module`),
       {
         mode: `import`,
       }
@@ -293,7 +293,7 @@ describe(`Resolve module exports`, () => {
   it(`Resolves exports when using import mode - panic on errors`, async () => {
     jest.mock(`import/module-error`)
 
-    await resolveModuleExports(path.join(mockDir, `import`, `module-error`), {
+    await resolveModuleExports(join(mockDir, `import`, `module-error`), {
       mode: `import`,
     })
 

@@ -11,7 +11,7 @@ const { createParentChildLink } = publicActions
 const { printTypeDefinitions } = actions
 
 jest.mock(`fs-extra`)
-const fs = require(`fs-extra`)
+const fs = require(`fs-extra`) // must use
 afterEach(() => {
   fs.writeFile.mockClear()
 })

@@ -1,9 +1,11 @@
 import _ from "lodash"
 import { slash, isCI } from "gatsby-core-utils"
-import * as fs from "fs-extra"
+import { existsSync, readFileSync, writeFileSync } from "fs"
+import { mkdir, rm, cp } from "fs/promises"
+import { emptyDir } from "fs-extra" // must use
 import { releaseAllMutexes } from "gatsby-core-utils/mutex"
 import { md5, md5File } from "gatsby-core-utils"
-import path from "path"
+import { join, relative } from "path"
 import { glob } from "tinyglobby"
 
 import apiRunnerNode from "../utils/api-runner-node"
@@ -254,9 +256,9 @@ export async function initialize({
   const workerCacheDirectory = `${program.directory}/.cache/worker`
   const lmdbCacheDirectory = `${program.directory}/.cache/${lmdbCacheDirectoryName}`
 
-  const publicDirExists = fs.existsSync(publicDirectory)
-  const workerCacheDirExists = fs.existsSync(workerCacheDirectory)
-  const lmdbCacheDirExists = fs.existsSync(lmdbCacheDirectory)
+  const publicDirExists = existsSync(publicDirectory)
+  const workerCacheDirExists = existsSync(workerCacheDirectory)
+  const lmdbCacheDirExists = existsSync(lmdbCacheDirectory)
 
   // check the cache file that is used by the current configuration
   const cacheDirExists = lmdbCacheDirExists
@@ -286,7 +288,7 @@ export async function initialize({
         cwd: program.directory,
       }
     )
-    await Promise.all(files.map(file => fs.remove(file)))
+    await Promise.all(files.map(file => rm(file, { force: true })))
     activity.end()
   }
 
@@ -300,9 +302,9 @@ export async function initialize({
       }
     )
     activity.start()
-    await fs
-      .remove(workerCacheDirectory)
-      .catch(() => fs.emptyDir(workerCacheDirectory))
+    await rm(workerCacheDirectory, { force: true }).catch(() =>
+      emptyDir(workerCacheDirectory)
+    )
     activity.end()
   }
 
@@ -443,7 +445,7 @@ export async function initialize({
         cwd: program.directory,
       })
 
-      await Promise.all(files.map(file => fs.remove(file)))
+      await Promise.all(files.map(file => rm(file, { force: true })))
     } catch (e) {
       reporter.error(`Failed to remove .cache files.`, e)
     }
@@ -466,10 +468,10 @@ export async function initialize({
 
   // Now that we know the .cache directory is safe, initialize the cache
   // directory.
-  await fs.ensureDir(cacheDirectory)
+  await mkdir(cacheDirectory, { recursive: true })
 
   // Ensure the public/static directory
-  await fs.ensureDir(`${publicDirectory}/static`)
+  await mkdir(`${publicDirectory}/static`, { recursive: true })
 
   // Init plugins once cache is initialized
   await apiRunnerNode(`onPluginInit`, {
@@ -488,15 +490,15 @@ export async function initialize({
   const siteDir = cacheDirectory
 
   try {
-    await fs.copy(srcDir, siteDir, {
-      overwrite: true,
+    await cp(srcDir, siteDir)
+    await mkdir(`${cacheDirectory}/${lmdbCacheDirectoryName}`, {
+      recursive: true,
     })
-    await fs.ensureDir(`${cacheDirectory}/${lmdbCacheDirectoryName}`)
 
     // Ensure .cache/fragments exists and is empty. We want fragments to be
     // added on every run in response to data as fragments can only be added if
     // the data used to create the schema they're dependent on is available.
-    await fs.emptyDir(`${cacheDirectory}/fragments`)
+    await emptyDir(`${cacheDirectory}/fragments`)
   } catch (err) {
     reporter.panic(`Unable to copy site files to .cache`, err)
   }
@@ -514,7 +516,7 @@ export async function initialize({
     // a handy place to include global styles and other global imports.
     try {
       if (env === `browser`) {
-        const modulePath = path.join(plugin.resolve, `gatsby-${env}`)
+        const modulePath = join(plugin.resolve, `gatsby-${env}`)
         return slash(resolveModule(modulePath) as string)
       }
     } catch (e) {
@@ -522,7 +524,7 @@ export async function initialize({
     }
 
     if (envAPIs && Array.isArray(envAPIs) && envAPIs.length > 0) {
-      const modulePath = path.join(plugin.resolve, `gatsby-${env}`)
+      const modulePath = join(plugin.resolve, `gatsby-${env}`)
       return slash(resolveModule(modulePath) as string)
     }
     return undefined
@@ -554,7 +556,7 @@ export async function initialize({
   const browserPluginsRequires = browserPlugins
     .map(plugin => {
       // we need a relative import path to keep contenthash the same if directory changes
-      const relativePluginPath = path.relative(siteDir, plugin.resolve)
+      const relativePluginPath = relative(siteDir, plugin.resolve)
       return `{
       plugin: require('${slash(relativePluginPath)}'),
       options: ${JSON.stringify(plugin.options)},
@@ -567,7 +569,7 @@ export async function initialize({
   let sSRAPIRunner = ``
 
   try {
-    sSRAPIRunner = fs.readFileSync(`${siteDir}/api-runner-ssr.js`, `utf-8`)
+    sSRAPIRunner = readFileSync(`${siteDir}/api-runner-ssr.js`, `utf-8`)
   } catch (err) {
     reporter.panic(`Failed to read ${siteDir}/api-runner-ssr.js`, err)
   }
@@ -584,12 +586,12 @@ export async function initialize({
     .join(`,`)
   sSRAPIRunner = `var plugins = [${ssrPluginsRequires}]\n${sSRAPIRunner}`
 
-  fs.writeFileSync(
+  writeFileSync(
     `${siteDir}/api-runner-browser-plugins.js`,
     browserAPIRunner,
     `utf-8`
   )
-  fs.writeFileSync(`${siteDir}/api-runner-ssr.js`, sSRAPIRunner, `utf-8`)
+  writeFileSync(`${siteDir}/api-runner-ssr.js`, sSRAPIRunner, `utf-8`)
 
   activity.end()
   /**

@@ -1,6 +1,7 @@
 import { validatePathQuery } from "../validate-path-query"
-import systemPath from "path"
-import fs from "fs-extra"
+import { join } from "path"
+import { rm } from "fs/promises"
+import { createFile } from "fs-extra" // test-only
 
 describe(`validatePathQuery`, () => {
   it(`throws on missing starting /`, () => {
@@ -50,17 +51,13 @@ Unable to find a file at: \\"<PROJECT_ROOT>/src/pages/foo/{bar}\\""
 
   it(`works if all the above predicates pass`, async () => {
     const filePath = `/baz/{bar}`
-    const absolutePath = systemPath.join(
-      process.cwd(),
-      `src/pages`,
-      `${filePath}.js`
-    )
-    await fs.createFile(absolutePath)
+    const absolutePath = join(process.cwd(), `src/pages`, `${filePath}.js`)
+    await createFile(absolutePath)
 
     expect(() => {
       validatePathQuery(filePath, [`.js`, `.ts`, `.mjs`])
     }).not.toThrow()
 
-    await fs.remove(systemPath.join(process.cwd(), `src/pages`))
+    await rm(join(process.cwd(), `src/pages`), { force: true })
   })
 })

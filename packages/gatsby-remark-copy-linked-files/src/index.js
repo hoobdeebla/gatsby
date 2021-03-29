@@ -1,10 +1,12 @@
 /* eslint-disable @babel/no-invalid-this */
 const visit = require(`unist-util-visit`)
 const isRelativeUrl = require(`is-relative-url`)
-const fsExtra = require(`fs-extra`)
-const path = require(`path`)
+const { readFileSync, existsSync } = require(`fs`)
+const { mkdir, cp } = require(`fs/promises`)
+const { relative, posix, dirname } = require(`path`)
+const { join } = posix
 const _ = require(`lodash`)
-const cheerio = require(`cheerio`)
+const { load } = require(`cheerio`)
 const imageSize = require(`probe-image-size`)
 
 const DEPLOY_DIR = `public`
@@ -13,7 +15,7 @@ const invalidDestinationDirMessage = dir =>
   `[gatsby-remark-copy-linked-files You have supplied an invalid destination directory. The destination directory must be a child but was: ${dir}`
 
 // dest must be a child
-const destinationIsValid = dest => !path.relative(`./`, dest).startsWith(`..`)
+const destinationIsValid = dest => !relative(`./`, dest).startsWith(`..`)
 
 const validateDestinationDir = dir => {
   if (typeof dir === `undefined`) {
@@ -52,7 +54,7 @@ const newPath = (linkNode, options) => {
   const { destinationDir } = options
   const destination = getDestination(linkNode, destinationDir)
   const paths = [process.cwd(), DEPLOY_DIR, destination]
-  return path.posix.join(...paths)
+  return join(...paths)
 }
 
 const newLinkURL = (linkNode, options, pathPrefix) => {
@@ -92,10 +94,7 @@ module.exports = (
   // to new location of the files.
   const visitor = link => {
     if (isRelativeUrl(link.url) && getNode(markdownNode.parent).dir) {
-      const linkPath = path.posix.join(
-        getNode(markdownNode.parent).dir,
-        link.url
-      )
+      const linkPath = join(getNode(markdownNode.parent).dir, link.url)
       const linkNode = _.find(files, file => {
         if (file && file.absolutePath) {
           return file.absolutePath === linkPath
@@ -118,10 +117,7 @@ module.exports = (
   // Takes a node and generates the needed images and then returns
   // the needed HTML replacement for the image
   const generateImagesAndUpdateNode = function (image, node) {
-    const imagePath = path.posix.join(
-      getNode(markdownNode.parent).dir,
-      image.attr(`src`)
-    )
+    const imagePath = join(getNode(markdownNode.parent).dir, image.attr(`src`))
     const imageNode = _.find(files, file => {
       if (file && file.absolutePath) {
         return file.absolutePath === imagePath
@@ -145,9 +141,7 @@ module.exports = (
     let dimensions
 
     if (!image.attr(`width`) || !image.attr(`height`)) {
-      dimensions = imageSize.sync(
-        toArray(fsExtra.readFileSync(imageNode.absolutePath))
-      )
+      dimensions = imageSize.sync(toArray(readFileSync(imageNode.absolutePath)))
     }
 
     // Generate default alt tag
@@ -197,10 +191,7 @@ module.exports = (
       return
     }
 
-    const imagePath = path.posix.join(
-      getNode(markdownNode.parent).dir,
-      image.url
-    )
+    const imagePath = join(getNode(markdownNode.parent).dir, image.url)
     const imageNode = _.find(files, file => {
       if (file && file.absolutePath) {
         return file.absolutePath === imagePath
@@ -215,7 +206,7 @@ module.exports = (
 
   // For each HTML Node
   visit(markdownAST, [`html`, `jsx`], node => {
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
 
     function processUrl({ url, isRequired }) {
       try {
@@ -298,10 +289,10 @@ module.exports = (
   return Promise.all(
     Array.from(filesToCopy, async ([linkPath, newFilePath]) => {
       // Don't copy anything if the file already exists at the location.
-      if (!fsExtra.existsSync(newFilePath)) {
+      if (!existsSync(newFilePath)) {
         try {
-          await fsExtra.ensureDir(path.dirname(newFilePath))
-          await fsExtra.copy(linkPath, newFilePath)
+          await mkdir(dirname(newFilePath), { recursive: true })
+          await cp(linkPath, newFilePath)
         } catch (err) {
           console.error(`error copying file`, err)
         }

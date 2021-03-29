@@ -1,5 +1,5 @@
-const fs = require(`fs-extra`)
-const path = require(`path`)
+const { writeFile, mkdir } = require(`fs/promises`)
+const { join, dirname } = require(`path`)
 const fileType = require(`file-type`)
 
 const { createFileNode } = require(`./create-file-node`)
@@ -39,7 +39,7 @@ const cacheId = hash => `create-file-node-from-buffer-${hash}`
  */
 const writeBuffer = (filename, buffer) =>
   new Promise((resolve, reject) => {
-    fs.writeFile(filename, buffer, err => (err ? reject(err) : resolve()))
+    writeFile(filename, buffer, err => (err ? reject(err) : resolve()))
   })
 
 /**
@@ -72,8 +72,8 @@ async function processBufferNode({
       const filetype = await fileType.fromBuffer(buffer)
       ext = filetype ? `.${filetype.ext}` : `.bin`
     }
-    filename = createFilePath(path.join(pluginCacheDir, hash), name, ext)
-    await fs.ensureDir(path.dirname(filename))
+    filename = createFilePath(join(pluginCacheDir, hash), name, ext)
+    await mkdir(dirname(filename), { recursive: true })
 
     // Cache the buffer contents
     await writeBuffer(filename, buffer)

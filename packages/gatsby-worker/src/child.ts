@@ -1,5 +1,5 @@
 import signalExit from "signal-exit"
-import fs from "fs-extra"
+import { outputJsonSync } from "fs-extra" // must use
 import {
   ParentMessageUnion,
   ChildMessageUnion,
@@ -47,10 +47,7 @@ if (
   signalExit(() => {
     if (inFlightMessages.size > 0) {
       // this need to be sync
-      fs.outputJsonSync(
-        workerInFlightsDumpLocation,
-        Array.from(inFlightMessages)
-      )
+      outputJsonSync(workerInFlightsDumpLocation, Array.from(inFlightMessages))
     }
   })
 

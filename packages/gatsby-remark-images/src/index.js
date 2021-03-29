@@ -7,12 +7,12 @@ const {
 } = require(`./constants`)
 const visitWithParents = require(`unist-util-visit-parents`)
 const getDefinitions = require(`mdast-util-definitions`)
-const path = require(`path`)
+const { extname, join } = require(`path`)
 const queryString = require(`query-string`)
 const isRelativeUrl = require(`is-relative-url`)
 const _ = require(`lodash`)
 const { fluid, stats, traceSVG } = require(`gatsby-plugin-sharp`)
-const cheerio = require(`cheerio`)
+const { load } = require(`cheerio`)
 const { slash } = require(`gatsby-core-utils`)
 const chalk = require(`chalk`)
 
@@ -84,7 +84,7 @@ module.exports = (
   const getImageInfo = uri => {
     const { url, query } = queryString.parseUrl(uri)
     return {
-      ext: path.extname(url).split(`.`).pop(),
+      ext: extname(url).split(`.`).pop(),
       url,
       query,
     }
@@ -170,7 +170,7 @@ module.exports = (
     }
     let imagePath
     if (parentNode && parentNode.dir) {
-      imagePath = slash(path.join(parentNode.dir, getImageInfo(node.url).url))
+      imagePath = slash(join(parentNode.dir, getImageInfo(node.url).url))
     } else {
       return null
     }
@@ -481,7 +481,7 @@ module.exports = (
               return resolve()
             }
 
-            const $ = cheerio.load(node.value)
+            const $ = load(node.value)
             if ($(`img`).length === 0) {
               // No img tags
               return resolve()

@@ -1,5 +1,5 @@
 import { WorkerPool } from "gatsby-worker"
-import fs from "fs-extra"
+import { createReadStream } from "fs"
 import nodePath from "path"
 import report from "gatsby-cli/lib/reporter"
 import { isCI } from "gatsby-core-utils"
@@ -71,7 +71,7 @@ const searchFileForString = (
       `exports.ssrComponents.*${escapedSubString}.*}`,
       `gs`
     )
-    const stream = fs.createReadStream(filePath)
+    const stream = createReadStream(filePath)
     let found = false
     stream.on(`data`, function (d) {
       if (chunkRegex.test(d.toString())) {

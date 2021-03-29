@@ -5,7 +5,7 @@ import reporter from "gatsby-cli/lib/reporter"
 import { store } from "../redux/"
 import { internalActions } from "../redux/actions"
 import path from "path"
-import fs from "fs-extra"
+import { mkdir, writeFile } from "fs/promises"
 import fastq from "fastq"
 
 interface INodeManifestPage {
@@ -342,7 +342,7 @@ export async function processNodeManifest(
 
   const manifestFileDir = path.dirname(manifestFilePath)
 
-  await fs.ensureDir(manifestFileDir)
+  await mkdir(manifestFileDir, { recursive: true })
 
   const previouslyWrittenNodeManifest =
     await previouslyWrittenNodeManifests.get(inputManifest.manifestId)
@@ -357,7 +357,10 @@ export async function processNodeManifest(
       finalManifest.foundPageBy !== `none`)
 
   if (shouldWriteManifest) {
-    const writePromise = fs.writeJSON(manifestFilePath, finalManifest)
+    const writePromise = writeFile(
+      manifestFilePath,
+      JSON.stringify(finalManifest)
+    )
 
     // This prevents two manifests from writing to the same file at the same time
     previouslyWrittenNodeManifests.set(

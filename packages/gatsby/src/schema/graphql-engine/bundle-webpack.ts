@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
-import * as path from "path"
-import * as fs from "fs-extra"
+import path from "path" // must use for regular and posix
+import { existsSync, readFileSync } from "fs"
+import { mkdir, readFile, copyFile } from "fs/promises"
+import { emptyDir, outputJson } from "fs-extra" // must use
 import execa, { Options as ExecaOptions } from "execa"
 import webpack, { Module, NormalModule, Compilation } from "webpack"
 import ConcatenatedModule from "webpack/lib/optimize/ConcatenatedModule"
 import { dependencies } from "gatsby/package.json"
 import { printQueryEnginePlugins } from "./print-plugins"
-import mod from "module"
+import { createRequire, builtinModules } from "module"
 import { WebpackLoggingPlugin } from "../../utils/webpack/plugins/webpack-logging"
 import { getAssetMeta } from "@vercel/webpack-asset-relocator-loader"
 import reporter from "gatsby-cli/lib/reporter"
@@ -65,14 +65,14 @@ const createInternalPackagesCacheDir = async (
   functionsTarget: IPlatformAndArch
 ): Promise<void> => {
   const cacheDir = getInternalPackagesCacheDir(functionsTarget)
-  await fs.ensureDir(cacheDir)
+  await mkdir(cacheDir, { recursive: true })
 
   const packageJsonPath = path.join(cacheDir, `package.json`)
 
-  if (!fs.existsSync(packageJsonPath)) {
-    await fs.emptyDir(cacheDir)
+  if (!existsSync(packageJsonPath)) {
+    await emptyDir(cacheDir)
 
-    await fs.outputJson(packageJsonPath, {
+    await outputJson(packageJsonPath, {
       name: `gatsby-internal-packages`,
       description: `This directory contains internal packages installed by Gatsby used to comply with the current platform requirements`,
       version: `1.0.0`,
@@ -96,7 +96,7 @@ function getLMDBBinaryFromSiteLocation(
       .dirname(slash(require.resolve(`lmdb`)))
       .replace(`/dist`, ``)
     const packageJsonPath = path.join(modulePath, `package.json`)
-    packageJson = JSON.parse(fs.readFileSync(packageJsonPath, `utf-8`))
+    packageJson = JSON.parse(readFileSync(packageJsonPath, `utf-8`))
   } catch (e) {
     // If we fail to read lmdb's package.json there's bigger problems here so just skip installation
     return undefined
@@ -122,14 +122,12 @@ function getPackageLocationFromRequireContext(
 ): string | undefined {
   try {
     const requireId = `${packageName}/package.json`
-    const locationRequire = mod.createRequire(location)
+    const locationRequire = createRequire(location)
     const packageJsonLocation = slash(locationRequire.resolve(requireId))
 
     if (packageVersion) {
       // delete locationRequire.cache[requireId]
-      const { version } = JSON.parse(
-        fs.readFileSync(packageJsonLocation, `utf-8`)
-      )
+      const { version } = JSON.parse(readFileSync(packageJsonLocation, `utf-8`))
       if (packageVersion !== version) {
         return undefined
       }
@@ -343,7 +341,7 @@ export async function createGraphqlEngineBundle(
     ? state.config.pathPrefix ?? ``
     : ``
 
-  const schemaSnapshotString = await fs.readFile(
+  const schemaSnapshotString = await readFile(
     path.join(rootDir, `.cache`, `schema.gql`),
     `utf-8`
   )
@@ -356,7 +354,7 @@ export async function createGraphqlEngineBundle(
     },
   }
 
-  const gatsbyPluginTSRequire = mod.createRequire(
+  const gatsbyPluginTSRequire = createRequire(
     require.resolve(`gatsby-plugin-typescript`)
   )
 
@@ -428,7 +426,7 @@ export async function createGraphqlEngineBundle(
     externals: [
       `cbor-x`, // optional dep of lmdb-store, but we are using `msgpack` (default) encoding, so we don't need it
       `electron`, // :shrug: `got` seems to have electron specific code path
-      mod.builtinModules.reduce((acc, builtinModule) => {
+      builtinModules.reduce((acc, builtinModule) => {
         if (builtinModule === `fs`) {
           acc[builtinModule] = `global _actualFsWrapper`
           acc[`node:${builtinModule}`] = `global _actualFsWrapper`
@@ -653,7 +651,7 @@ export async function createGraphqlEngineBundle(
               const sourcePath = assetMeta?.path
               if (sourcePath) {
                 const dist = path.join(outputDir, asset)
-                binaryFixingPromises.push(fs.copyFile(sourcePath, dist))
+                binaryFixingPromises.push(copyFile(sourcePath, dist))
               }
             }
           }

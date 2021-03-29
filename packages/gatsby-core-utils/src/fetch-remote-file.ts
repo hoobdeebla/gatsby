@@ -1,6 +1,7 @@
 import fileType from "file-type"
-import path from "path"
-import fs from "fs-extra"
+import { join, resolve } from "path"
+import { access, cp, mkdir, rm } from "fs/promises"
+import { move } from "fs-extra" // no native cross-platform equivalent
 import Queue from "fastq"
 import { createContentDigest } from "./create-content-digest"
 import {
@@ -43,10 +44,16 @@ export async function fetchRemoteFile(
     ) as string
 
     if (info?.cacheKey === args.cacheKey && fileDirectory) {
-      const cachedPath = path.join(info.directory, info.path)
-      const downloadPath = path.join(fileDirectory, info.path)
+      const cachedPath = join(info.directory, info.path)
+      const downloadPath = join(fileDirectory, info.path)
 
-      if (await fs.pathExists(cachedPath)) {
+      // inline fs-extra.pathExists()
+      if (
+        await access(cachedPath).then(
+          () => true,
+          () => false
+        )
+      ) {
         // If the cached directory is not part of the public directory, we don't need to copy it
         // as it won't be part of the build.
         if (isPublicPath(downloadPath) && cachedPath !== downloadPath) {
@@ -63,7 +70,7 @@ export async function fetchRemoteFile(
 
 function isPublicPath(downloadPath: string): boolean {
   return downloadPath.startsWith(
-    path.join(global.__GATSBY?.root ?? process.cwd(), `public`)
+    join(global.__GATSBY?.root ?? process.cwd(), `public`)
   )
 }
 
@@ -82,9 +89,7 @@ async function copyCachedPathToDownloadPath({
     )
     await copyFileMutex.acquire()
     if (!alreadyCopiedFiles.has(downloadPath)) {
-      await fs.copy(cachedPath, downloadPath, {
-        overwrite: true,
-      })
+      await cp(cachedPath, downloadPath)
     }
 
     alreadyCopiedFiles.add(downloadPath)
@@ -158,8 +163,8 @@ async function fetchFile({
   try {
     const digest = createContentDigest(url)
     const finalDirectory = excludeDigest
-      ? path.resolve(fileDirectory)
-      : path.join(fileDirectory, digest)
+      ? resolve(fileDirectory)
+      : join(fileDirectory, digest)
 
     if (!name) {
       name = getRemoteFileName(url)
@@ -192,7 +197,7 @@ async function fetchFile({
       httpOptions.password = auth.htaccess_pass
     }
 
-    await fs.ensureDir(finalDirectory)
+    await mkdir(finalDirectory, { recursive: true })
 
     const tmpFilename = createFilePath(fileDirectory, `tmp-${digest}`, ext)
     let filename = createFilePath(finalDirectory, name, ext)
@@ -201,7 +206,12 @@ async function fetchFile({
     // from a previous request.
     const headers = { ...httpHeaders }
 
-    if (cachedEntry?.headers?.etag && (await fs.pathExists(filename))) {
+    if (
+      cachedEntry?.headers?.etag &&
+      (await access(filename)
+        .then(() => true)
+        .catch(() => false))
+    ) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       headers[`If-None-Match`] = cachedEntry.headers.etag
     }
@@ -226,7 +236,7 @@ async function fetchFile({
         }
       }
 
-      await fs.move(tmpFilename, filename, { overwrite: true })
+      await move(tmpFilename, filename, { overwrite: true })
 
       const slashedDirectory = slash(finalDirectory)
       await setInFlightObject(url, BUILD_ID, {
@@ -237,7 +247,7 @@ async function fetchFile({
         path: slash(filename).replace(`${slashedDirectory}/`, ``),
       })
     } else if (response.statusCode === 304) {
-      await fs.remove(tmpFilename)
+      await rm(tmpFilename, { force: true })
     }
 
     return filename
@@ -255,7 +265,7 @@ function getInFlightObject(key: string, buildId?: string): string | undefined {
   const remoteFile = getStorage(getDatabaseDir()).remoteFileInfo.get(key)
   // if buildId match we know it's the same build and it already processed this url this build
   if (remoteFile && remoteFile.buildId === buildId) {
-    return path.join(remoteFile.directory, remoteFile.path)
+    return join(remoteFile.directory, remoteFile.path)
   }
 
   return undefined
@@ -271,7 +281,7 @@ async function setInFlightObject(
   >
 ): Promise<void> {
   if (!buildId) {
-    inFlightMap.set(key, path.join(value.directory, value.path))
+    inFlightMap.set(key, join(value.directory, value.path))
   }
 
   await getStorage(getDatabaseDir()).remoteFileInfo.put(key, {

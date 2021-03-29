@@ -1,4 +1,5 @@
-import fs from "fs-extra"
+import { createWriteStream } from "fs"
+import { rm } from "fs/promises"
 import type { IncomingMessage } from "http"
 import type { Headers, Options } from "got"
 import type { GatsbyCache } from "gatsby"
@@ -90,7 +91,7 @@ export async function requestRemoteNode(
 
   return new Promise((resolve, reject) => {
     let timeout: NodeJS.Timeout
-    const fsWriteStream = fs.createWriteStream(tmpFilename)
+    const fsWriteStream = createWriteStream(tmpFilename)
     fsWriteStream.on(`error`, (error: unknown) => {
       if (timeout) {
         clearTimeout(timeout)
@@ -102,7 +103,7 @@ export async function requestRemoteNode(
     // Called if we stall for 30s without receiving any data
     const handleTimeout = async (): Promise<void> => {
       fsWriteStream.close()
-      await fs.remove(tmpFilename)
+      await rm(tmpFilename, { force: true })
 
       if (attempt < STALL_RETRY_LIMIT) {
         // Retry by calling ourself recursively
@@ -160,7 +161,7 @@ export async function requestRemoteNode(
       }
 
       fsWriteStream.close()
-      await fs.remove(tmpFilename)
+      await rm(tmpFilename, { force: true })
 
       if (!(error instanceof RequestError)) {
         return reject(error)
@@ -239,7 +240,7 @@ export async function requestRemoteNode(
 
         // We have an incomplete download
         if (!haveAllBytesBeenWritten) {
-          await fs.remove(tmpFilename)
+          await rm(tmpFilename, { force: true })
 
           if (attempt < INCOMPLETE_RETRY_LIMIT) {
             // let's give node time to remove the file

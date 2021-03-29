@@ -1,5 +1,5 @@
-import * as path from "path"
-import * as fs from "fs-extra"
+import { join } from "path"
+import { readFile, writeFile } from "fs/promises"
 import { generateHtmlPath } from "gatsby-core-utils/page-html"
 
 interface ISliceBoundaryMatch {
@@ -28,8 +28,8 @@ async function stitchSlices(
   let cursor = 0
 
   async function getSliceContent(sliceHtmlName: string): Promise<string> {
-    return fs.readFile(
-      path.join(publicDir, `_gatsby`, `slices`, `${sliceHtmlName}.html`),
+    return readFile(
+      join(publicDir, `_gatsby`, `slices`, `${sliceHtmlName}.html`),
       `utf-8`
     )
   }
@@ -131,11 +131,11 @@ export async function stitchSliceForAPage({
 }): Promise<void> {
   const htmlFilePath = generateHtmlPath(publicDir, pagePath)
 
-  const html = await fs.readFile(htmlFilePath, `utf-8`)
+  const html = await readFile(htmlFilePath, `utf-8`)
 
   const processedHTML = await stitchSlices(html, publicDir)
 
   if (html !== processedHTML) {
-    await fs.writeFile(htmlFilePath, processedHTML)
+    await writeFile(htmlFilePath, processedHTML)
   }
 }

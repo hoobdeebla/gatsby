@@ -6,7 +6,7 @@ import { rest } from "msw"
 import { setupServer } from "msw/node"
 import { Writable } from "stream"
 import got from "got"
-import fs from "fs-extra"
+import fs from "fs-extra" // must use for test
 import { slash } from "gatsby-core-utils/path"
 import { fetchRemoteFile } from "../fetch-remote-file"
 import * as storage from "../utils/get-storage"

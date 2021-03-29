@@ -1,5 +1,5 @@
-import path from "path"
-import fs from "fs-extra"
+import { join } from "path"
+import { readFile, access, rm } from "fs/promises"
 import { rest } from "msw"
 import { setupServer } from "msw/node"
 import { IMAGE_CDN } from "../gatsby-worker"
@@ -7,8 +7,8 @@ import getSharpInstance from "gatsby-sharp"
 
 const server = setupServer(
   rest.get(`https://example.com/another-file.jpg`, async (req, res, ctx) => {
-    const content = await fs.readFile(
-      path.join(__dirname, `../../__tests__/__fixtures__/dog-portrait.jpg`)
+    const content = await readFile(
+      join(__dirname, `../../__tests__/__fixtures__/dog-portrait.jpg`)
     )
 
     return res(
@@ -27,7 +27,7 @@ describe(`gatsby-worker`, () => {
   describe(`IMAGE_CDN`, () => {
     // TODO msw is failing on weird error during CI but not locally
     it.skip(`should download and transform an image`, async () => {
-      const outputDir = path.join(__dirname, `.cache`)
+      const outputDir = join(__dirname, `.cache`)
       await IMAGE_CDN({
         outputDir,
         args: {
@@ -41,15 +41,21 @@ describe(`gatsby-worker`, () => {
         },
       })
 
-      const outputFile = path.join(outputDir, `abc.jpg`)
-      expect(await fs.pathExists(outputFile)).toBe(true)
+      const outputFile = join(outputDir, `abc.jpg`)
+      // inline fs-extra.pathExists()
+      expect(
+        await access(outputFile).then(
+          () => true,
+          () => false
+        )
+      ).toBe(true)
 
       const sharp = await getSharpInstance()
       const metadata = await sharp(outputFile).metadata()
       expect(metadata.width).toBe(100)
       expect(metadata.height).toBe(100)
 
-      await fs.remove(outputFile)
+      await rm(outputFile, { force: true })
     })
   })
 })

@@ -1,4 +1,5 @@
-import * as fs from "fs-extra"
+import { existsSync } from "fs"
+import { writeFile } from "fs/promises"
 import {
   EnumTypeComposer,
   InputTypeComposer,
@@ -335,7 +336,7 @@ export const printTypeDefinitions = ({
     return Promise.resolve()
   }
 
-  if (!rewrite && fs.existsSync(path)) {
+  if (!rewrite && existsSync(path)) {
     report.error(
       `Printing type definitions aborted. The file \`${path}\` already exists.`
     )
@@ -458,7 +459,7 @@ export const printTypeDefinitions = ({
   try {
     typeDefs.forEach(tc => printedTypeDefs.push(printType(tc)))
     report.info(`Writing GraphQL type definitions to ${path}`)
-    return fs.writeFile(path, printedTypeDefs.join(`\n\n`))
+    return writeFile(path, printedTypeDefs.join(`\n\n`))
   } catch (error) {
     report.error(`Failed writing type definitions to \`${path}\`.`, error)
     return Promise.resolve()

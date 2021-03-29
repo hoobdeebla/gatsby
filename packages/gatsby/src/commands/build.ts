@@ -1,6 +1,7 @@
 import path from "path"
 import report from "gatsby-cli/lib/reporter"
-import fs from "fs-extra"
+import fs from "fs"
+import fsp from "fs/promises"
 import {
   updateInternalSiteMetadata,
   isTruthy,
@@ -467,7 +468,7 @@ module.exports = async function build(
           `page-ssr`,
           `slice-data`
         )
-        fs.copySync(sliceDataPath, destination)
+        fs.cpSync(sliceDataPath, destination)
       }
 
       if (process.send) {
@@ -635,10 +636,10 @@ module.exports = async function build(
       ? `${toDelete.join(`\n`)}\n`
       : ``
 
-    await fs.writeFile(createdFilesPath, createdFilesContent, `utf8`)
+    await fsp.writeFile(createdFilesPath, createdFilesContent, `utf8`)
     report.info(`.cache/newPages.txt created`)
 
-    await fs.writeFile(deletedFilesPath, deletedFilesContent, `utf8`)
+    await fsp.writeFile(deletedFilesPath, deletedFilesContent, `utf8`)
     report.info(`.cache/deletedPages.txt created`)
   }
 

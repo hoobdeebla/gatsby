@@ -1,6 +1,6 @@
 import { Span } from "opentracing"
 import _ from "lodash"
-import fs from "fs-extra"
+import { outputFile } from "fs-extra" // must use
 import report from "gatsby-cli/lib/reporter"
 import { ExecutionResult, GraphQLError } from "graphql"
 import { sha1 } from "gatsby-core-utils/hash"
@@ -220,7 +220,7 @@ export async function queryRunner(
         `d`,
         `${queryJob.hash}.json`
       )
-      await fs.outputFile(resultPath, resultJSON)
+      await outputFile(resultPath, resultJSON)
     }
   }
 

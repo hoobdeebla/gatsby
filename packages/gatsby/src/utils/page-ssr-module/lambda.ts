@@ -1,6 +1,19 @@
 import type { GatsbyFunctionResponse, GatsbyFunctionRequest } from "gatsby"
-import * as path from "path"
-import * as fs from "fs-extra"
+import { join, resolve, sep } from "path"
+import {
+  accessSync,
+  constants,
+  PathLike,
+  promises,
+  WriteStream,
+  createWriteStream,
+  ReadStream,
+  createReadStream,
+  existsSync,
+  cpSync,
+  readFileSync,
+} from "fs"
+import { mkdir } from "fs/promises"
 import { get as httpsGet } from "https"
 import { get as httpGet, IncomingMessage, ClientRequest } from "http"
 import { tmpdir } from "os"
@@ -20,35 +33,32 @@ const PATH_PREFIX = `%PATH_PREFIX%`
 // this file should be in `.cache/page-ssr-module/lambda.js`
 // so getting `.cache` location should be one directory above
 // directory of this file
-const cacheDir = path.join(__dirname, `..`)
+const cacheDir = join(__dirname, `..`)
 
 // gatsby relies on process.cwd() a lot, so this ensures that CWD is set correctly
 // in relation to bundled files for lambda. In some scenarios those files are not in
 // expected relative locations to CWD, so here we are forcing setting CWD so the
 // relative paths are correct
-process.chdir(path.join(cacheDir, `..`))
+process.chdir(join(cacheDir, `..`))
 
 function setupFsWrapper(): string {
   // setup global._fsWrapper
   try {
-    fs.accessSync(__filename, fs.constants.W_OK)
-    return path.join(cacheDir, `data`, `datastore`)
+    accessSync(__filename, constants.W_OK)
+    return join(cacheDir, `data`, `datastore`)
   } catch (e) {
     // we are in a read-only filesystem, so we need to use a temp dir
 
-    const TEMP_DIR = path.join(tmpdir(), `gatsby`)
-    const TEMP_CACHE_DIR = path.join(TEMP_DIR, `.cache`)
+    const TEMP_DIR = join(tmpdir(), `gatsby`)
+    const TEMP_CACHE_DIR = join(TEMP_DIR, `.cache`)
 
     global.__GATSBY.root = TEMP_DIR
 
     // we need to rewrite fs
     const rewrites = [
-      [path.join(cacheDir, `caches`), path.join(TEMP_CACHE_DIR, `caches`)],
-      [
-        path.join(cacheDir, `caches-lmdb`),
-        path.join(TEMP_CACHE_DIR, `caches-lmdb`),
-      ],
-      [path.join(cacheDir, `data`), path.join(TEMP_CACHE_DIR, `data`)],
+      [join(cacheDir, `caches`), join(TEMP_CACHE_DIR, `caches`)],
+      [join(cacheDir, `caches-lmdb`), join(TEMP_CACHE_DIR, `caches-lmdb`)],
+      [join(cacheDir, `data`), join(TEMP_CACHE_DIR, `data`)],
     ]
 
     console.log(`Preparing Gatsby filesystem`, {
@@ -58,8 +68,8 @@ function setupFsWrapper(): string {
     })
 
     // copied from https://github.com/streamich/linkfs/blob/master/src/index.ts#L126-L142
-    function mapPathUsingRewrites(fsPath: fs.PathLike): string {
-      let filename = path.resolve(String(fsPath))
+    function mapPathUsingRewrites(fsPath: PathLike): string {
+      let filename = resolve(String(fsPath))
       for (const [from, to] of rewrites) {
         if (filename.indexOf(from) === 0) {
           const rootRegex = /(?:^[a-zA-Z]:\\$)|(?:^\/$)/ // C:\ vs /
@@ -68,7 +78,7 @@ function setupFsWrapper(): string {
 
           if (isRoot) {
             const regex = new RegExp(baseRegex)
-            filename = filename.replace(regex, () => to + path.sep)
+            filename = filename.replace(regex, () => to + sep)
           } else {
             const regex = new RegExp(baseRegex + `(\\\\|/|$)`)
             filename = filename.replace(regex, (_match, _p1, p2) => to + p2)
@@ -123,13 +133,13 @@ function setupFsWrapper(): string {
     // 'promises' is not initially linked within the 'linkfs'
     // package, and is needed by underlying Gatsby code (the
     // @graphql-tools/code-file-loader)
-    lfs.promises = createLinkedFS(fs.promises)
+    lfs.promises = createLinkedFS(promises)
 
-    const originalWritesStream = fs.WriteStream
+    const originalWritesStream = WriteStream
     function LinkedWriteStream(
-      this: fs.WriteStream,
-      ...args: Parameters<(typeof fs)["createWriteStream"]>
-    ): fs.WriteStream {
+      this: WriteStream,
+      ...args: Parameters<typeof createWriteStream>
+    ): WriteStream {
       args[0] = mapPathUsingRewrites(args[0])
       args[1] =
         typeof args[1] === `string`
@@ -151,11 +161,11 @@ function setupFsWrapper(): string {
     // @ts-ignore TS doesn't like extending prototype "classes"
     lfs.WriteStream = LinkedWriteStream
 
-    const originalReadStream = fs.ReadStream
+    const originalReadStream = ReadStream
     function LinkedReadStream(
-      this: fs.ReadStream,
-      ...args: Parameters<(typeof fs)["createReadStream"]>
-    ): fs.ReadStream {
+      this: ReadStream,
+      ...args: Parameters<typeof createReadStream>
+    ): ReadStream {
       args[0] = mapPathUsingRewrites(args[0])
       args[1] =
         typeof args[1] === `string`
@@ -177,7 +187,7 @@ function setupFsWrapper(): string {
     // @ts-ignore TS doesn't like extending prototype "classes"
     lfs.ReadStream = LinkedReadStream
 
-    const dbPath = path.join(TEMP_CACHE_DIR, `data`, `datastore`)
+    const dbPath = join(TEMP_CACHE_DIR, `data`, `datastore`)
 
     // Gatsby uses this instead of fs if present
     // eslint-disable-next-line no-underscore-dangle
@@ -186,16 +196,13 @@ function setupFsWrapper(): string {
 
     if (!cdnDatastorePath) {
       const dir = `data`
-      if (
-        !process.env.NETLIFY_LOCAL &&
-        fs.existsSync(path.join(TEMP_CACHE_DIR, dir))
-      ) {
+      if (!process.env.NETLIFY_LOCAL && existsSync(join(TEMP_CACHE_DIR, dir))) {
         console.log(`directory already exists`)
         return dbPath
       }
       console.log(`Start copying ${dir}`)
 
-      fs.copySync(path.join(cacheDir, dir), path.join(TEMP_CACHE_DIR, dir))
+      cpSync(join(cacheDir, dir), join(TEMP_CACHE_DIR, dir))
       console.log(`End copying ${dir}`)
     }
 
@@ -264,7 +271,7 @@ async function downloadDatastoreFromCDN(origin: string): Promise<void> {
     `Downloading datastore from CDN (${cdnDatastore} -> ${downloadPath})`
   )
 
-  await fs.ensureDir(dbPath)
+  await mkdir(dbPath, { recursive: true })
   await new Promise((resolve, reject) => {
     const req = get(cdnDatastore, response => {
       if (
@@ -282,7 +289,7 @@ async function downloadDatastoreFromCDN(origin: string): Promise<void> {
         return
       }
 
-      const fileStream = fs.createWriteStream(downloadPath)
+      const fileStream = createWriteStream(downloadPath)
       streamPipeline(response, fileStream)
         .then(resolve)
         .catch(error => {
@@ -433,10 +440,10 @@ function getErrorBody(statusCode: number): string {
   }</p></body></html>`
 
   if (statusCode === 404 || statusCode === 500) {
-    const filename = path.join(process.cwd(), `public`, `${statusCode}.html`)
+    const filename = join(process.cwd(), `public`, `${statusCode}.html`)
 
-    if (fs.existsSync(filename)) {
-      body = fs.readFileSync(filename, `utf8`)
+    if (existsSync(filename)) {
+      body = readFileSync(filename, `utf8`)
     }
   }
 

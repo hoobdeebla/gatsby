@@ -1,5 +1,5 @@
 import _ from "lodash"
-import fs from "fs-extra"
+import { writeFile } from "fs/promises"
 import { joinPath, md5 } from "gatsby-core-utils"
 import reporter from "gatsby-cli/lib/reporter"
 import { store, emitter } from "../redux"
@@ -60,7 +60,7 @@ export const writeRedirects = async (): Promise<void> => {
 
   lastHash = newHash
 
-  await fs.writeFile(
+  await writeFile(
     joinPath(program.directory, `.cache/redirects.json`),
     JSON.stringify(browserRedirects, null, 2)
   )

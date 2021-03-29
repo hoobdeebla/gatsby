@@ -1,20 +1,19 @@
-const path = require("path")
-const documentation = require("documentation")
-const fs = require("fs-extra")
+const { join, resolve, basename } = require("path")
+const { build } = require("documentation")
+const { writeFile } = require("fs/promises")
 
 const OUTPUT_FILE_NAME = `apis.json`
 
 async function outputFile() {
   const apis = await Promise.all(
     [
-      path.join("cache-dir", "api-ssr-docs.js"),
-      path.join("src", "utils", "api-browser-docs.ts"),
-      path.join("src", "utils", "api-node-docs.ts")
+      join("cache-dir", "api-ssr-docs.js"),
+      join("src", "utils", "api-browser-docs.ts"),
+      join("src", "utils", "api-node-docs.ts")
     ].map(filePath => {
-      const resolved = path.resolve(filePath)
-      const [, api] = path.basename(filePath).split("-")
-      return documentation
-        .build(resolved, {
+      const resolved = resolve(filePath)
+      const [, api] = basename(filePath).split("-")
+      return build(resolved, {
           shallow: true
         })
         .then(contents => {
@@ -43,8 +42,8 @@ async function outputFile() {
   /** @type {Array<import("../index").AvailableFeatures>} */
   output.features = ["image-cdn", "graphql-typegen", "content-file-path", "slices", "stateful-source-nodes", "adapters"];
 
-  return fs.writeFile(
-    path.resolve(OUTPUT_FILE_NAME),
+  return writeFile(
+    resolve(OUTPUT_FILE_NAME),
     JSON.stringify(output, null, 2),
     "utf8"
   )

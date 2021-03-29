@@ -1,6 +1,7 @@
 import _ from "lodash"
-import path from "path"
-import fs from "fs-extra"
+import { relative } from "path"
+import { writeFile } from "fs/promises"
+import { move } from "fs-extra" // must use
 import reporter from "gatsby-cli/lib/reporter"
 import { match } from "@gatsbyjs/reach-router"
 import { joinPath, md5, slash } from "gatsby-core-utils"
@@ -231,7 +232,7 @@ const preferDefault = m => (m && m.default) || m
     asyncRequires = `exports.components = {\n${components
       .map((c: IGatsbyPageComponent): string => {
         // we need a relative import path to keep contenthash the same if directory changes
-        const relativeComponentPath = path.relative(
+        const relativeComponentPath = relative(
           getAbsolutePathForVirtualModule(`$virtual`),
           c.componentPath
         )
@@ -253,7 +254,7 @@ exports.head = {\n${components
           return undefined
         }
         // we need a relative import path to keep contenthash the same if directory changes
-        const relativeComponentPath = path.relative(
+        const relativeComponentPath = relative(
           getAbsolutePathForVirtualModule(`$virtual`),
           c.componentPath
         )
@@ -273,7 +274,7 @@ exports.head = {\n${components
     asyncRequires = `exports.components = {\n${components
       .map((c: IGatsbyPageComponent): string => {
         // we need a relative import path to keep contenthash the same if directory changes
-        const relativeComponentPath = path.relative(
+        const relativeComponentPath = relative(
           getAbsolutePathForVirtualModule(`$virtual`),
           c.componentPath
         )
@@ -297,9 +298,9 @@ exports.head = {\n${components
     // `match-paths.json` to setup routing)
     const destination = joinPath(program.directory, `.cache`, file)
     const tmp = `${destination}.${Date.now()}`
-    return fs
-      .writeFile(tmp, data)
-      .then(() => fs.move(tmp, destination, { overwrite: true }))
+    return writeFile(tmp, data).then(() =>
+      move(tmp, destination, { overwrite: true })
+    )
   }
 
   await Promise.all([

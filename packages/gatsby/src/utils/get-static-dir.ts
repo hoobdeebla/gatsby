@@ -1,6 +1,7 @@
-import fs from "fs-extra"
-import chokidar from "chokidar"
-import nodePath from "path"
+import { existsSync, cpSync } from "fs"
+import { cp } from "fs/promises"
+import { watch } from "chokidar"
+import { resolve, join, relative } from "path"
 import { store } from "../redux"
 
 /**
@@ -21,19 +22,19 @@ export const copyStaticDirs = (): void => {
 
   themesSet
     // create an array of potential theme static folders
-    .map(theme => nodePath.resolve(theme.themeDir, `static`))
+    .map(theme => resolve(theme.themeDir, `static`))
     // filter out the static folders that don't exist
-    .filter(themeStaticPath => fs.existsSync(themeStaticPath))
+    .filter(themeStaticPath => existsSync(themeStaticPath))
     // copy the files for each folder into the user's build
     .map(folder =>
-      fs.copySync(folder, nodePath.join(process.cwd(), `public`), {
+      cpSync(folder, join(process.cwd(), `public`), {
         dereference: true,
       })
     )
 
-  const staticDir = nodePath.join(process.cwd(), `static`)
-  if (!fs.existsSync(staticDir)) return undefined
-  return fs.copySync(staticDir, nodePath.join(process.cwd(), `public`), {
+  const staticDir = join(process.cwd(), `static`)
+  if (!existsSync(staticDir)) return undefined
+  return cpSync(staticDir, join(process.cwd(), `public`), {
     dereference: true,
   })
 }
@@ -44,15 +45,14 @@ export const copyStaticDirs = (): void => {
  * Set up a watcher to sync changes from the static directory to the public directory
  */
 export const syncStaticDir = (): void => {
-  const staticDir = nodePath.join(process.cwd(), `static`)
-  chokidar
-    .watch(staticDir)
+  const staticDir = join(process.cwd(), `static`)
+  watch(staticDir)
     .on(`add`, path => {
-      const relativePath = nodePath.relative(staticDir, path)
-      fs.copy(path, `${process.cwd()}/public/${relativePath}`)
+      const relativePath = relative(staticDir, path)
+      cp(path, `${process.cwd()}/public/${relativePath}`)
     })
     .on(`change`, path => {
-      const relativePath = nodePath.relative(staticDir, path)
-      fs.copy(path, `${process.cwd()}/public/${relativePath}`)
+      const relativePath = relative(staticDir, path)
+      cp(path, `${process.cwd()}/public/${relativePath}`)
     })
 }

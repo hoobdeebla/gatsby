@@ -29,7 +29,7 @@ export class ForceCssHMRForEdgeCases {
         const chunkGraph = compilation.chunkGraph
         const records = compilation.records
 
-        if (!records.chunkModuleHashes) {
+        if (!records!.chunkModuleHashes) {
           return
         }
 
@@ -45,8 +45,8 @@ export class ForceCssHMRForEdgeCases {
 
         for (const chunk of compilation.chunks) {
           const getModuleHash = (module: Module): string => {
-            if (compilation.codeGenerationResults.has(module, chunk.runtime)) {
-              return compilation.codeGenerationResults.getHash(
+            if (compilation.codeGenerationResults!.has(module, chunk.runtime)) {
+              return compilation.codeGenerationResults!.getHash(
                 module,
                 chunk.runtime
               )
@@ -68,7 +68,7 @@ export class ForceCssHMRForEdgeCases {
               ) {
                 this.blankCssKey = key
                 this.originalBlankCssHash =
-                  records.chunkModuleHashes[this.blankCssKey]
+                  records!.chunkModuleHashes[this.blankCssKey]
               }
 
               // @ts-ignore - exists on NormalModule but not Module
@@ -81,7 +81,7 @@ export class ForceCssHMRForEdgeCases {
                 cssRemovedInThisCompilation.delete(key)
 
                 const hash = getModuleHash(module)
-                if (records.chunkModuleHashes[key] !== hash) {
+                if (records!.chunkModuleHashes[key] !== hash) {
                   newOrUpdatedCss = true
                 }
               }
@@ -97,7 +97,7 @@ export class ForceCssHMRForEdgeCases {
           this.originalBlankCssHash &&
           this.blankCssKey
         ) {
-          records.chunkModuleHashes[this.blankCssKey] =
+          records!.chunkModuleHashes[this.blankCssKey] =
             this.originalBlankCssHash + String(this.hackCounter++)
         }
 

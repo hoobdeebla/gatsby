@@ -1,5 +1,6 @@
-const path = require(`path`)
-const fs = require(`fs-extra`)
+const { join } = require(`path`)
+const { existsSync, readFileSync } = require(`fs`)
+const { outputJSONSync } = require(`fs-extra`) // must use
 
 const { promisifiedSpawn } = require(`../utils/promisified-spawn`)
 const { registryUrl } = require(`./verdaccio-config`)
@@ -99,11 +100,11 @@ const installPackages = async ({
 
     Object.keys(workspacesLayout).forEach(workspaceName => {
       const { location } = workspacesLayout[workspaceName]
-      const pkgJsonPath = path.join(yarnWorkspaceRoot, location, `package.json`)
-      if (!fs.existsSync(pkgJsonPath)) {
+      const pkgJsonPath = join(yarnWorkspaceRoot, location, `package.json`)
+      if (!existsSync(pkgJsonPath)) {
         return
       }
-      const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, `utf8`))
+      const pkg = JSON.parse(readFileSync(pkgJsonPath, `utf8`))
 
       let changed = false
       changed |= handleDeps(pkg.dependencies)
@@ -112,7 +113,7 @@ const installPackages = async ({
 
       if (changed) {
         console.log(`Changing deps in ${pkgJsonPath} to use @gatsby-dev`)
-        fs.outputJSONSync(pkgJsonPath, pkg, {
+        outputJSONSync(pkgJsonPath, pkg, {
           spaces: 2,
         })
       }

@@ -1,7 +1,7 @@
-const path = require(`path`)
+const { resolve, basename } = require(`path`)
 
 const Debug = require(`debug`)
-const fs = require(`fs-extra`)
+const { mkdir, access } = require(`fs/promises`)
 const sharp = require(`sharp`)
 const md5File = require(`md5-file`)
 
@@ -43,9 +43,9 @@ module.exports = async args => {
 }
 
 async function sqipSharp({ cache, getNodeAndSavePathDependency }) {
-  const cacheDir = path.resolve(`${cache.directory}/intermediate-files/`)
+  const cacheDir = resolve(`${cache.directory}/intermediate-files/`)
 
-  await fs.ensureDir(cacheDir)
+  await mkdir(cacheDir, { recursive: true })
 
   return {
     sqip: {
@@ -111,7 +111,11 @@ async function sqipSharp({ cache, getNodeAndSavePathDependency }) {
 
         const job = await queueImageResizing({ file, args: sharpArgs })
 
-        if (!(await fs.exists(job.absolutePath))) {
+        if (
+          !(await access(job.absolutePath)
+            .then(() => true)
+            .catch(() => false))
+        ) {
           debug(`Preparing ${file.name}`)
           await job.finishedPromise
         }
@@ -137,9 +141,9 @@ async function sqipContentful({ cache }) {
     schemes: { ImageResizingBehavior, ImageCropFocusType },
   } = require(`gatsby-source-contentful`)
 
-  const cacheDir = path.resolve(`${cache.directory}/intermediate-files/`)
+  const cacheDir = resolve(`${cache.directory}/intermediate-files/`)
 
-  await fs.ensureDir(cacheDir)
+  await mkdir(cacheDir, { recursive: true })
 
   return {
     sqip: {
@@ -222,7 +226,7 @@ async function sqipContentful({ cache }) {
 
         const extension = mimeTypeExtensions.get(contentType)
         const url = createUrl(imgUrl, options)
-        const name = path.basename(fileName, extension)
+        const name = basename(fileName, extension)
 
         const absolutePath = await fetchRemoteFile({
           url,

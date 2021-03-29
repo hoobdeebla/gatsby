@@ -1,5 +1,5 @@
 const path = require(`path`)
-const fs = require(`fs-extra`)
+const { cp } = require(`fs/promises`)
 const chokidar = require(`chokidar`)
 
 exports.createPagesStatefully = async ({ store, actions }, options, done) => {
@@ -12,7 +12,7 @@ exports.createPagesStatefully = async ({ store, actions }, options, done) => {
       `.cache`,
       `dev-404-page.js`
     )
-    const copy = () => fs.copy(source, destination)
+    const copy = () => cp(source, destination)
     await copy()
     createPage({
       component: destination,

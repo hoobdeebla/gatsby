@@ -1,5 +1,5 @@
-import * as path from "path"
-import * as fs from "fs-extra"
+import { join } from "path"
+import { access, readFile } from "fs/promises"
 
 import { store } from "../../../redux"
 import { actions } from "../../../redux/actions"
@@ -21,14 +21,20 @@ export async function buildSchema(): Promise<void> {
     )
   }
 
-  const schemaSnapshotPath = path.join(
+  const schemaSnapshotPath = join(
     workerStore.program.directory,
     `.cache`,
     `schema.gql`
   )
 
-  if (await fs.pathExists(schemaSnapshotPath)) {
-    const schemaSnapshot = await fs.readFile(schemaSnapshotPath, `utf-8`)
+  // inline fs-extra.pathExists
+  if (
+    await access(schemaSnapshotPath).then(
+      () => true,
+      () => false
+    )
+  ) {
+    const schemaSnapshot = await readFile(schemaSnapshotPath, `utf-8`)
     store.dispatch(actions.createTypes(schemaSnapshot))
   }
 

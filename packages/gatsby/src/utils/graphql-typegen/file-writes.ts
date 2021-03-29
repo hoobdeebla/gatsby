@@ -1,4 +1,5 @@
-import * as fs from "fs-extra"
+import { existsSync } from "fs"
+import { outputFile } from "fs-extra" // must use
 import { join } from "path"
 import { GraphQLSchema, printSchema } from "graphql"
 import reporter from "gatsby-cli/lib/reporter"
@@ -18,7 +19,7 @@ export async function writeGraphQLConfig(
     const base = program.directory
     const outputPath = join(base, OUTPUT_PATHS.config)
 
-    if (fs.existsSync(outputPath)) {
+    if (existsSync(outputPath)) {
       reporter.verbose(`graphql.config.json already exists. Skipping...`)
       return
     }
@@ -41,7 +42,7 @@ export async function writeGraphQLConfig(
       2
     )
 
-    await fs.outputFile(outputPath, configJSONString)
+    await outputFile(outputPath, configJSONString)
     reporter.verbose(`Successfully created graphql.config.json`)
   } catch (err) {
     reporter.error(`Failed to write graphql.config.json`, err)
@@ -58,7 +59,7 @@ export async function writeGraphQLFragments(
       .map(([_, def]) => `# ${def.filePath}\n${def.printedAst}`)
       .join(`\n`)
 
-    await fs.outputFile(join(directory, OUTPUT_PATHS.fragments), fragmentString)
+    await outputFile(join(directory, OUTPUT_PATHS.fragments), fragmentString)
     reporter.verbose(`Wrote fragments.graphql file to .cache`)
   } catch (err) {
     reporter.error(`Failed to write fragments.graphql to .cache`, err)
@@ -72,7 +73,7 @@ export async function writeGraphQLSchema(
   try {
     const schemaSDLString = printSchema(stabilizeSchema(schema))
 
-    await fs.outputFile(join(directory, OUTPUT_PATHS.schema), schemaSDLString)
+    await outputFile(join(directory, OUTPUT_PATHS.schema), schemaSDLString)
     reporter.verbose(`Successfully created schema.graphql`)
   } catch (err) {
     reporter.error(`Failed to write schema.graphql to .cache`, err)

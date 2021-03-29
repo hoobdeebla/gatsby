@@ -7,7 +7,7 @@ jest.mock(`tinyglobby`, () => {
 
 const _ = require(`lodash`)
 const { parse, buildSchema } = require(`graphql`)
-const fs = require(`fs-extra`)
+const fs = require(`fs/promises`)
 const path = require(`path`)
 const { globSync } = require(`tinyglobby`)
 const {

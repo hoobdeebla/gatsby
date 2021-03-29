@@ -1,4 +1,4 @@
-import fs from "fs-extra"
+import fs from "fs-extra" // must use for test
 import { prepareFunction } from "../lambda-handler"
 import { join, relative } from "path"
 import { slash } from "gatsby-core-utils/path"

@@ -1,4 +1,6 @@
-import fs from "fs-extra"
+import { utimesSync, writeFileSync, readFileSync } from "fs"
+import { stat, mkdir } from "fs/promises"
+import { emptyDir } from "fs-extra" // must use
 import { glob as globAsync } from "tinyglobby"
 import path from "path"
 import webpack from "webpack"
@@ -39,7 +41,7 @@ async function ensureFunctionIsCompiled(
   // stat the compiled function. If it's there, then return.
   let compiledFileExists = false
   try {
-    compiledFileExists = !!(await fs.stat(functionObj.absoluteCompiledFilePath))
+    compiledFileExists = !!(await stat(functionObj.absoluteCompiledFilePath))
   } catch (e) {
     // ignore
   }
@@ -49,7 +51,7 @@ async function ensureFunctionIsCompiled(
     // Otherwise, restart webpack by touching the file and watch for the file to be
     // compiled.
     const time = new Date()
-    fs.utimesSync(functionObj.originalAbsoluteFilePath, time, time)
+    utimesSync(functionObj.originalAbsoluteFilePath, time, time)
     await new Promise(resolve => {
       const watcher = chokidar
         // Watch the root of the compiled function directory in .cache as chokidar
@@ -202,7 +204,7 @@ const createWebpackConfig = async ({
   store.dispatch(internalActions.setFunctions(knownFunctions))
 
   // Write out manifest for use by `gatsby serve` and plugins
-  fs.writeFileSync(
+  writeFileSync(
     path.join(compiledFunctionsDir, `manifest.json`),
     JSON.stringify(knownFunctions, null, 4)
   )
@@ -223,7 +225,7 @@ const createWebpackConfig = async ({
   const envFile = path.join(siteDirectoryPath, `./.env.${configEnv}`)
   let parsed = {}
   try {
-    parsed = dotenv.parse(fs.readFileSync(envFile, { encoding: `utf8` }))
+    parsed = dotenv.parse(readFileSync(envFile, { encoding: `utf8` }))
   } catch (err) {
     if (err.code !== `ENOENT`) {
       reporter.error(
@@ -428,8 +430,8 @@ export async function onPreBootstrap({
     `functions`
   )
 
-  await fs.ensureDir(compiledFunctionsDir)
-  await fs.emptyDir(compiledFunctionsDir)
+  await mkdir(compiledFunctionsDir, { recursive: true })
+  await emptyDir(compiledFunctionsDir)
 
   try {
     // We do this ungainly thing as we need to make accessible
@@ -517,7 +519,7 @@ export async function onPreBootstrap({
             )
 
             // Otherwise, restart the watcher
-            compiler.close(async () => {
+            compiler!.close(async () => {
               const config = await createWebpackConfig({
                 siteDirectoryPath,
                 store,

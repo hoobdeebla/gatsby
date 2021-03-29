@@ -1,10 +1,12 @@
 import { b64e } from "~/utils/string-encoding"
 import { withPluginKey } from "~/store"
-const fs = require(`fs-extra`)
+import { rmSync, createWriteStream } from "fs"
+import { rm } from "fs/promises"
+import { move } from "fs-extra" // must use
 const { remoteFileDownloaderBarPromise } = require(`./progress-bar-promise`)
 const got = require(`got`)
 const { createContentDigest } = require(`gatsby-core-utils`)
-const path = require(`path`)
+const { join } = require(`path`)
 const { isWebUri } = require(`valid-url`)
 const Queue = require(`better-queue`)
 const readChunk = require(`read-chunk`)
@@ -163,7 +165,7 @@ const requestRemoteNode = (url, headers, tmpFilename, httpOpts, attempt = 1) =>
     // Called if we stall without receiving any data
     const handleTimeout = async () => {
       fsWriteStream.close()
-      fs.removeSync(tmpFilename)
+      rmSync(tmpFilename)
       if (attempt < STALL_RETRY_LIMIT) {
         // Retry by calling ourself recursively
         resolve(
@@ -193,7 +195,7 @@ const requestRemoteNode = (url, headers, tmpFilename, httpOpts, attempt = 1) =>
       timeout: { send: CONNECTION_TIMEOUT },
       ...httpOpts,
     })
-    const fsWriteStream = fs.createWriteStream(tmpFilename)
+    const fsWriteStream = createWriteStream(tmpFilename)
     responseStream.pipe(fsWriteStream)
 
     // If there's a 400/500 response or other error.
@@ -204,7 +206,7 @@ const requestRemoteNode = (url, headers, tmpFilename, httpOpts, attempt = 1) =>
       processingCache[url] = null
       totalJobs -= 1
       bar.total = totalJobs
-      fs.removeSync(tmpFilename)
+      rmSync(tmpFilename)
       console.error(error)
       reject(error)
     })
@@ -298,14 +300,14 @@ async function processRemoteNode({
   }
 
   const filename = createFilePath(
-    path.join(pluginCacheDir, digest),
+    join(pluginCacheDir, digest),
     String(name),
     ext
   )
 
   // If the status code is 200, move the piped temp file to the real name.
   if (response.statusCode === 200) {
-    await fs.move(tmpFilename, filename, { overwrite: true })
+    await move(tmpFilename, filename, { overwrite: true })
     // Else if 304, remove the empty response.
   } else {
     processingCache[url] = null
@@ -313,7 +315,7 @@ async function processRemoteNode({
 
     bar.total = totalJobs
 
-    await fs.remove(tmpFilename)
+    await rm(tmpFilename, { force: true })
   }
 
   // Create the file node.

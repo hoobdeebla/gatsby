@@ -1,5 +1,5 @@
-import fs from "fs-extra"
-import * as path from "path"
+import { outputFileSync, outputJSON } from "fs-extra" // must use
+import { join } from "path"
 
 import packageJson from "gatsby-adapter-netlify/package.json"
 
@@ -36,14 +36,14 @@ export async function prepareFileCdnHandler({
 }): Promise<void> {
   const functionId = `file-cdn`
 
-  const edgeFunctionsManifestPath = path.join(
+  const edgeFunctionsManifestPath = join(
     process.cwd(),
     `.netlify`,
     `edge-functions`,
     `manifest.json`
   )
 
-  const fileCdnEdgeFunction = path.join(
+  const fileCdnEdgeFunction = join(
     process.cwd(),
     `.netlify`,
     `edge-functions`,
@@ -59,7 +59,7 @@ export async function prepareFileCdnHandler({
     export default async (req: Request): Promise<Response> => {
       const url = new URL(req.url)
       const remoteUrl = url.searchParams.get("url")
-      
+
       const isAllowed = allowedUrlPatterns.some(allowedUrlPattern => allowedUrlPattern.test(remoteUrl))
       if (isAllowed) {
         return fetch(remoteUrl);
@@ -70,7 +70,7 @@ export async function prepareFileCdnHandler({
     }
   `
 
-  await fs.outputFileSync(fileCdnEdgeFunction, handlerSource)
+  await outputFileSync(fileCdnEdgeFunction, handlerSource)
 
   const manifest: IFunctionManifest = {
     functions: [
@@ -86,5 +86,5 @@ export async function prepareFileCdnHandler({
     version: 1,
   }
 
-  await fs.outputJSON(edgeFunctionsManifestPath, manifest)
+  await outputJSON(edgeFunctionsManifestPath, manifest)
 }

@@ -1,6 +1,6 @@
 import VirtualModulesPlugin from "webpack-virtual-modules"
-import * as path from "path"
-import * as fs from "fs-extra"
+import { join } from "path"
+import { outputFileSync } from "fs-extra" // must use
 /*
  * This module allows creating virtual (in memory only) modules / files
  * that webpack compilation can access without the need to write module
@@ -36,7 +36,7 @@ export class GatsbyWebpackVirtualModules {
 }
 
 export function getAbsolutePathForVirtualModule(filePath: string): string {
-  return path.join(process.cwd(), VIRTUAL_MODULES_BASE_PATH, filePath)
+  return join(process.cwd(), VIRTUAL_MODULES_BASE_PATH, filePath)
 }
 
 export function writeModule(filePath: string, fileContents: string): void {
@@ -49,7 +49,7 @@ export function writeModule(filePath: string, fileContents: string): void {
 
   // workaround webpack marking virtual modules as deleted because those files don't really exist
   // so we create those files just so watchpack doesn't mark them as initially missing
-  fs.outputFileSync(adjustedFilePath, fileContents)
+  outputFileSync(adjustedFilePath, fileContents)
 
   fileContentLookup[adjustedFilePath] = fileContents
 

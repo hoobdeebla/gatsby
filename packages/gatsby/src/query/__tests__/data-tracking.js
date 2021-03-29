@@ -28,6 +28,7 @@
  */
 
 jest.mock(`fs-extra`, () => {
+  // must use
   return {
     outputFile: jest.fn(),
     ensureDir: jest.fn(),

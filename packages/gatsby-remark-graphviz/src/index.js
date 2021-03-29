@@ -1,7 +1,7 @@
 const visit = require(`unist-util-visit`)
 const Viz = require(`viz.js`)
 const { Module, render } = require(`viz.js/full.render.js`)
-const cheerio = require(`cheerio`)
+const { load } = require(`cheerio`)
 
 const viz = new Viz({ Module, render })
 
@@ -27,12 +27,12 @@ module.exports = async ({ markdownAST }, pluginOptions = {}) => {
         const svgString = await viz.renderString(value, { engine: lang })
 
         // Add default inline styling
-        const $ = cheerio.load(svgString)
+        const $ = load(svgString)
         $(`svg`).attr(`style`, `max-width: 100%; height: auto;`)
 
         // Merge custom attributes if provided by user (adds and overwrites)
         if (attrString) {
-          const attrElement = cheerio.load(`<element ${attrString}></element>`)
+          const attrElement = load(`<element ${attrString}></element>`)
           $(`svg`).attr(attrElement(`element`).attr())
         }
 

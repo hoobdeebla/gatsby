@@ -1,5 +1,5 @@
 const visit = require(`unist-util-visit`)
-const cheerio = require(`cheerio`)
+const { load } = require(`cheerio`)
 const { oneLine } = require(`common-tags`)
 const _ = require(`lodash`)
 
@@ -28,7 +28,7 @@ module.exports = async ({ markdownAST }, pluginOptions = {}) => {
   }
   const options = _.defaults({}, pluginOptions, defaults)
   visit(markdownAST, [`html`, `jsx`], node => {
-    const $ = cheerio.load(node.value)
+    const $ = load(node.value)
     const iframe = $(`iframe, object`)
     if (iframe.length === 0) {
       return

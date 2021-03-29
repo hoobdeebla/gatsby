@@ -2,7 +2,8 @@ import reporter from "gatsby-cli/lib/reporter"
 import _ from "lodash"
 import { createRequireFromPath } from "gatsby-core-utils/create-require-from-path"
 import { join } from "path"
-import { emptyDir, ensureDir, outputJson } from "fs-extra"
+import { mkdir } from "fs/promises"
+import { emptyDir, outputJson } from "fs-extra" // must use
 import execa, { Options as ExecaOptions } from "execa"
 import { version as gatsbyVersionFromPackageJson } from "gatsby/package.json"
 import { satisfies } from "semver"
@@ -15,7 +16,7 @@ export const getAdaptersCacheDir = (): string =>
   join(process.cwd(), `.cache/adapters`)
 
 const createAdaptersCacheDir = async (): Promise<void> => {
-  await ensureDir(getAdaptersCacheDir())
+  await mkdir(getAdaptersCacheDir(), { recursive: true })
   await emptyDir(getAdaptersCacheDir())
 
   const packageJsonPath = join(getAdaptersCacheDir(), `package.json`)

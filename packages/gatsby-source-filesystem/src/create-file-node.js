@@ -1,5 +1,5 @@
-const path = require(`path`)
-const fs = require(`fs-extra`)
+const { parse, relative } = require(`path`)
+const { stat } = require(`fs/promises`)
 const mime = require(`mime`)
 const prettyBytes = require(`pretty-bytes`)
 
@@ -12,17 +12,17 @@ exports.createFileNode = async (
   cache = null
 ) => {
   const slashed = slash(pathToFile)
-  const parsedSlashed = path.parse(slashed)
+  const parsedSlashed = parse(slashed)
   const slashedFile = {
     ...parsedSlashed,
     absolutePath: slashed,
     // Useful for limiting graphql query with certain parent directory
     relativeDirectory: slash(
-      path.relative(pluginOptions.path || process.cwd(), parsedSlashed.dir)
+      relative(pluginOptions.path || process.cwd(), parsedSlashed.dir)
     ),
   }
 
-  const stats = await fs.stat(slashedFile.absolutePath)
+  const stats = await stat(slashedFile.absolutePath)
   let internal
   if (stats.isDirectory()) {
     const contentDigest = createContentDigest({
@@ -32,7 +32,7 @@ exports.createFileNode = async (
     internal = {
       contentDigest,
       type: `Directory`,
-      description: `Directory "${path.relative(process.cwd(), slashed)}"`,
+      description: `Directory "${relative(process.cwd(), slashed)}"`,
     }
   } else {
     const key = stats.mtimeMs.toString() + stats.ino.toString()
@@ -55,7 +55,7 @@ exports.createFileNode = async (
       contentDigest,
       type: `File`,
       mediaType: mediaType ? mediaType : `application/octet-stream`,
-      description: `File "${path.relative(process.cwd(), slashed)}"`,
+      description: `File "${relative(process.cwd(), slashed)}"`,
     }
   }
 
@@ -69,10 +69,7 @@ exports.createFileNode = async (
     internal,
     sourceInstanceName: pluginOptions.name || `__PROGRAMMATIC__`,
     relativePath: slash(
-      path.relative(
-        pluginOptions.path || process.cwd(),
-        slashedFile.absolutePath
-      )
+      relative(pluginOptions.path || process.cwd(), slashedFile.absolutePath)
     ),
     extension: slashedFile.ext.slice(1).toLowerCase(),
     prettySize: prettyBytes(stats.size),

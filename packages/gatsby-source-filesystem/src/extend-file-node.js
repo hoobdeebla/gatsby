@@ -1,6 +1,6 @@
 const { GraphQLString } = require(`gatsby/graphql`)
-const fs = require(`fs-extra`)
-const path = require(`path`)
+const { existsSync, cpSync } = require(`fs`)
+const { join } = require(`path`)
 const { prefixId, CODES } = require(`./error-utils`)
 
 module.exports = ({
@@ -22,15 +22,10 @@ module.exports = ({
         const details = getNodeAndSavePathDependency(file.id, context.path)
         const fileName = `${file.internal.contentDigest}/${details.base}`
 
-        const publicPath = path.join(
-          process.cwd(),
-          `public`,
-          `static`,
-          fileName
-        )
+        const publicPath = join(process.cwd(), `public`, `static`, fileName)
 
-        if (!fs.existsSync(publicPath)) {
-          fs.copySync(
+        if (!existsSync(publicPath)) {
+          cpSync(
             details.absolutePath,
             publicPath,
             { dereference: true },

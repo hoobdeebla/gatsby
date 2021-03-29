@@ -21,7 +21,7 @@
   "dependencies": {
     "@babel/runtime": "^7.20.13",
     "gatsby-core-utils": "^4.17.0-next.0",
-    "node-fetch": "^2.6.11",
+    "node-fetch": "^2.7.0",
     "tinyglobby": "^0.2.15"
   },
   "peerDependencies": {

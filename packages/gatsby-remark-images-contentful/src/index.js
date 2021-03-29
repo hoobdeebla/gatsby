@@ -3,7 +3,7 @@ const { selectAll } = require(`unist-util-select`)
 const getSharpInstance = require(`./safe-sharp`)
 const axios = require(`axios`)
 const _ = require(`lodash`)
-const cheerio = require(`cheerio`)
+const { load } = require(`cheerio`)
 const chalk = require(`chalk`)
 const { buildResponsiveSizes } = require(`./utils`)
 
@@ -246,7 +246,7 @@ ${rawHTML}
               return resolve()
             }
 
-            const $ = cheerio.load(node.value)
+            const $ = load(node.value)
             if ($(`img`).length === 0) {
               // No img tags
               return resolve()

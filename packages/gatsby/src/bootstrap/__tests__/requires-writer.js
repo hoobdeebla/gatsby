@@ -26,6 +26,7 @@ jest.mock(`../../utils/page-mode`, () => {
 })
 
 jest.mock(`fs-extra`, () => {
+  // must use
   return {
     writeFile: () => Promise.resolve(),
     outputFileSync: () => {},

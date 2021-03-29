@@ -1,7 +1,7 @@
-import fs from "fs-extra"
-import * as path from "path"
+import { readFile } from "fs/promises"
+import { posix } from "path"
 // we want to force posix-style joins, so Windows doesn't produce backslashes for urls
-const { join } = path.posix
+const { join } = posix
 import type { IScriptsAndStyles } from "./client-assets-for-template"
 import { IPageDataWithQueryResult } from "./page-data"
 
@@ -11,7 +11,7 @@ export const getStaticQueryPath = (hash: string): string =>
 export const getStaticQueryResult = async (hash: string): Promise<any> => {
   const staticQueryPath = getStaticQueryPath(hash)
   const absoluteStaticQueryPath = join(process.cwd(), `public`, staticQueryPath)
-  const staticQueryRaw = await fs.readFile(absoluteStaticQueryPath)
+  const staticQueryRaw = await readFile(absoluteStaticQueryPath)
 
   return JSON.parse(staticQueryRaw.toString())
 }
