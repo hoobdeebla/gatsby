@@ -1,5 +1,5 @@
-import * as path from "path"
-import * as fs from "fs-extra"
+import path from "path"
+import fs from "fs/promises"
 import {
   savePageQueryResult,
   readPageQueryResult,
@@ -11,7 +11,8 @@ import {
 describe(`savePageQueryResults / readPageQueryResults`, () => {
   it(`can save and read data`, async () => {
     const fileDir = path.join(process.cwd(), `.cache`, `json`)
-    await fs.emptyDir(fileDir)
+    await fs.rm(fileDir, { recursive: true, force: true })
+    await fs.mkdir(fileDir, { recursive: true })
 
     const pagePath = `/foo/`
     const inputResult = {

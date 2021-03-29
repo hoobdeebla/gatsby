@@ -56,13 +56,13 @@ export async function downloadContentfulAssets(gatsbyFunctions) {
       if (!node.file) {
         reporter.log(id, locale)
         reporter.warn(`The asset with id: ${id}, contains no file.`)
-        return Promise.resolve()
+        return
       }
       if (!node.file.url) {
         reporter.warn(
           `The asset with id: ${id} has a file but the file contains no url.`
         )
-        return Promise.resolve()
+        return
       }
       const url = createUrl(node.file.url)
 

@@ -1,6 +1,6 @@
 import path from "path"
 import hasha from "hasha"
-import fs from "fs-extra"
+import fs from "fs"
 import pDefer from "p-defer"
 import _ from "lodash"
 import { createContentDigest, slash } from "gatsby-core-utils"
@@ -72,7 +72,7 @@ async function runLocalWorker<T>(
   workerFn: { ({ inputPaths, outputDir, args }: InternalJob): T },
   job: InternalJob
 ): Promise<T> {
-  await fs.ensureDir(job.outputDir)
+  await fs.promises.mkdir(job.outputDir, { recursive: true })
 
   return new Promise((resolve, reject) => {
     // execute worker nextTick

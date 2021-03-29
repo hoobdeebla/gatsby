@@ -1,9 +1,9 @@
-import fs from "fs-extra"
+import fs from "fs/promises"
 import reporter from "gatsby-cli/lib/reporter"
 import { createErrorFromString } from "gatsby-cli/lib/reporter/errors"
 import { chunk } from "lodash"
 import { build, watch } from "../utils/webpack/bundle"
-import * as path from "path"
+import path from "path"
 import fastq from "fastq"
 
 import { emitter, store } from "../redux"
@@ -167,7 +167,7 @@ const runWebpack = (
           // this runs multiple times
           emitter.emit(`DEV_SSR_COMPILATION_DONE`)
           if (isFirstCompile) {
-            watcher.suspend()
+            watcher!.suspend()
             isFirstCompile = false
           }
 
@@ -190,7 +190,7 @@ const runWebpack = (
               stats: stats as webpack.Stats,
               close: () =>
                 new Promise((resolve, reject): void =>
-                  watcher.close(err => (err ? reject(err) : resolve()))
+                  watcher!.close(err => (err ? reject(err) : resolve()))
                 ),
             })
           }
@@ -216,7 +216,10 @@ const doBuildRenderer = async (
   const { stats, close } = await runWebpack(webpackConfig, stage, directory)
   if (stats?.hasErrors()) {
     reporter.panicOnBuild(
-      structureWebpackErrors(stage, stats.compilation.errors)
+      structureWebpackErrors(
+        stage,
+        stats.compilation.errors as Array<webpack.WebpackError>
+      )
     )
   }
 
@@ -240,7 +243,10 @@ const doBuildPartialHydrationRenderer = async (
   const { stats, close } = await runWebpack(webpackConfig, stage, directory)
   if (stats?.hasErrors()) {
     reporter.panicOnBuild(
-      structureWebpackErrors(stage, stats.compilation.errors)
+      structureWebpackErrors(
+        stage,
+        stats.compilation.errors as Array<webpack.WebpackError>
+      )
     )
   }
 
@@ -315,8 +321,8 @@ export const buildPartialHydrationRenderer = async (
 // TODO remove after v4 release and update cloud internals
 export const deleteRenderer = async (rendererPath: string): Promise<void> => {
   try {
-    await fs.remove(rendererPath)
-    await fs.remove(`${rendererPath}.map`)
+    await fs.rm(rendererPath, { recursive: true, force: true })
+    await fs.rm(`${rendererPath}.map`, { recursive: true, force: true })
   } catch (e) {
     // This function will fail on Windows with no further consequences.
   }

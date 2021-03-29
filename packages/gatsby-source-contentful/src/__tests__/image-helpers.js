@@ -2,7 +2,7 @@
 import { createUrl } from "../image-helpers"
 
 jest.mock(`gatsby-core-utils`)
-jest.mock(`fs-extra`)
+jest.mock(`fs/promises`)
 
 describe(`Contentful Image API helpers`, () => {
   describe(`createUrl`, () => {

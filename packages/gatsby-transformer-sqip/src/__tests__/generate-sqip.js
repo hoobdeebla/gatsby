@@ -1,6 +1,6 @@
 const { resolve } = require(`path`)
 
-const { exists, readFile, writeFile } = require(`fs-extra`)
+const { access, readFile, writeFile } = require(`fs/promises`)
 const sqip = require(`sqip`)
 
 const generateSqip = require(`../generate-sqip.js`)
@@ -13,9 +13,9 @@ jest.mock(`sqip`, () =>
   })
 )
 
-jest.mock(`fs-extra`, () => {
+jest.mock(`fs/promises`, () => {
   return {
-    exists: jest.fn(() => false),
+    access: jest.fn(() => false),
     readFile: jest.fn(() => `<svg><!-- Cached SQIP SVG --></svg>`),
     writeFile: jest.fn(),
   }
@@ -23,7 +23,7 @@ jest.mock(`fs-extra`, () => {
 
 afterEach(() => {
   sqip.mockClear()
-  exists.mockClear()
+  access.mockClear()
   readFile.mockClear()
   writeFile.mockClear()
 })
@@ -61,12 +61,12 @@ describe(`gatsby-transformer-sqip`, () => {
       delete sqipArgs.filename
       expect(sqipArgs).toMatchSnapshot()
 
-      expect(exists).toHaveBeenCalledTimes(1)
+      expect(access).toHaveBeenCalledTimes(1)
       expect(writeFile).toHaveBeenCalledTimes(1)
       expect(readFile).toHaveBeenCalledTimes(0)
     })
     it(`cached`, async () => {
-      exists.mockImplementationOnce(() => true)
+      access.mockImplementationOnce(() => true)
       const cache = {
         get: jest.fn(),
         set: jest.fn(),
@@ -87,12 +87,12 @@ describe(`gatsby-transformer-sqip`, () => {
 
       expect(sqip).toHaveBeenCalledTimes(0)
 
-      expect(exists).toHaveBeenCalledTimes(1)
+      expect(access).toHaveBeenCalledTimes(1)
       expect(writeFile).toHaveBeenCalledTimes(0)
       expect(readFile).toHaveBeenCalledTimes(1)
     })
     it(`returns null for unsupported files`, async () => {
-      exists.mockImplementationOnce(() => true)
+      access.mockImplementationOnce(() => true)
 
       const cache = {
         get: jest.fn(),
@@ -113,7 +113,7 @@ describe(`gatsby-transformer-sqip`, () => {
       expect(result).toBe(null)
 
       expect(sqip).toHaveBeenCalledTimes(0)
-      expect(exists).toHaveBeenCalledTimes(0)
+      expect(access).toHaveBeenCalledTimes(0)
       expect(writeFile).toHaveBeenCalledTimes(0)
       expect(readFile).toHaveBeenCalledTimes(0)
     })

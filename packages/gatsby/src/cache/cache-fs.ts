@@ -23,12 +23,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-const fs = require(`fs`)
-const crypto = require(`crypto`)
-const path = require(`path`)
-const promisify = require(`util`).promisify
+import fs from "fs"
+import crypto from "crypto"
+import path from "path"
 const jsonFileStore = require(`./json-file-store`)
-const wrapCallback = require(`./wrap-callback`)
 
 import reporter from "gatsby-cli/lib/reporter"
 
@@ -78,7 +76,7 @@ function DiskStore(this: any, options): void {
 
   // check storage directory for existence (or create it)
   if (!fs.existsSync(this.options.path)) {
-    fs.mkdirSync(this.options.path)
+    fs.mkdirSync(this.options.path, { recursive: true })
   }
 }
 
@@ -91,12 +89,7 @@ function DiskStore(this: any, options): void {
  * @param {function} [cb]
  * @returns {Promise}
  */
-DiskStore.prototype.set = wrapCallback(async function (
-  this: any,
-  key,
-  val,
-  options
-) {
+DiskStore.prototype.set = async function (this: any, key, val, options) {
   key = key + ``
   const filePath = this._getFilePathByKey(key)
 
@@ -110,11 +103,11 @@ DiskStore.prototype.set = wrapCallback(async function (
   if (this.options.subdirs) {
     // check if subdir exists or create it
     const dir = path.dirname(filePath)
-    await promisify(fs.access)(dir, fs.constants.W_OK).catch(function () {
-      return promisify(fs.mkdir)(dir).catch(err => {
+    await fs.promises.access(dir, fs.promises.constants.W_OK).catch(() =>
+      fs.promises.mkdir(dir, { recursive: true }).catch(err => {
         if (err.code !== `EEXIST`) throw err
       })
-    })
+    )
   }
 
   try {
@@ -125,7 +118,7 @@ DiskStore.prototype.set = wrapCallback(async function (
   } finally {
     await this._unlock(filePath)
   }
-})
+}
 
 /**
  * get an entry from store
@@ -133,7 +126,7 @@ DiskStore.prototype.set = wrapCallback(async function (
  * @param {function} [cb]
  * @returns {Promise}
  */
-DiskStore.prototype.get = wrapCallback(async function (this: any, key) {
+DiskStore.prototype.get = async function (this: any, key) {
   key = key + ``
   const filePath = this._getFilePathByKey(key)
 
@@ -172,18 +165,18 @@ DiskStore.prototype.get = wrapCallback(async function (this: any, key) {
       throw err
     }
   }
-})
+}
 
 /**
  * delete entry from cache
  */
-DiskStore.prototype.del = wrapCallback(async function (this: any, key) {
+DiskStore.prototype.del = async function (this: any, key) {
   const filePath = this._getFilePathByKey(key)
   try {
     if (this.options.subdirs) {
       // check if the folder exists to fail faster
       const dir = path.dirname(filePath)
-      await promisify(fs.access)(dir, fs.constants.W_OK)
+      await fs.promises.access(dir, fs.promises.constants.W_OK)
     }
 
     await this._lock(filePath)
@@ -196,18 +189,13 @@ DiskStore.prototype.del = wrapCallback(async function (this: any, key) {
   } finally {
     await this._unlock(filePath)
   }
-})
+}
 
 /**
  * cleanup cache on disk -> delete all files from the cache
  */
-DiskStore.prototype.reset = wrapCallback(async function (
-  this: any
-): Promise<void> {
-  const readdir = promisify(fs.readdir)
-  const stat = promisify(fs.stat)
-  const unlink = promisify(fs.unlink)
-
+DiskStore.prototype.reset = async function (this: any): Promise<void> {
+  const { readdir, stat, unlink } = fs.promises
   return await deletePath(this.options.path, 2)
 
   async function deletePath(fileOrDir, maxDeep): Promise<void> {
@@ -228,7 +216,7 @@ DiskStore.prototype.reset = wrapCallback(async function (
       await unlink(fileOrDir)
     }
   }
-})
+}
 
 /**
  * locks a file so other forks that want to use the same file have to wait

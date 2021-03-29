@@ -8,7 +8,7 @@ import {
 } from "../compile-gatsby-files"
 import { siteMetadata } from "./fixtures/utils/site-metadata"
 import { moreDataConfig } from "./fixtures/utils/more-data-config"
-import { readFile, remove, pathExists } from "fs-extra"
+import { readFile, rm, access } from "fs/promises"
 import reporter from "gatsby-cli/lib/reporter"
 
 const dir = {
@@ -91,7 +91,7 @@ describe(`gatsby file compilation`, () => {
     describe(`js files are not touched`, () => {
       beforeAll(async () => {
         process.chdir(dir.js)
-        await remove(`${dir.js}/.cache`)
+        await rm(`${dir.js}/.cache`, { recursive: true, force: true })
         await compileGatsbyFiles(dir.js)
       })
 
@@ -100,16 +100,22 @@ describe(`gatsby file compilation`, () => {
       })
 
       it(`should not compile gatsby-config.js`, async () => {
-        const isCompiled = await pathExists(
+        const isCompiled = await access(
           `${dir.js}/.cache/compiled/gatsby-config.js`
+        ).then(
+          () => true,
+          () => false
         )
         expect(isCompiled).toEqual(false)
         expect(reporterPanicMock).not.toHaveBeenCalled()
       })
 
       it(`should not compile gatsby-node.js`, async () => {
-        const isCompiled = await pathExists(
+        const isCompiled = await access(
           `${dir.js}/.cache/compiled/gatsby-node.js`
+        ).then(
+          () => true,
+          () => false
         )
         expect(isCompiled).toEqual(false)
         expect(reporterPanicMock).not.toHaveBeenCalled()
@@ -119,7 +125,7 @@ describe(`gatsby file compilation`, () => {
     describe(`ts files are compiled`, () => {
       beforeAll(async () => {
         process.chdir(dir.ts)
-        await remove(`${dir.ts}/.cache`)
+        await rm(`${dir.ts}/.cache`, { recursive: true, force: true })
         await compileGatsbyFiles(dir.ts)
       })
 
@@ -153,7 +159,10 @@ describe(`gatsby file compilation`, () => {
     describe(`ts only in local plugin files are compiled and outputted where expected`, () => {
       beforeAll(async () => {
         process.chdir(dir.tsOnlyInLocal)
-        await remove(`${dir.tsOnlyInLocal}/.cache`)
+        await rm(`${dir.tsOnlyInLocal}/.cache`, {
+          recursive: true,
+          force: true,
+        })
         await compileGatsbyFiles(dir.tsOnlyInLocal)
       })
 
@@ -179,7 +188,7 @@ describe(`gatsby file compilation`, () => {
 
   it(`handles errors in TS code`, async () => {
     process.chdir(dir.errorInCode)
-    await remove(`${dir.errorInCode}/.cache`)
+    await rm(`${dir.errorInCode}/.cache`, { recursive: true, force: true })
     await compileGatsbyFiles(dir.errorInCode)
 
     expect(reporterPanicMock).toMatchInlineSnapshot(`
@@ -212,7 +221,10 @@ describe(`gatsby file compilation`, () => {
 describe(`gatsby-node directory is allowed`, () => {
   beforeAll(async () => {
     process.chdir(dir.gatsbyNodeAsDirectory)
-    await remove(`${dir.gatsbyNodeAsDirectory}/.cache`)
+    await rm(`${dir.gatsbyNodeAsDirectory}/.cache`, {
+      recursive: true,
+      force: true,
+    })
   })
   beforeEach(() => {
     reporterPanicMock.mockClear()
@@ -239,7 +251,7 @@ describe(`misnamed gatsby-node files`, () => {
   })
   it(`should panic on gatsby-node.jsx`, async () => {
     process.chdir(dir.misnamedJS)
-    await remove(`${dir.misnamedJS}/.cache`)
+    await rm(`${dir.misnamedJS}/.cache`, { recursive: true, force: true })
     await compileGatsbyFiles(dir.misnamedJS)
 
     expect(reporterPanicMock).toBeCalledWith({
@@ -253,7 +265,7 @@ describe(`misnamed gatsby-node files`, () => {
   })
   it(`should panic on gatsby-node.tsx`, async () => {
     process.chdir(dir.misnamedTS)
-    await remove(`${dir.misnamedTS}/.cache`)
+    await rm(`${dir.misnamedTS}/.cache`, { recursive: true, force: true })
     await compileGatsbyFiles(dir.misnamedTS)
 
     expect(reporterPanicMock).toBeCalledWith({

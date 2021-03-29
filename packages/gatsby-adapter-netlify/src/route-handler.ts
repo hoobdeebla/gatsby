@@ -1,8 +1,8 @@
 import type { RoutesManifest, HeaderRoutes } from "gatsby"
 import { tmpdir } from "os"
 import { Transform } from "stream"
-import { join, basename } from "path"
-import fs from "fs-extra"
+import { join, dirname, basename } from "path"
+import fs from "fs"
 import { createStaticAssetsPathHandler } from "./pretty-urls"
 
 const NETLIFY_REDIRECT_KEYWORDS_ALLOWLIST = new Set([
@@ -33,10 +33,13 @@ export async function injectEntries(
   fileName: string,
   content: string
 ): Promise<void> {
-  await fs.ensureFile(fileName)
+  await fs.promises.mkdir(dirname(fileName), { recursive: true })
+  await fs.promises
+    .access(fileName)
+    .catch(() => fs.promises.writeFile(fileName, ``))
 
   const tmpFile = join(
-    await fs.mkdtemp(join(tmpdir(), basename(fileName))),
+    await fs.promises.mkdtemp(join(tmpdir(), basename(fileName))),
     `out.txt`
   )
 
@@ -127,8 +130,8 @@ export async function injectEntries(
   })
 
   // remove previous file and move new file from tmp to final path
-  await fs.remove(fileName)
-  await fs.move(tmpFile, fileName)
+  await fs.promises.rm(fileName, { recursive: true, force: true })
+  await fs.promises.rename(tmpFile, fileName)
 }
 
 function buildHeaderString(path, headers): string {

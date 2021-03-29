@@ -4,7 +4,7 @@ const { slash } = require(`gatsby-core-utils`)
 const worker = require(`./fixtures/node_modules/gatsby-plugin-test/gatsby-worker`)
 const reporter = require(`gatsby-cli/lib/reporter`)
 const hasha = require(`hasha`)
-const fs = require(`fs-extra`)
+const fs = require(`fs/promises`)
 const pDefer = require(`p-defer`)
 const { randomUUID } = require(`crypto`)
 const timers = require(`timers`)
@@ -37,7 +37,7 @@ jest.mock(`crypto`, () => {
 
 jest.mock(`hasha`, () => jest.requireActual(`hasha`))
 
-fs.ensureDir = jest.fn().mockResolvedValue(true)
+fs.mkdir = jest.fn().mockResolvedValue(true)
 
 const nodeModulesPluginPath = slash(
   path.resolve(__dirname, `fixtures`, `node_modules`, `gatsby-plugin-test`)

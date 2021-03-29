@@ -1,5 +1,5 @@
 import { WorkerPool } from "gatsby-worker"
-import fs from "fs-extra"
+import fs from "fs"
 import nodePath from "path"
 import report from "gatsby-cli/lib/reporter"
 import { isCI } from "gatsby-core-utils"

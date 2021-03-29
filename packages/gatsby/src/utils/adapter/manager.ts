@@ -5,7 +5,7 @@ import { slash } from "gatsby-core-utils/path"
 import { generatePageDataPath } from "gatsby-core-utils/page-data"
 import { posix } from "path"
 import { globSync } from "tinyglobby"
-import { copy, pathExists, unlink } from "fs-extra"
+import { cp, access, unlink } from "fs/promises"
 import pathToRegexp from "path-to-regexp"
 import type {
   FunctionsManifest,
@@ -191,10 +191,16 @@ export async function initAdapterManager(): Promise<IAdapterManager> {
       const mdbInPublicPath = `public/${getLmdbOnCdnPath()}`
       if (!shouldBundleDatastore()) {
         const mdbPath = getDefaultDbPath() + `/data.mdb`
-        copy(mdbPath, mdbInPublicPath)
+        cp(mdbPath, mdbInPublicPath, { recursive: true })
       } else {
         // ensure public dir doesn't have lmdb file
-        if (await pathExists(mdbInPublicPath)) {
+        if (
+          // inline fs-fse.pathExists()
+          await access(mdbInPublicPath).then(
+            () => true,
+            () => false
+          )
+        ) {
           await unlink(mdbInPublicPath)
         }
       }

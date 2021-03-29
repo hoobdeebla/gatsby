@@ -1,4 +1,3 @@
-import fetch from "node-fetch"
 import { SourceNodesArgs } from "gatsby"
 import { createInterface } from "readline"
 import { shiftLeft } from "shift-left"
@@ -69,7 +68,7 @@ export function makeSourceFromOperation(
       const { body: jsonLines } = await fetch(resp.node.url)
 
       const rl = createInterface({
-        input: jsonLines,
+        input: jsonLines as any as NodeJS.ReadableStream,
         crlfDelay: Infinity,
       })
 

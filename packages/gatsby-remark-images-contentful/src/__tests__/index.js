@@ -15,7 +15,7 @@ jest.mock(`../utils/`, () => {
   }
 })
 
-jest.mock(`axios`)
+jest.mock(`fetch`)
 
 jest.mock(`sharp`, () => {
   const metadataMock = jest.fn(() => {
@@ -97,11 +97,10 @@ const remark = new Remark().data(`settings`, {
   footnotes: true,
   pedantic: true,
 })
-const axios = require(`axios`)
 
 beforeEach(() => {
-  axios.mockClear()
-  axios.mockImplementation(() =>
+  fetch.mockClear()
+  fetch.mockImplementation(() =>
     Promise.resolve({
       data: {
         pipe: jest.fn(),
@@ -176,7 +175,7 @@ test(`it transforms images with a https scheme in markdown`, async () => {
 })
 
 test(`it throws specific error if the image is not found`, async () => {
-  axios.mockImplementationOnce(() => Promise.reject(new Error(`oh no`)))
+  fetch.mockImplementationOnce(() => Promise.reject(new Error(`oh no`)))
   const reporter = {
     panic: jest.fn(),
   }

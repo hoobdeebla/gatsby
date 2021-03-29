@@ -2,7 +2,7 @@
 import { parse } from "acorn-loose"
 import { simple as walk } from "acorn-walk"
 import type { LoaderDefinitionFunction } from "webpack"
-import type { Node } from "acorn-loose"
+import type { Node } from "acorn"
 import type {
   ExportNamedDeclaration,
   ExportDefaultDeclaration,

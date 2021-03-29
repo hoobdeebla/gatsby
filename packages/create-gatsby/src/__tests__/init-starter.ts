@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { execSync } from "child_process"
 import execa from "execa"
-import fs from "fs-extra"
+import fs from "fs/promises"
 import path from "path"
 import { initStarter } from "../init-starter"
 import { reporter } from "../utils/reporter"
@@ -15,7 +15,7 @@ jest.mock(`../utils/clear-line`)
 jest.mock(`../utils/make-npm-safe`)
 jest.mock(`execa`)
 jest.mock(`child_process`)
-jest.mock(`fs-extra`)
+jest.mock(`fs/promises`)
 jest.mock(`path`)
 jest.mock(`../utils/reporter`)
 jest.mock(`../utils/get-config-store`, () => {
@@ -73,14 +73,14 @@ describe(`init-starter`, () => {
         expect(reporter.success).not.toBeCalledWith(
           `Created site from template`
         )
-        expect(fs.remove).toBeCalledWith(`/somewhere-here`)
+        expect(fs.rm).toBeCalledWith(`/somewhere-here`)
       }
     })
 
     it(`reports a success when everything is going ok`, async () => {
       ;(path as any).join.mockImplementation(() => `/somewhere-here`)
       ;(execa as any).mockImplementation(() => Promise.resolve())
-      ;(fs as any).readJSON.mockImplementation(() => {
+      ;(fs as any).readFile.mockImplementation(() => {
         return { name: `gatsby-project` }
       })
 
@@ -100,7 +100,7 @@ describe(`init-starter`, () => {
       ])
       expect(reporter.panic).not.toBeCalled()
       expect(reporter.success).toBeCalledWith(`Created site from template`)
-      expect(fs.remove).toBeCalledWith(`/somewhere-here`)
+      expect(fs.rm).toBeCalledWith(`/somewhere-here`)
     })
   })
 
@@ -109,7 +109,7 @@ describe(`init-starter`, () => {
       process.env.npm_config_user_agent = `yarn`
       ;(path as any).join.mockImplementation(() => `/somewhere-here`)
       ;(execa as any).mockImplementation(() => Promise.resolve())
-      ;(fs as any).readJSON.mockImplementation(() => {
+      ;(fs as any).readFile.mockImplementation(() => {
         return { name: `gatsby-project` }
       })
 
@@ -120,7 +120,7 @@ describe(`init-starter`, () => {
         `A site`
       )
 
-      expect(fs.remove).toBeCalledWith(`package-lock.json`)
+      expect(fs.rm).toBeCalledWith(`package-lock.json`)
       expect(reporter.success).toBeCalledWith(`Installed plugins`)
       expect(reporter.panic).not.toBeCalled()
       expect(execa).toBeCalledWith(`yarnpkg`, [`--silent`], {
@@ -132,7 +132,7 @@ describe(`init-starter`, () => {
       process.env.npm_config_user_agent = `npm`
       ;(path as any).join.mockImplementation(() => `/somewhere-here`)
       ;(execa as any).mockImplementation(() => Promise.resolve())
-      ;(fs as any).readJSON.mockImplementation(() => {
+      ;(fs as any).readFile.mockImplementation(() => {
         return { name: `gatsby-project` }
       })
 
@@ -143,7 +143,7 @@ describe(`init-starter`, () => {
         `A site`
       )
 
-      expect(fs.remove).toBeCalledWith(`yarn.lock`)
+      expect(fs.rm).toBeCalledWith(`yarn.lock`)
       expect(reporter.success).toBeCalledWith(`Installed Gatsby`)
       expect(reporter.success).toBeCalledWith(`Installed plugins`)
       expect(reporter.panic).not.toBeCalled()
@@ -183,7 +183,7 @@ describe(`init-starter`, () => {
       })
       ;(path as any).join.mockImplementation(() => `/somewhere-here`)
       ;(execa as any).mockImplementation(() => Promise.resolve())
-      ;(fs as any).readJSON.mockImplementation(() => {
+      ;(fs as any).readFile.mockImplementation(() => {
         return { name: `gatsby-project` }
       })
 

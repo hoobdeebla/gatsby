@@ -1,4 +1,4 @@
-import fse from "fs-extra"
+import fs from "fs/promises"
 import { vol } from "memfs"
 import {
   generatePrettyUrlFilePath,
@@ -48,8 +48,8 @@ describe(`createStaticAssetsPathHandler`, () => {
   })
 
   it(`no-op if filepath is already coorect for given route`, async () => {
-    const copySpy = jest.spyOn(fse, `copy`)
-    const moveSpy = jest.spyOn(fse, `move`)
+    const copySpy = jest.spyOn(fs, `cp`)
+    const moveSpy = jest.spyOn(fs, `rename`)
 
     vol.fromJSON(
       {

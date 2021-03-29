@@ -1,18 +1,13 @@
 const { URL } = require(`url`)
-const axios = require(`axios`)
 
 // This should be replaced with the solution for https://github.com/gatsbyjs/gatsby/issues/24220
 const getBase64Img = async (url, reporter) => {
   try {
-    const response = await axios({
-      method: `GET`,
-      responseType: `arraybuffer`,
-      url: `${url}`,
-    })
+    const response = await fetch(url)
 
-    const base64Img = `data:${
-      response.headers[`content-type`]
-    };base64,${Buffer.from(response.data).toString(`base64`)}`
+    const base64Img = `data:${response.headers.get(
+      `content-type`
+    )};base64,${Buffer.from(await response.arrayBuffer().toString(`base64`))}`
 
     return base64Img
   } catch (err) {
