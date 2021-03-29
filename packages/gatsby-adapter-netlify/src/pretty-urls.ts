@@ -1,5 +1,5 @@
 import fastq from "fastq"
-import fs from "fs-extra"
+import fs from "fs/promises"
 
 export function generatePrettyUrlFilePath(routePath: string): string {
   if (routePath.endsWith(`/`)) {
@@ -35,9 +35,9 @@ export function createStaticAssetsPathHandler(): {
   const moveQueue = fastq<void, IMoveTask, void>(async (task, cb) => {
     try {
       if (task.keepOriginalFile) {
-        await fs.copy(task.from, task.to, { overwrite: true })
+        await fs.cp(task.from, task.to, { recursive: true })
       } else {
-        await fs.move(task.from, task.to, { overwrite: true })
+        await fs.rename(task.from, task.to)
       }
       cb(null, undefined)
     } catch (error) {

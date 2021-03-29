@@ -9,7 +9,7 @@ const tracer = require(`opentracing`).globalTracer()
 const reporter = require(`gatsby-cli/lib/reporter`)
 const stackTrace = require(`stack-trace`)
 const { codeFrameColumns } = require(`@babel/code-frame`)
-const fs = require(`fs-extra`)
+const fs = require(`fs`)
 const { getCache } = require(`./get-cache`)
 import { createNodeId } from "./create-node-id"
 const {

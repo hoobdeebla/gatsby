@@ -1,4 +1,4 @@
-import * as fs from "fs-extra"
+import fs from "fs"
 import {
   EnumTypeComposer,
   InputTypeComposer,
@@ -458,7 +458,7 @@ export const printTypeDefinitions = ({
   try {
     typeDefs.forEach(tc => printedTypeDefs.push(printType(tc)))
     report.info(`Writing GraphQL type definitions to ${path}`)
-    return fs.writeFile(path, printedTypeDefs.join(`\n\n`))
+    return fs.promises.writeFile(path, printedTypeDefs.join(`\n\n`))
   } catch (error) {
     report.error(`Failed writing type definitions to \`${path}\`.`, error)
     return Promise.resolve()

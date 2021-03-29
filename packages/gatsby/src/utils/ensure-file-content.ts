@@ -1,4 +1,5 @@
-import { outputFile, readFile } from "fs-extra"
+import { readFile, mkdir, writeFile } from "fs/promises"
+import { dirname } from "path"
 
 export async function ensureFileContent(
   file: string,
@@ -12,7 +13,8 @@ export async function ensureFileContent(
   }
 
   if (previousContent !== data) {
-    await outputFile(file, data)
+    await mkdir(dirname(file), { recursive: true })
+    await writeFile(file, data)
     return true
   }
 

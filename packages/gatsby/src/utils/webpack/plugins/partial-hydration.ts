@@ -1,5 +1,5 @@
-import * as path from "path"
-import fs from "fs-extra"
+import path from "path"
+import fs from "fs"
 import { createNormalizedModuleKey } from "../utils/create-normalized-module-key"
 import webpack, {
   Module,

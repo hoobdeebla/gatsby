@@ -1,5 +1,5 @@
 import { walkStream as fsWalkStream, Entry } from "@nodelib/fs.walk"
-import fs from "fs-extra"
+import fs from "fs"
 import reporter from "gatsby-cli/lib/reporter"
 import fastq from "fastq"
 import path from "path"
@@ -40,7 +40,7 @@ export async function readPageData(
   pagePath: string
 ): Promise<IPageDataWithQueryResult> {
   const filePath = generatePageDataPath(publicDir, pagePath)
-  const rawPageData = await fs.readFile(filePath, `utf-8`)
+  const rawPageData = await fs.promises.readFile(filePath, `utf-8`)
   return JSON.parse(rawPageData)
 }
 
@@ -51,7 +51,7 @@ export async function removePageData(
   const filePath = generatePageDataPath(publicDir, pagePath)
 
   if (fs.existsSync(filePath)) {
-    return await fs.remove(filePath)
+    return await fs.promises.rm(filePath, { recursive: true, force: true })
   }
 
   return Promise.resolve()
@@ -171,7 +171,7 @@ export async function readSliceData(
   sliceName: string
 ): Promise<IPageDataWithQueryResult> {
   const filePath = path.join(publicDir, `slice-data`, `${sliceName}.json`)
-  const rawPageData = await fs.readFile(filePath, `utf-8`)
+  const rawPageData = await fs.promises.readFile(filePath, `utf-8`)
   return JSON.parse(rawPageData)
 }
 
@@ -403,7 +403,13 @@ export function enqueueFlush(parentSpan?: Span): void {
 }
 
 export async function handleStalePageData(parentSpan: Span): Promise<void> {
-  if (!(await fs.pathExists(`public/page-data`))) {
+  if (
+    // inline fse.pathExists()
+    !(await fs.promises.access(`public/page-data`).then(
+      () => true,
+      () => false
+    ))
+  ) {
     return
   }
 
@@ -444,7 +450,9 @@ export async function handleStalePageData(parentSpan: Span): Promise<void> {
   const deletionPromises: Array<Promise<void>> = []
   pageDataFilesFromPreviousBuilds.forEach(pageDataFilePath => {
     if (!expectedPageDataFiles.has(pageDataFilePath)) {
-      deletionPromises.push(fs.remove(pageDataFilePath))
+      deletionPromises.push(
+        fs.promises.rm(pageDataFilePath, { recursive: true, force: true })
+      )
     }
   })
 

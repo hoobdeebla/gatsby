@@ -1,6 +1,6 @@
 import "jest-extended"
-import * as path from "path"
-import fs from "fs-extra"
+import path from "path"
+import fs from "fs/promises"
 import type { watch as ChokidarWatchType } from "chokidar"
 import { build } from "../../../schema"
 import sourceNodesAndRemoveStaleNodes from "../../source-nodes"
@@ -111,7 +111,8 @@ describe(`worker (queries)`, () => {
   beforeAll(async () => {
     store.dispatch({ type: `DELETE_CACHE` })
     const fileDir = path.join(process.cwd(), `.cache/worker`)
-    await fs.emptyDir(fileDir)
+    await fs.rm(fileDir, { recursive: true, force: true })
+    await fs.mkdir(fileDir, { recursive: true })
 
     worker = createTestWorker()
 
@@ -238,9 +239,12 @@ describe(`worker (queries)`, () => {
     await worker.single.runQueries(queryIdsSmall)
     const stateFromWorker = await worker.single.getState()
 
-    const staticQueryResult = await fs.readJson(
-      `${stateFromWorker.program.directory}/public/page-data/sq/d/${dummyStaticQuery.hash}.json`
-    )
+    const staticQueryResult = await fs
+      .readFile(
+        `${stateFromWorker.program.directory}/public/page-data/sq/d/${dummyStaticQuery.hash}.json`,
+        `utf8`
+      )
+      .then(JSON.parse)
 
     expect(staticQueryResult).toStrictEqual({
       data: {

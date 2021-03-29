@@ -1,4 +1,4 @@
-import fs from "fs-extra"
+import fs from "fs/promises"
 import { tmpdir } from "os"
 import { join } from "path"
 import type { IRedirectRoute, RoutesManifest } from "gatsby"

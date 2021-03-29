@@ -1,5 +1,5 @@
-import * as path from "path"
-import * as fs from "fs-extra"
+import path from "path"
+import fs from "fs"
 import webpack from "webpack"
 import mod from "module"
 import { WebpackLoggingPlugin } from "../../utils/webpack/plugins/webpack-logging"
@@ -48,15 +48,17 @@ export async function copyStaticQueriesToEngine({
   const sourceDir = path.join(process.cwd(), `public`, `page-data`, `sq`, `d`)
   const destDir = path.join(outputDir, `sq`)
 
-  await fs.ensureDir(destDir)
-  await fs.emptyDir(destDir)
+  await fs.promises.rm(destDir, { recursive: true, force: true })
+  await fs.promises.mkdir(destDir, { recursive: true })
 
   const promisesToAwait: Array<Promise<void>> = []
   for (const hash of staticQueriesToCopy) {
     const sourcePath = path.join(sourceDir, `${hash}.json`)
     const destPath = path.join(destDir, `${hash}.json`)
 
-    promisesToAwait.push(fs.copy(sourcePath, destPath))
+    promisesToAwait.push(
+      fs.promises.cp(sourcePath, destPath, { recursive: true })
+    )
   }
 
   await Promise.all(promisesToAwait)
@@ -246,7 +248,7 @@ export async function createPageSSRBundle({
 
   let IMAGE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH = ``
   if (global.__GATSBY?.imageCDNUrlGeneratorModulePath) {
-    await fs.copyFile(
+    await fs.promises.copyFile(
       global.__GATSBY.imageCDNUrlGeneratorModulePath,
       path.join(outputDir, `image-cdn-url-generator.js`)
     )
@@ -255,14 +257,14 @@ export async function createPageSSRBundle({
 
   let FILE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH = ``
   if (global.__GATSBY?.fileCDNUrlGeneratorModulePath) {
-    await fs.copyFile(
+    await fs.promises.copyFile(
       global.__GATSBY.fileCDNUrlGeneratorModulePath,
       path.join(outputDir, `file-cdn-url-generator.js`)
     )
     FILE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH = `./file-cdn-url-generator.js`
   }
 
-  let functionCode = await fs.readFile(
+  let functionCode = await fs.promises.readFile(
     path.join(__dirname, `lambda.js`),
     `utf-8`
   )
@@ -286,7 +288,8 @@ export async function createPageSSRBundle({
       FILE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH
     )
 
-  await fs.outputFile(path.join(outputDir, `lambda.js`), functionCode)
+  await fs.promises.mkdir(outputDir, { recursive: true })
+  await fs.promises.writeFile(path.join(outputDir, `lambda.js`), functionCode)
 
   return new Promise((resolve, reject) => {
     compiler.run((err, stats) => {

@@ -1,5 +1,5 @@
 const ignore = require(`ignore`)
-const fs = require(`fs-extra`)
+const fs = require(`fs`)
 const yargs = require(`yargs`)
 const chalk = require(`chalk`)
 const path = require(`path`)
@@ -161,7 +161,7 @@ async function run() {
     (await confirm(`Are you sure you want to delete those files?`))
   ) {
     filesToDelete.forEach(file => {
-      fs.removeSync(file)
+      fs.rmSync(file, { recursive: true, force: true })
     })
     return
   }

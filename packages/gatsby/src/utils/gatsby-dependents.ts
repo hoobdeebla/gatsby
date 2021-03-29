@@ -4,7 +4,7 @@ import { memoize } from "lodash"
 import { createRequire } from "module"
 import { join, dirname } from "path"
 import { PackageJson } from "../.."
-import { readFile } from "fs-extra"
+import { readFile } from "fs/promises"
 
 interface IDependency {
   name: string

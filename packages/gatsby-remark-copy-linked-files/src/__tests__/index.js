@@ -1,12 +1,14 @@
-jest.mock(`fs-extra`, () => {
+jest.mock(`fs`, () => {
   return {
     existsSync: () => false,
-    copy: jest.fn(),
-    ensureDir: jest.fn(),
+    promises: {
+      cp: jest.fn(),
+      mkdir: jest.fn(),
+    },
   }
 })
 const Remark = require(`remark`)
-const fsExtra = require(`fs-extra`)
+const fs = require(`fs/promises`)
 const path = require(`path`)
 
 const plugin = require(`../`)
@@ -21,7 +23,7 @@ const imageURL = markdownAST => markdownAST.children[0].children[0].url
 
 describe(`gatsby-remark-copy-linked-files`, () => {
   afterEach(() => {
-    fsExtra.copy.mockReset()
+    fs.cp.mockReset()
   })
 
   const parentDir = `/`
@@ -63,7 +65,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
           getNode,
         })
 
-        expect(fsExtra.copy).toHaveBeenCalledWith(
+        expect(fs.cp).toHaveBeenCalledWith(
           expect.any(String),
           expect.any(String)
         )
@@ -81,7 +83,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
           getNode,
         })
 
-        expect(fsExtra.copy).not.toHaveBeenCalled()
+        expect(fs.cp).not.toHaveBeenCalled()
       })
     })
   })
@@ -93,7 +95,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
 
     await plugin({ files: getFiles(path), markdownAST, markdownNode, getNode })
 
-    expect(fsExtra.copy).toHaveBeenCalled()
+    expect(fs.cp).toHaveBeenCalled()
   })
 
   it(`can copy file links`, async () => {
@@ -103,7 +105,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
 
     await plugin({ files: getFiles(path), markdownAST, markdownNode, getNode })
 
-    expect(fsExtra.copy).toHaveBeenCalled()
+    expect(fs.cp).toHaveBeenCalled()
   })
 
   it(`can copy HTML file links`, async () => {
@@ -113,7 +115,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
 
     await plugin({ files: getFiles(path), markdownAST, markdownNode, getNode })
 
-    expect(fsExtra.copy).toHaveBeenCalled()
+    expect(fs.cp).toHaveBeenCalled()
   })
 
   it(`can copy HTML images`, async () => {
@@ -123,7 +125,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
 
     await plugin({ files: getFiles(path), markdownAST, markdownNode, getNode })
 
-    expect(fsExtra.copy).toHaveBeenCalled()
+    expect(fs.cp).toHaveBeenCalled()
   })
 
   it(`can copy JSX images`, async () => {
@@ -139,7 +141,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
       getNode,
     })
 
-    expect(fsExtra.copy).toHaveBeenCalled()
+    expect(fs.cp).toHaveBeenCalled()
   })
 
   it(`can copy HTML multiple images`, async () => {
@@ -157,7 +159,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
       getNode,
     })
 
-    expect(fsExtra.copy).toHaveBeenCalledTimes(2)
+    expect(fs.cp).toHaveBeenCalledTimes(2)
   })
 
   it(`can copy HTML multiple images when some are in ignore extensions`, async () => {
@@ -175,7 +177,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
       getNode,
     })
 
-    expect(fsExtra.copy).toHaveBeenCalledTimes(1)
+    expect(fs.cp).toHaveBeenCalledTimes(1)
   })
 
   it(`can copy HTML videos`, async () => {
@@ -187,7 +189,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
 
     await plugin({ files: getFiles(path), markdownAST, markdownNode, getNode })
 
-    expect(fsExtra.copy).toHaveBeenCalled()
+    expect(fs.cp).toHaveBeenCalled()
   })
 
   it(`can copy HTML videos from video elements with the src attribute`, async () => {
@@ -199,7 +201,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
 
     await plugin({ files: getFiles(path), markdownAST, markdownNode, getNode })
 
-    expect(fsExtra.copy).toHaveBeenCalled()
+    expect(fs.cp).toHaveBeenCalled()
   })
 
   it(`can copy HTML images from video elements with the poster attribute `, async () => {
@@ -217,7 +219,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
       getNode,
     })
 
-    expect(fsExtra.copy).toHaveBeenCalledTimes(2)
+    expect(fs.cp).toHaveBeenCalledTimes(2)
   })
 
   it(`can copy flash from object elements with the value attribute`, async () => {
@@ -229,7 +231,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
 
     await plugin({ files: getFiles(path), markdownAST, markdownNode, getNode })
 
-    expect(fsExtra.copy).toHaveBeenCalled()
+    expect(fs.cp).toHaveBeenCalled()
   })
 
   it(`can copy HTML videos when some siblings are in ignore extensions`, async () => {
@@ -242,7 +244,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
 
     await plugin({ files: getFiles(path), markdownAST, markdownNode, getNode })
 
-    expect(fsExtra.copy).toHaveBeenCalled()
+    expect(fs.cp).toHaveBeenCalled()
   })
 
   it(`leaves HTML nodes alone`, async () => {
@@ -269,7 +271,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
 
     await plugin({ files: getFiles(path), markdownAST, markdownNode, getNode })
 
-    expect(fsExtra.copy).not.toHaveBeenCalled()
+    expect(fs.cp).not.toHaveBeenCalled()
   })
 
   it(`do nothing if dir is not found`, async () => {
@@ -286,7 +288,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
 
     await plugin({ files: getFiles(path), markdownAST, markdownNode, getNode })
 
-    expect(fsExtra.copy).not.toHaveBeenCalled()
+    expect(fs.cp).not.toHaveBeenCalled()
   })
 
   describe(`respects pathPrefix`, () => {
@@ -318,7 +320,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
         `/path-prefix/some-hash/sample-image.svg`
       )
 
-      expect(fsExtra.copy).toHaveBeenCalledWith(imagePath, expectedNewPath)
+      expect(fs.cp).toHaveBeenCalledWith(imagePath, expectedNewPath)
     })
 
     it(`absolute pathPrefix (with assetPrefix, empty base path prefix)`, async () => {
@@ -344,7 +346,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
         `https://cdn.mysiteassets.com/some-hash/sample-image.svg`
       )
 
-      expect(fsExtra.copy).toHaveBeenCalledWith(imagePath, expectedNewPath)
+      expect(fs.cp).toHaveBeenCalledWith(imagePath, expectedNewPath)
     })
 
     it(`absolute pathPrefix (with assetPrefix, and non-empty base path prefix)`, async () => {
@@ -370,7 +372,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
         `https://cdn.mysiteassets.com/path-prefix/some-hash/sample-image.svg`
       )
 
-      expect(fsExtra.copy).toHaveBeenCalledWith(imagePath, expectedNewPath)
+      expect(fs.cp).toHaveBeenCalledWith(imagePath, expectedNewPath)
     })
   })
 
@@ -392,7 +394,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
         }
       ).catch(e => {
         expect(e).toEqual(expect.stringContaining(invalidDestinationDir))
-        expect(fsExtra.copy).not.toHaveBeenCalled()
+        expect(fs.cp).not.toHaveBeenCalled()
       })
     })
 
@@ -411,7 +413,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
         }
       ).catch(e => {
         expect(e).toEqual(expect.stringContaining(invalidDestinationDir))
-        expect(fsExtra.copy).not.toHaveBeenCalled()
+        expect(fs.cp).not.toHaveBeenCalled()
       })
     })
 
@@ -435,7 +437,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
         }
       ).then(v => {
         expect(v).toBeDefined()
-        expect(fsExtra.copy).toHaveBeenCalledWith(imagePath, expectedNewPath)
+        expect(fs.cp).toHaveBeenCalledWith(imagePath, expectedNewPath)
         expect(imageURL(markdownAST)).toEqual(
           `/path/to/dir/${fileLocationPart}`
         )
@@ -457,7 +459,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
           ...[process.cwd(), `public`, expectedDestination]
         )
         expect(v).toBeDefined()
-        expect(fsExtra.copy).toHaveBeenCalledWith(imagePath, expectedNewPath)
+        expect(fs.cp).toHaveBeenCalledWith(imagePath, expectedNewPath)
         expect(imageURL(markdownAST)).toEqual(`/${expectedDestination}`)
       })
     })
@@ -490,7 +492,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
         }
       ).then(v => {
         expect(v).toBeDefined()
-        expect(fsExtra.copy).toHaveBeenCalledWith(imagePath, expectedNewPath)
+        expect(fs.cp).toHaveBeenCalledWith(imagePath, expectedNewPath)
         expect(imageURL(markdownAST)).toEqual(
           `${pathPrefix}/path/to/dir/${fileLocationPart}`
         )
@@ -519,7 +521,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
           ...[process.cwd(), `public`, expectedDestination]
         )
         expect(v).toBeDefined()
-        expect(fsExtra.copy).toHaveBeenCalledWith(imagePath, expectedNewPath)
+        expect(fs.cp).toHaveBeenCalledWith(imagePath, expectedNewPath)
         expect(imageURL(markdownAST)).toEqual(
           `${pathPrefix}/${expectedDestination}`
         )
@@ -544,7 +546,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
           ...[process.cwd(), `public`, expectedDestination]
         )
         expect(v).toBeDefined()
-        expect(fsExtra.copy).toHaveBeenCalledWith(imgPath, expectedNewPath)
+        expect(fs.cp).toHaveBeenCalledWith(imgPath, expectedNewPath)
         expect(imageURL(markdownAST)).toEqual(`/${expectedDestination}`)
       })
     })
@@ -566,7 +568,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
         getNode,
       }).then(v => {
         expect(v).toBeDefined()
-        expect(fsExtra.copy).toHaveBeenCalledWith(imagePath, expectedNewPath)
+        expect(fs.cp).toHaveBeenCalledWith(imagePath, expectedNewPath)
         expect(imageURL(markdownAST)).toEqual(`/some-hash/${imageName}.gif`)
       })
     })
@@ -601,7 +603,7 @@ describe(`gatsby-remark-copy-linked-files`, () => {
         }
       )
 
-      expect(fsExtra.copy).toHaveBeenCalledTimes(5)
+      expect(fs.cp).toHaveBeenCalledTimes(5)
     })
   })
 })

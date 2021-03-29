@@ -1,7 +1,6 @@
 const { performance } = require(`perf_hooks`)
 
 const { globSync } = require(`tinyglobby`)
-const nodeFetch = require(`node-fetch`)
 const { execSync } = require(`child_process`)
 const fs = require(`fs`)
 
@@ -244,7 +243,7 @@ class BenchMeta {
     reportInfo(`Flushing benchmark data to remote server...`)
 
     let lastStatus = 0
-    this.flushing = nodeFetch(`${BENCHMARK_REPORTING_URL}`, {
+    this.flushing = fetch(`${BENCHMARK_REPORTING_URL}`, {
       method: `POST`,
       headers: {
         "content-type": `application/json`,

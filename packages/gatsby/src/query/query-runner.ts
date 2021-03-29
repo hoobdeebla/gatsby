@@ -1,6 +1,5 @@
 import { Span } from "opentracing"
-import _ from "lodash"
-import fs from "fs-extra"
+import fs from "fs/promises"
 import report from "gatsby-cli/lib/reporter"
 import { ExecutionResult, GraphQLError } from "graphql"
 import { sha1 } from "gatsby-core-utils/hash"
@@ -220,7 +219,8 @@ export async function queryRunner(
         `d`,
         `${queryJob.hash}.json`
       )
-      await fs.outputFile(resultPath, resultJSON)
+      await fs.mkdir(path.dirname(resultPath), { recursive: true })
+      await fs.writeFile(resultPath, resultJSON)
     }
   }
 

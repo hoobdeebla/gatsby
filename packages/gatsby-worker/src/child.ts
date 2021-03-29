@@ -1,5 +1,6 @@
 import signalExit from "signal-exit"
-import fs from "fs-extra"
+import fs from "fs"
+import { dirname } from "path"
 import {
   ParentMessageUnion,
   ChildMessageUnion,
@@ -47,7 +48,8 @@ if (
   signalExit(() => {
     if (inFlightMessages.size > 0) {
       // this need to be sync
-      fs.outputJsonSync(
+      fs.mkdirSync(dirname(workerInFlightsDumpLocation), { recursive: true })
+      fs.writeFileSync(
         workerInFlightsDumpLocation,
         Array.from(inFlightMessages)
       )
