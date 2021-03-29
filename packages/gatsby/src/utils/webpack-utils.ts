@@ -4,10 +4,10 @@ import { GraphQLSchema } from "graphql"
 import { Plugin as PostCSSPlugin } from "postcss"
 import autoprefixer from "autoprefixer"
 import flexbugs from "postcss-flexbugs-fixes"
-import TerserPlugin from "terser-webpack-plugin"
-import type { MinifyOptions as TerserOptions } from "terser"
+import TerserPlugin, { TerserOptions } from "terser-webpack-plugin"
 import MiniCssExtractPlugin from "mini-css-extract-plugin"
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin"
+import type CssMinimizerPluginType from "css-minimizer-webpack-plugin/types"
 import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin"
 import { getBrowsersList } from "./browserslist"
 import ESLintPlugin from "eslint-webpack-plugin"
@@ -718,15 +718,14 @@ export const createWebpackUtils = (
           `default`,
           {
             svgo: {
-              full: true,
               plugins: [
                 // potentially destructive plugins removed - see https://github.com/gatsbyjs/gatsby/issues/15629
                 // use correct config format and remove plugins requiring specific params - see https://github.com/gatsbyjs/gatsby/issues/31619
-                // List of default plugins and their defaults: https://github.com/svg/svgo#built-in-plugins
+                // List of built-in plugins and their defaults: https://github.com/svg/svgo#built-in-plugins
                 // Last update 2021-08-17
                 `cleanupAttrs`,
                 `cleanupEnableBackground`,
-                `cleanupIDs`,
+                `cleanupIds`,
                 `cleanupListOfValues`, // Default: disabled
                 `cleanupNumericValues`,
                 `collapseGroups`,
@@ -760,14 +759,14 @@ export const createWebpackUtils = (
                 `removeUselessStrokeAndFill`,
                 `removeXMLProcInst`,
                 `reusePaths`, // Default: disabled
-                `sortAttrs`, // Default: disabled
+                `sortAttrs`,
               ],
             },
           },
         ],
       },
     }
-  ): CssMinimizerPlugin =>
+  ): CssMinimizerPluginType =>
     new CssMinimizerPlugin({
       parallel: Math.max(1, cpuCoreCount() - 1),
       ...options,
