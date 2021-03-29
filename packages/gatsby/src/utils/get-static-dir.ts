@@ -1,4 +1,4 @@
-import fs from "fs-extra"
+import fs from "fs"
 import chokidar from "chokidar"
 import nodePath from "path"
 import { store } from "../redux"
@@ -26,14 +26,16 @@ export const copyStaticDirs = (): void => {
     .filter(themeStaticPath => fs.existsSync(themeStaticPath))
     // copy the files for each folder into the user's build
     .map(folder =>
-      fs.copySync(folder, nodePath.join(process.cwd(), `public`), {
+      fs.cpSync(folder, nodePath.join(process.cwd(), `public`), {
+        recursive: true,
         dereference: true,
       })
     )
 
   const staticDir = nodePath.join(process.cwd(), `static`)
   if (!fs.existsSync(staticDir)) return undefined
-  return fs.copySync(staticDir, nodePath.join(process.cwd(), `public`), {
+  return fs.cpSync(staticDir, nodePath.join(process.cwd(), `public`), {
+    recursive: true,
     dereference: true,
   })
 }
@@ -49,10 +51,14 @@ export const syncStaticDir = (): void => {
     .watch(staticDir)
     .on(`add`, path => {
       const relativePath = nodePath.relative(staticDir, path)
-      fs.copy(path, `${process.cwd()}/public/${relativePath}`)
+      fs.promises.cp(path, `${process.cwd()}/public/${relativePath}`, {
+        recursive: true,
+      })
     })
     .on(`change`, path => {
       const relativePath = nodePath.relative(staticDir, path)
-      fs.copy(path, `${process.cwd()}/public/${relativePath}`)
+      fs.promises.cp(path, `${process.cwd()}/public/${relativePath}`, {
+        recursive: true,
+      })
     })
 }

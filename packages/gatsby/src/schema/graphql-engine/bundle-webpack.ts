@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
-import * as path from "path"
-import * as fs from "fs-extra"
+import path from "path"
+import fs from "fs"
 import execa, { Options as ExecaOptions } from "execa"
 import webpack, { Module, NormalModule, Compilation } from "webpack"
 import ConcatenatedModule from "webpack/lib/optimize/ConcatenatedModule"
@@ -65,22 +63,31 @@ const createInternalPackagesCacheDir = async (
   functionsTarget: IPlatformAndArch
 ): Promise<void> => {
   const cacheDir = getInternalPackagesCacheDir(functionsTarget)
-  await fs.ensureDir(cacheDir)
+  await fs.promises.mkdir(cacheDir, { recursive: true })
 
   const packageJsonPath = path.join(cacheDir, `package.json`)
 
   if (!fs.existsSync(packageJsonPath)) {
-    await fs.emptyDir(cacheDir)
+    await fs.promises.rm(cacheDir, { recursive: true, force: true })
+    await fs.promises.mkdir(cacheDir, { recursive: true })
 
-    await fs.outputJson(packageJsonPath, {
-      name: `gatsby-internal-packages`,
-      description: `This directory contains internal packages installed by Gatsby used to comply with the current platform requirements`,
-      version: `1.0.0`,
-      private: true,
-      author: `Gatsby`,
-      license: `MIT`,
-      functionsTarget,
-    })
+    await fs.promises.mkdir(path.dirname(packageJsonPath), { recursive: true })
+    await fs.promises.writeFile(
+      packageJsonPath,
+      JSON.stringify(
+        {
+          name: `gatsby-internal-packages`,
+          description: `This directory contains internal packages installed by Gatsby used to comply with the current platform requirements`,
+          version: `1.0.0`,
+          private: true,
+          author: `Gatsby`,
+          license: `MIT`,
+          functionsTarget,
+        },
+        null,
+        2
+      )
+    )
   }
 }
 
@@ -343,7 +350,7 @@ export async function createGraphqlEngineBundle(
     ? state.config.pathPrefix ?? ``
     : ``
 
-  const schemaSnapshotString = await fs.readFile(
+  const schemaSnapshotString = await fs.promises.readFile(
     path.join(rootDir, `.cache`, `schema.gql`),
     `utf-8`
   )
@@ -653,7 +660,9 @@ export async function createGraphqlEngineBundle(
               const sourcePath = assetMeta?.path
               if (sourcePath) {
                 const dist = path.join(outputDir, asset)
-                binaryFixingPromises.push(fs.copyFile(sourcePath, dist))
+                binaryFixingPromises.push(
+                  fs.promises.copyFile(sourcePath, dist)
+                )
               }
             }
           }

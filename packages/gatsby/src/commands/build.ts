@@ -1,6 +1,6 @@
 import path from "path"
-import report from "gatsby-cli/lib/reporter"
-import fs from "fs-extra"
+import reporter from "gatsby-cli/lib/reporter"
+import fs from "fs"
 import {
   updateInternalSiteMetadata,
   isTruthy,
@@ -56,7 +56,6 @@ import {
   copyStaticQueriesToEngine,
 } from "../utils/page-ssr-module/bundle-webpack"
 import { shouldGenerateEngines } from "../utils/engines-helpers"
-import reporter from "gatsby-cli/lib/reporter"
 import {
   materializePageMode,
   getPageMode,
@@ -83,15 +82,15 @@ module.exports = async function build(
   if (isTruthy(process.env.VERBOSE)) {
     program.verbose = true
   }
-  report.setVerbose(program.verbose)
+  reporter.setVerbose(program.verbose)
 
   if (program.profile) {
-    report.warn(
+    reporter.warn(
       `React Profiling is enabled. This can have a performance impact. See https://www.gatsbyjs.com/docs/profiling-site-performance-with-react-profiler/#performance-impact`
     )
   }
 
-  report.verbose(`Running build in "${process.env.NODE_ENV}" environment`)
+  reporter.verbose(`Running build in "${process.env.NODE_ENV}" environment`)
 
   await updateInternalSiteMetadata({
     name: program.sitePackageJson.name,
@@ -110,7 +109,7 @@ module.exports = async function build(
     )
   }
 
-  const buildActivity = report.phantomActivity(`build`)
+  const buildActivity = reporter.phantomActivity(`build`)
   buildActivity.start()
 
   const buildSpan = buildActivity.span
@@ -149,7 +148,7 @@ module.exports = async function build(
   let templateCompilationHashes: Record<string, string> = {}
 
   const engineBundlingPromises: Array<Promise<any>> = []
-  const buildActivityTimer = report.activityTimer(
+  const buildActivityTimer = reporter.activityTimer(
     `Building production JavaScript and CSS bundles`,
     { parentSpan: buildSpan }
   )
@@ -164,7 +163,7 @@ module.exports = async function build(
 
     if (stats.hasWarnings()) {
       const rawMessages = stats.toJson({ all: false, warnings: true })
-      reportWebpackWarnings(rawMessages.warnings, report)
+      reportWebpackWarnings(rawMessages.warnings, reporter)
     }
 
     webpackCompilationHash = stats.hash as string
@@ -174,7 +173,7 @@ module.exports = async function build(
     buildActivityTimer.end()
   }
 
-  const buildSSRBundleActivityProgress = report.activityTimer(
+  const buildSSRBundleActivityProgress = reporter.activityTimer(
     `Building HTML renderer`,
     { parentSpan: buildSpan }
   )
@@ -210,7 +209,7 @@ module.exports = async function build(
       process.env.GATSBY_PARTIAL_HYDRATION === `1`) &&
     _CFLAGS_.GATSBY_MAJOR === `5`
   ) {
-    const buildPartialHydrationBundleActivityProgress = report.activityTimer(
+    const buildPartialHydrationBundleActivityProgress = reporter.activityTimer(
       `Building Partial Hydration renderer`,
       { parentSpan: buildSpan }
     )
@@ -234,7 +233,7 @@ module.exports = async function build(
   }
 
   // exec outer config function for each template
-  const pageConfigActivity = report.activityTimer(`Execute page configs`, {
+  const pageConfigActivity = reporter.activityTimer(`Execute page configs`, {
     parentSpan: buildSpan,
   })
   pageConfigActivity.start()
@@ -248,7 +247,7 @@ module.exports = async function build(
 
   if (shouldGenerateEngines()) {
     const state = store.getState()
-    const buildActivityTimer = report.activityTimer(
+    const buildActivityTimer = reporter.activityTimer(
       `Building Rendering Engines`,
       { parentSpan: buildSpan }
     )
@@ -256,7 +255,7 @@ module.exports = async function build(
       buildActivityTimer.start()
       // bundle graphql-engine
       engineBundlingPromises.push(
-        createGraphqlEngineBundle(program.directory, report, program.verbose)
+        createGraphqlEngineBundle(program.directory, reporter, program.verbose)
       )
 
       engineBundlingPromises.push(
@@ -265,7 +264,7 @@ module.exports = async function build(
           components: state.components,
           staticQueriesByTemplate: state.staticQueriesByTemplate,
           webpackCompilationHash: webpackCompilationHash as string, // we set webpackCompilationHash above
-          reporter: report,
+          reporter,
           isVerbose: program.verbose,
         })
       )
@@ -279,7 +278,7 @@ module.exports = async function build(
     await validateEnginesWithActivity(program.directory, buildSpan)
   }
 
-  const cacheActivity = report.activityTimer(`Caching Webpack compilations`, {
+  const cacheActivity = reporter.activityTimer(`Caching Webpack compilations`, {
     parentSpan: buildSpan,
   })
   try {
@@ -398,7 +397,7 @@ module.exports = async function build(
         payload: webpackCompilationHash,
       })
 
-      const rewriteActivityTimer = report.activityTimer(
+      const rewriteActivityTimer = reporter.activityTimer(
         `Rewriting compilation hashes`,
         {
           parentSpan: buildSpan,
@@ -466,7 +465,7 @@ module.exports = async function build(
           `page-ssr`,
           `slice-data`
         )
-        fs.copySync(sliceDataPath, destination)
+        fs.cpSync(sliceDataPath, destination, { recursive: true })
       }
 
       if (process.send) {
@@ -548,7 +547,7 @@ module.exports = async function build(
     }
   }
 
-  const postBuildActivityTimer = report.activityTimer(`onPostBuild`, {
+  const postBuildActivityTimer = reporter.activityTimer(`onPostBuild`, {
     parentSpan: buildSpan,
   })
   postBuildActivityTimer.start()
@@ -565,7 +564,7 @@ module.exports = async function build(
   try {
     await waitWorkerPoolEnd
   } catch (e) {
-    report.warn(`Error when closing WorkerPool: ${e.message}`)
+    reporter.warn(`Error when closing WorkerPool: ${e.message}`)
   }
 
   // Make sure we saved the latest state so we have all jobs cached
@@ -592,7 +591,7 @@ module.exports = async function build(
     })
   }
 
-  report.info(`Done building in ${process.uptime()} sec`)
+  reporter.info(`Done building in ${process.uptime()} sec`)
 
   buildActivity.end()
   if (!externalTelemetryAttributes) {
@@ -601,7 +600,7 @@ module.exports = async function build(
 
   if (program.logPages) {
     if (toRegenerate.length) {
-      report.info(
+      reporter.info(
         `Built pages:\n${toRegenerate
           .map(path => `Updated page: ${path}`)
           .join(`\n`)}`
@@ -609,7 +608,7 @@ module.exports = async function build(
     }
 
     if (toDelete.length) {
-      report.info(
+      reporter.info(
         `Deleted pages:\n${toDelete
           .map(path => `Deleted page: ${path}`)
           .join(`\n`)}`
@@ -634,11 +633,11 @@ module.exports = async function build(
       ? `${toDelete.join(`\n`)}\n`
       : ``
 
-    await fs.writeFile(createdFilesPath, createdFilesContent, `utf8`)
-    report.info(`.cache/newPages.txt created`)
+    await writeFile(createdFilesPath, createdFilesContent, `utf8`)
+    reporter.info(`.cache/newPages.txt created`)
 
-    await fs.writeFile(deletedFilesPath, deletedFilesContent, `utf8`)
-    report.info(`.cache/deletedPages.txt created`)
+    await writeFile(deletedFilesPath, deletedFilesContent, `utf8`)
+    reporter.info(`.cache/deletedPages.txt created`)
   }
 
   if (adapterManager) {

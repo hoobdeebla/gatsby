@@ -2,7 +2,6 @@ import url from "url"
 import Range from "semver/classes/range"
 
 import type { NodePluginArgs } from "gatsby"
-import fetch from "node-fetch"
 
 import fetchGraphql from "~/utils/fetch-graphql"
 import { formatLogMessage } from "~/utils/format-log-message"

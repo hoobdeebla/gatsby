@@ -1,6 +1,6 @@
 const path = require("path")
 const documentation = require("documentation")
-const fs = require("fs-extra")
+const fs = require("fs/promises")
 
 const OUTPUT_FILE_NAME = `apis.json`
 

@@ -1,5 +1,5 @@
 const path = require(`path`)
-const fs = require(`fs-extra`)
+const fs = require(`fs`)
 
 /**
  * Update Gatsby and React dependency versions in package.json of sites.

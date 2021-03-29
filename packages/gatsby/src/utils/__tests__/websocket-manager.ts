@@ -2,19 +2,12 @@ import { createServer } from "http"
 import * as io from "socket.io-client"
 import { WebsocketManager } from "../websocket-manager"
 import { store } from "../../redux"
-import * as path from "path"
 
 const MOCK_FILE_INFO = {}
 
-jest.mock(`fs-extra`, () => {
+jest.mock(`fs/promises`, () => {
   return {
-    readJson: jest.fn(path => {
-      if (MOCK_FILE_INFO[path]) {
-        return MOCK_FILE_INFO[path]
-      }
-      throw new Error(`Doesn't exist`)
-    }),
-    pathExists: jest.fn(path => !!MOCK_FILE_INFO[path]),
+    access: jest.fn(path => !!MOCK_FILE_INFO[path]),
     readFile: jest.fn(path => JSON.stringify(MOCK_FILE_INFO[path])),
   }
 })
