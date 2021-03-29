@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "microbundle": "^0.15.0",
+    "microbundle": "^0.15.1",
     "preval.macro": "^5.0.0"
   },
   "engines": {
