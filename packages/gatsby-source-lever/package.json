@@ -9,7 +9,7 @@
   "bundledDependencies": [],
   "dependencies": {
     "@babel/runtime": "^7.25.7",
-    "axios": "^1.6.2",
+    "axios": "^1.7.7",
     "bluebird": "^3.7.2",
     "deep-map-keys": "^2.0.1",
     "json-stringify-safe": "^5.0.1",
