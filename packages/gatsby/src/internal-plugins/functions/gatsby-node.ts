@@ -517,7 +517,7 @@ export async function onPreBootstrap({
             )
 
             // Otherwise, restart the watcher
-            compiler.close(async () => {
+            compiler!.close(async () => {
               const config = await createWebpackConfig({
                 siteDirectoryPath,
                 store,

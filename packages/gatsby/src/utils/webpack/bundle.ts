@@ -40,7 +40,7 @@ export function watch(
   ) => void,
   watchOptions: webpack.Watching["watchOptions"] = {}
 ): {
-  watcher: webpack.Watching
+  watcher: webpack.Watching | undefined
   close: () => Promise<void>
 } {
   const compiler = webpack(webpackConfig)
@@ -54,7 +54,7 @@ export function watch(
     watcher,
     close: (): Promise<void> =>
       new Promise((resolve, reject) =>
-        watcher.close(err => (err ? reject(err) : resolve()))
+        watcher!.close(err => (err ? reject(err) : resolve()))
       ),
   }
 }

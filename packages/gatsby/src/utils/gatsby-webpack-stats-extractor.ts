@@ -91,7 +91,7 @@ export class GatsbyWebpackStatsExtractor {
                   assets.add(relatedAsset)
                 }
               } else {
-                assets.add(relatedAssets)
+                assets.add(relatedAssets!)
               }
             }
           }

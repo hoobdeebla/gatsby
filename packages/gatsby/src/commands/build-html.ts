@@ -167,7 +167,7 @@ const runWebpack = (
           // this runs multiple times
           emitter.emit(`DEV_SSR_COMPILATION_DONE`)
           if (isFirstCompile) {
-            watcher.suspend()
+            watcher!.suspend()
             isFirstCompile = false
           }
 
@@ -190,7 +190,7 @@ const runWebpack = (
               stats: stats as webpack.Stats,
               close: () =>
                 new Promise((resolve, reject): void =>
-                  watcher.close(err => (err ? reject(err) : resolve()))
+                  watcher!.close(err => (err ? reject(err) : resolve()))
                 ),
             })
           }
@@ -216,7 +216,10 @@ const doBuildRenderer = async (
   const { stats, close } = await runWebpack(webpackConfig, stage, directory)
   if (stats?.hasErrors()) {
     reporter.panicOnBuild(
-      structureWebpackErrors(stage, stats.compilation.errors)
+      structureWebpackErrors(
+        stage,
+        stats.compilation.errors as Array<webpack.WebpackError>
+      )
     )
   }
 
@@ -240,7 +243,10 @@ const doBuildPartialHydrationRenderer = async (
   const { stats, close } = await runWebpack(webpackConfig, stage, directory)
   if (stats?.hasErrors()) {
     reporter.panicOnBuild(
-      structureWebpackErrors(stage, stats.compilation.errors)
+      structureWebpackErrors(
+        stage,
+        stats.compilation.errors as Array<webpack.WebpackError>
+      )
     )
   }
 
