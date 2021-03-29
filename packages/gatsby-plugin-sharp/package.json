@@ -8,19 +8,20 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
-    "async": "^3.2.5",
+    "async": "^3.2.6",
     "debug": "^4.4.3",
-    "fs-extra": "^11.2.0",
+    "fs-extra": "^11.3.3",
     "gatsby-core-utils": "^4.17.0-next.0",
     "gatsby-plugin-utils": "^4.17.0-next.0",
     "lodash": "^4.17.21",
     "probe-image-size": "^7.2.3",
-    "semver": "^7.5.3",
+    "semver": "^7.7.4",
     "sharp": "^0.32.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.20.7",
     "@babel/core": "^7.20.12",
+    "@types/fs-extra": "^11.0.4",
     "babel-preset-gatsby-package": "^3.17.0-next.0",
     "cross-env": "^7.0.3",
     "gatsby-plugin-image": "^3.17.0-next.0"
