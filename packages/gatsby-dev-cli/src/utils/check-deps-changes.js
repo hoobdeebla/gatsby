@@ -1,9 +1,8 @@
-const fs = require(`fs-extra`)
+const fs = require(`fs`)
 const _ = require(`lodash`)
 const {
   getMonorepoPackageJsonPath,
 } = require(`./get-monorepo-package-json-path`)
-const got = require(`got`)
 
 function difference(object, base) {
   function changes(object, base) {
@@ -62,8 +61,8 @@ exports.checkDepsChanges = async ({
     try {
       const version = getPackageVersion(packageName)
       const url = `https://unpkg.com/${packageName}@${version}/package.json`
-      const response = await got(url)
-      if (response?.statusCode !== 200) {
+      const response = await fetch(url)
+      if (response?.status !== 200) {
         throw new Error(`No response or non 200 code for ${url}`)
       }
       localPKGjson = JSON.parse(response.body)

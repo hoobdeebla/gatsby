@@ -5,7 +5,7 @@ import { mockGatsbyApi, mockPluginOptions, mockShopifyEvents } from "./fixtures"
 const gatsbyApi = mockGatsbyApi()
 const pluginOptions = mockPluginOptions()
 
-jest.mock(`node-fetch`)
+jest.mock(`fetch`)
 
 const eventsApi = jest.spyOn(eventsModule, `eventsApi`)
 

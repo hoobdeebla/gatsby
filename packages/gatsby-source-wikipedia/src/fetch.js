@@ -1,5 +1,4 @@
 const queryString = require(`query-string`)
-const fetch = require(`node-fetch`)
 
 const apiBase = `https://en.wikipedia.org/w/api.php?`
 

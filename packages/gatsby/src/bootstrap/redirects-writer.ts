@@ -1,5 +1,5 @@
 import _ from "lodash"
-import fs from "fs-extra"
+import fs from "fs/promises"
 import { joinPath, md5 } from "gatsby-core-utils"
 import reporter from "gatsby-cli/lib/reporter"
 import { store, emitter } from "../redux"

@@ -24,7 +24,7 @@ import { createGraphqlEngineBundle } from "./bundle-webpack"
 import { createPageSSRBundle } from "./../../utils/page-ssr-module/bundle-webpack"
 import reporter from "gatsby-cli/lib/reporter"
 import { loadConfigAndPlugins } from "../../utils/worker/child/load-config-and-plugins"
-import * as fs from "fs-extra"
+import fs from "fs/promises"
 import { store } from "../../redux"
 import { validateEnginesWithActivity } from "../../utils/validate-engines"
 
@@ -39,8 +39,14 @@ async function run(): Promise<void> {
   try {
     reporter.verbose(`clearing webpack cache`)
     // get rid of cache if it exist
-    await fs.remove(process.cwd() + `/.cache/webpack/query-engine`)
-    await fs.remove(process.cwd() + `/.cache/webpack/page-ssr`)
+    await fs.rm(process.cwd() + `/.cache/webpack/query-engine`, {
+      recursive: true,
+      force: true,
+    })
+    await fs.rm(process.cwd() + `/.cache/webpack/page-ssr`, {
+      recursive: true,
+      force: true,
+    })
   } catch (e) {
     // eslint-disable no-empty
   }

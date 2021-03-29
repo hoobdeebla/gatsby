@@ -1,5 +1,5 @@
 const crypto = require(`crypto`)
-const fs = require(`fs-extra`)
+const fs = require(`fs`)
 const path = require(`path`)
 const dotenv = require(`dotenv`)
 const { CoreJSResolver } = require(`./webpack/plugins/corejs-resolver`)
@@ -295,17 +295,6 @@ module.exports = async (
               : null,
           ])
           .filter(Boolean)
-        break
-      }
-      case `develop-html`:
-      case `build-html`: {
-        // Add global fetch in node environments
-        configPlugins.push(
-          plugins.provide({
-            fetch: require.resolve(`node-fetch`),
-            "global.fetch": require.resolve(`node-fetch`),
-          })
-        )
         break
       }
     }

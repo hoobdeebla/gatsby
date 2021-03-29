@@ -6,19 +6,19 @@ import { rest } from "msw"
 import { setupServer } from "msw/node"
 import { Writable } from "stream"
 import got from "got"
-import fs from "fs-extra"
+import fs from "fs/promises" // must use for test
+import { createReadStream } from "fs"
 import { slash } from "gatsby-core-utils/path"
 import { fetchRemoteFile } from "../fetch-remote-file"
 import * as storage from "../utils/get-storage"
 
 jest.spyOn(storage, `getDatabaseDir`)
 jest.spyOn(got, `stream`)
-jest.spyOn(fs, `move`)
-jest.spyOn(fs, `copy`)
-jest.spyOn(fs, `pathExists`)
+jest.spyOn(fs, `rename`)
+jest.spyOn(fs, `cp`)
+jest.spyOn(fs, `access`)
 
 const gotStream = got.stream
-const fsMove = fs.move
 
 const urlCount = new Map()
 
@@ -50,7 +50,7 @@ async function getFileContent(file, req, options = {}) {
   }
 
   const content = await new Promise(resolve => {
-    const fileStream = fs.createReadStream(file, {
+    const fileStream = createReadStream(file, {
       end:
         currentRetryCount < Number(maxRetry)
           ? Number(maxBytes)
@@ -288,7 +288,7 @@ describe(`fetch-remote-file`, () => {
 
   afterAll(async () => {
     await storage.closeDatabase()
-    await fs.remove(cacheRoot)
+    await fs.rm(cacheRoot, { recursive: true, force: true })
     delete global.__GATSBY
 
     // Clean up after all tests are done, preventing this
@@ -304,13 +304,13 @@ describe(`fetch-remote-file`, () => {
         : `1`,
     }
     gotStream.mockClear()
-    fsMove.mockClear()
-    fs.pathExists.mockClear()
-    fs.copy.mockClear()
+    fs.rename.mockClear()
+    fs.access.mockClear()
+    fs.cp.mockClear()
     urlCount.clear()
 
-    await fs.remove(cachePath)
-    await fs.ensureDir(cachePath)
+    await fs.rm(cachePath, { recursive: true, force: true })
+    await fs.mkdir(cachePath, { recursive: true })
   })
 
   it(`downloads and create a svg file`, async () => {
@@ -445,7 +445,7 @@ describe(`fetch-remote-file`, () => {
     })
 
     expect(filePathCached).toBe(filePath)
-    expect(fsMove).toBeCalledTimes(1)
+    expect(fs.rename).toBeCalledTimes(1)
     expect(gotStream).toBeCalledTimes(2)
     global.__GATSBY = currentGlobal
   })
@@ -458,7 +458,7 @@ describe(`fetch-remote-file`, () => {
       directory: cachePath,
     })
 
-    await fs.remove(filePath)
+    await fs.rm(filePath, { recursive: true, force: true })
 
     global.__GATSBY = { buildId: `304-4` }
     const filePathCached = await fetchRemoteFile({
@@ -467,7 +467,7 @@ describe(`fetch-remote-file`, () => {
     })
 
     expect(filePathCached).toBe(filePath)
-    expect(fsMove).toBeCalledTimes(2)
+    expect(fs.rename).toBeCalledTimes(2)
     expect(gotStream).toBeCalledTimes(2)
     global.__GATSBY = currentGlobal
   })
@@ -536,8 +536,8 @@ Fetch details:
 
       expect(filePath).toBe(cachedFilePath)
       expect(gotStream).toBeCalledTimes(1)
-      expect(fs.pathExists).toBeCalledTimes(1)
-      expect(fs.copy).not.toBeCalled()
+      expect(fs.access).toBeCalledTimes(1)
+      expect(fs.cp).not.toBeCalled()
     })
 
     it(`should not re-download and use same path if ouputDir is not inside public folder`, async () => {
@@ -556,8 +556,8 @@ Fetch details:
 
       expect(filePath).toBe(cachedFilePath)
       expect(gotStream).toBeCalledTimes(1)
-      expect(fs.pathExists).toBeCalledTimes(1)
-      expect(fs.copy).not.toBeCalled()
+      expect(fs.access).toBeCalledTimes(1)
+      expect(fs.cp).not.toBeCalled()
     })
 
     it(`should not re-download but copy file to public folder`, async () => {
@@ -565,7 +565,7 @@ Fetch details:
       global.__GATSBY = {
         root: cache.directory,
       }
-      await fs.ensureDir(path.join(cache.directory, `public`))
+      await fs.mkdir(path.join(cache.directory, `public`), { recursive: true })
       const filePath = await fetchRemoteFile({
         url: getExternalUrl(++cacheVersion),
         directory: cache.directory,
@@ -582,9 +582,14 @@ Fetch details:
       expect(filePath).not.toBe(cachedFilePath)
       expect(cachedFilePath).toStartWith(path.join(cache.directory, `public`))
       expect(gotStream).toBeCalledTimes(1)
-      expect(fs.pathExists).toBeCalledTimes(1)
-      expect(fs.copy).toBeCalledTimes(1)
-      expect(await fs.pathExists(cachedFilePath)).toBe(true)
+      expect(fs.access).toBeCalledTimes(1)
+      expect(fs.cp).toBeCalledTimes(1)
+      expect(
+        await fs.access(cachedFilePath).then(
+          () => true,
+          () => false
+        )
+      ).toBe(true)
       global.__GATSBY = currentGlobal
     })
 
@@ -593,7 +598,7 @@ Fetch details:
       global.__GATSBY = {
         root: cache.directory,
       }
-      await fs.ensureDir(path.join(cache.directory, `public`))
+      await fs.mkdir(path.join(cache.directory, `public`), { recursive: true })
       const filePath = await fetchRemoteFile({
         url: getExternalUrl(++cacheVersion),
         directory: slash(cache.directory),
@@ -610,9 +615,14 @@ Fetch details:
       expect(filePath).not.toBe(cachedFilePath)
       expect(cachedFilePath).toStartWith(path.join(cache.directory, `public`))
       expect(gotStream).toBeCalledTimes(1)
-      expect(fs.pathExists).toBeCalledTimes(1)
-      expect(fs.copy).toBeCalledTimes(1)
-      expect(await fs.pathExists(cachedFilePath)).toBe(true)
+      expect(fs.access).toBeCalledTimes(1)
+      expect(fs.cp).toBeCalledTimes(1)
+      expect(
+        await fs.access(cachedFilePath).then(
+          () => true,
+          () => false
+        )
+      ).toBe(true)
       global.__GATSBY = currentGlobal
     })
 
@@ -621,7 +631,7 @@ Fetch details:
       global.__GATSBY = {
         root: cache.directory,
       }
-      await fs.ensureDir(path.join(cache.directory, `public`))
+      await fs.mkdir(path.join(cache.directory, `public`), { recursive: true })
       const filePathPromise = fetchRemoteFile({
         url: getExternalUrl(++cacheVersion),
         directory: cache.directory,
@@ -643,8 +653,8 @@ Fetch details:
       expect(filePath).not.toBe(cachedFilePath)
       expect(cachedFilePath).toStartWith(path.join(cache.directory, `public`))
       expect(gotStream).toBeCalledTimes(1)
-      expect(fs.pathExists).toBeCalledTimes(0)
-      expect(fs.copy).toBeCalledTimes(1)
+      expect(fs.access).toBeCalledTimes(0)
+      expect(fs.cp).toBeCalledTimes(1)
       global.__GATSBY = currentGlobal
     })
 
@@ -653,7 +663,7 @@ Fetch details:
       global.__GATSBY = {
         root: cache.directory,
       }
-      await fs.ensureDir(path.join(cache.directory, `public`))
+      await fs.mkdir(path.join(cache.directory, `public`), { recursive: true })
       const filePathPromise = fetchRemoteFile({
         url: getExternalUrl(++cacheVersion),
         directory: slash(cache.directory),
@@ -675,8 +685,8 @@ Fetch details:
       expect(filePath).not.toBe(cachedFilePath)
       expect(cachedFilePath).toStartWith(path.join(cache.directory, `public`))
       expect(gotStream).toBeCalledTimes(1)
-      expect(fs.pathExists).toBeCalledTimes(0)
-      expect(fs.copy).toBeCalledTimes(1)
+      expect(fs.access).toBeCalledTimes(0)
+      expect(fs.cp).toBeCalledTimes(1)
       global.__GATSBY = currentGlobal
     })
 
@@ -685,7 +695,7 @@ Fetch details:
       global.__GATSBY = {
         root: cache.directory,
       }
-      await fs.ensureDir(path.join(cache.directory, `public`))
+      await fs.mkdir(path.join(cache.directory, `public`), { recursive: true })
       const filePathPromise = await fetchRemoteFile({
         url: getExternalUrl(++cacheVersion),
         directory: path.join(cache.directory, `public`),
@@ -706,8 +716,8 @@ Fetch details:
 
       expect(cachedFilePath).toStartWith(path.join(cache.directory, `public`))
       expect(gotStream).toBeCalledTimes(1)
-      expect(fs.pathExists).toBeCalledTimes(1)
-      expect(fs.copy).toBeCalledTimes(excludeDigest ? 0 : 1)
+      expect(fs.access).toBeCalledTimes(1)
+      expect(fs.cp).toBeCalledTimes(excludeDigest ? 0 : 1)
       global.__GATSBY = currentGlobal
     })
 
@@ -716,7 +726,7 @@ Fetch details:
       global.__GATSBY = {
         root: cache.directory,
       }
-      await fs.ensureDir(path.join(cache.directory, `public`))
+      await fs.mkdir(path.join(cache.directory, `public`), { recursive: true })
       const filePathPromise = fetchRemoteFile({
         url: getExternalUrl(++cacheVersion),
         directory: path.join(cache.directory, `public`),
@@ -738,8 +748,8 @@ Fetch details:
       expect(filePath).toBe(cachedFilePath)
       expect(cachedFilePath).toStartWith(path.join(cache.directory, `public`))
       expect(gotStream).toBeCalledTimes(1)
-      expect(fs.pathExists).toBeCalledTimes(0)
-      expect(fs.copy).toBeCalledTimes(0)
+      expect(fs.access).toBeCalledTimes(0)
+      expect(fs.cp).toBeCalledTimes(0)
       global.__GATSBY = currentGlobal
     })
   })

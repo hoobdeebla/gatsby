@@ -1,5 +1,5 @@
-jest.mock(`fs-extra`)
-const fs = require(`fs-extra`)
+jest.mock(`fs/promises`)
+const fs = require(`fs/promises`)
 const path = require(`path`)
 const { onPostBuild } = require(`../gatsby-node`)
 const DATE_TO_USE = new Date(`2018`)
@@ -10,9 +10,9 @@ global.Date.now = _Date.now
 
 describe(`Test plugin feed`, () => {
   beforeEach(() => {
-    fs.exists = jest.fn().mockResolvedValue(true)
+    fs.access = jest.fn().mockResolvedValue(true)
     fs.writeFile = jest.fn().mockResolvedValue()
-    fs.mkdirp = jest.fn().mockResolvedValue()
+    fs.mkdir = jest.fn().mockResolvedValue()
   })
 
   it(`custom properties work properly`, async () => {

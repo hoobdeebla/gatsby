@@ -1,4 +1,4 @@
-import fs from "fs-extra"
+import fs from "fs/promises"
 import path from "path"
 import { Compiler } from "webpack"
 import { PARTIAL_HYDRATION_CHUNK_REASON } from "./webpack/plugins/partial-hydration"
@@ -91,7 +91,7 @@ export class GatsbyWebpackStatsExtractor {
                   assets.add(relatedAsset)
                 }
               } else {
-                assets.add(relatedAssets)
+                assets.add(relatedAssets!)
               }
             }
           }
@@ -120,7 +120,9 @@ export class GatsbyWebpackStatsExtractor {
           </script>
         `
 
-          await fs.ensureDir(path.join(`public`, `_gatsby`, `slices`))
+          await fs.mkdir(path.join(`public`, `_gatsby`, `slices`), {
+            recursive: true,
+          })
 
           const hashSliceContents = `<script>window.___webpackCompilationHash="${stats.hash}";</script>`
 

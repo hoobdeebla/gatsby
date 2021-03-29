@@ -1,6 +1,6 @@
 import _ from "lodash"
 import path from "path"
-import fs from "fs-extra"
+import fs from "fs/promises"
 import reporter from "gatsby-cli/lib/reporter"
 import { match } from "@gatsbyjs/reach-router"
 import { joinPath, md5, slash } from "gatsby-core-utils"
@@ -297,9 +297,7 @@ exports.head = {\n${components
     // `match-paths.json` to setup routing)
     const destination = joinPath(program.directory, `.cache`, file)
     const tmp = `${destination}.${Date.now()}`
-    return fs
-      .writeFile(tmp, data)
-      .then(() => fs.move(tmp, destination, { overwrite: true }))
+    return fs.writeFile(tmp, data).then(() => fs.rename(tmp, destination))
   }
 
   await Promise.all([

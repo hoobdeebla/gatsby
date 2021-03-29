@@ -5,15 +5,15 @@ jest.mock(`stack-trace`, () => {
     get: jest.fn(),
   }
 })
-jest.mock(`fs-extra`, () => {
-  const fs = jest.requireActual(`fs-extra`)
+jest.mock(`fs`, () => {
+  const fs = jest.requireActual(`fs`)
   return {
     ...fs,
     readFileSync: jest.fn(),
   }
 })
 const trace = require(`stack-trace`)
-const fs = require(`fs-extra`)
+const fs = require(`fs`)
 const path = require(`path`)
 const { getNonGatsbyCodeFrameFormatted } = require(`../stack-trace-utils`)
 

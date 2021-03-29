@@ -1,4 +1,4 @@
-import fs from "fs-extra"
+import fs from "fs"
 import { glob as globAsync } from "tinyglobby"
 import path from "path"
 import webpack from "webpack"
@@ -39,7 +39,9 @@ async function ensureFunctionIsCompiled(
   // stat the compiled function. If it's there, then return.
   let compiledFileExists = false
   try {
-    compiledFileExists = !!(await fs.stat(functionObj.absoluteCompiledFilePath))
+    compiledFileExists = !!(await fs.promises.stat(
+      functionObj.absoluteCompiledFilePath
+    ))
   } catch (e) {
     // ignore
   }
@@ -428,8 +430,8 @@ export async function onPreBootstrap({
     `functions`
   )
 
-  await fs.ensureDir(compiledFunctionsDir)
-  await fs.emptyDir(compiledFunctionsDir)
+  await fs.promises.rm(compiledFunctionsDir, { recursive: true, force: true })
+  await fs.promises.mkdir(compiledFunctionsDir, { recursive: true })
 
   try {
     // We do this ungainly thing as we need to make accessible
@@ -517,7 +519,7 @@ export async function onPreBootstrap({
             )
 
             // Otherwise, restart the watcher
-            compiler.close(async () => {
+            compiler!.close(async () => {
               const config = await createWebpackConfig({
                 siteDirectoryPath,
                 store,

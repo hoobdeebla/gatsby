@@ -3,6 +3,7 @@
 const Configstore = require(`configstore`)
 const pkg = require(`../package.json`)
 const _ = require(`lodash`)
+const fs = require(`fs`)
 const path = require(`path`)
 const os = require(`os`)
 const watch = require(`./watch`)
@@ -58,8 +59,6 @@ if (argv.version) {
 }
 
 const conf = new Configstore(pkg.name)
-
-const fs = require(`fs-extra`)
 
 let pathToRepo = argv.setPathToRepo
 

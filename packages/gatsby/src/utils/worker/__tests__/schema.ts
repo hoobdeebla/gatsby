@@ -1,5 +1,5 @@
-import * as path from "path"
-import fs from "fs-extra"
+import path from "path"
+import fs from "fs/promises"
 import type { watch as ChokidarWatchType } from "chokidar"
 import { DocumentNode } from "graphql"
 import { CombinedState } from "redux"
@@ -41,7 +41,8 @@ describe(`worker (schema)`, () => {
   beforeAll(async () => {
     store.dispatch({ type: `DELETE_CACHE` })
     const fileDir = path.join(process.cwd(), `.cache/worker`)
-    await fs.emptyDir(fileDir)
+    await fs.rm(fileDir, { recursive: true, force: true })
+    await fs.mkdir(fileDir, { recursive: true })
 
     worker = createTestWorker()
 

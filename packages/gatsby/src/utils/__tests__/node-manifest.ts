@@ -1,6 +1,6 @@
 import { foundPageByToLogIds } from "./../node-manifest"
 import path from "path"
-import fs from "fs-extra"
+import fs from "fs/promises"
 import reporter from "gatsby-cli/lib/reporter"
 import { store } from "../../redux"
 import { actions } from "../../redux/actions"
@@ -17,10 +17,10 @@ function itWindows(name: string, fn: () => void): void {
   return process.platform === `win32` ? it(name, fn) : xit(name, fn)
 }
 
-jest.mock(`fs-extra`, () => {
+jest.mock(`fs/promises`, () => {
   return {
-    ensureDir: jest.fn(),
-    writeJSON: jest.fn((manifestFilePath, finalManifest) => {
+    mkdir: jest.fn(),
+    writeFile: jest.fn((manifestFilePath, finalManifest) => {
       if (process.env.DEBUG) {
         console.log({ manifestFilePath, finalManifest })
       }
@@ -364,7 +364,7 @@ describe(`processNodeManifests`, () => {
 
     await processNodeManifests()
 
-    expect(fs.writeJSON).not.toBeCalled()
+    expect(fs.writeFile).not.toBeCalled()
     expect(reporter.info).not.toBeCalled()
     expect(reporter.warn).not.toBeCalled()
     expect(reporter.error).not.toBeCalled()
@@ -505,8 +505,8 @@ describe(`processNodeManifests`, () => {
     )
     expect(store.dispatch).toBeCalled()
 
-    expect(fs.ensureDir).toBeCalledTimes(nodes.length)
-    expect(fs.writeJSON).toBeCalledTimes(nodes.length)
+    expect(fs.mkdir).toBeCalledTimes(nodes.length)
+    expect(fs.writeFile).toBeCalledTimes(nodes.length)
 
     pendingManifests.forEach((manifest, index) => {
       // if a node doesn't exist for this manifest we don't want to assert that
@@ -515,7 +515,7 @@ describe(`processNodeManifests`, () => {
         return
       }
 
-      expect(fs.writeJSON).toHaveBeenNthCalledWith(
+      expect(fs.writeFile).toHaveBeenNthCalledWith(
         index + 1,
         `${path.join(
           process.cwd(),
@@ -599,7 +599,7 @@ describe(`processNodeManifests`, () => {
     })
 
     await processNodeManifests()
-    const nodeManifestFileName = path.basename(fs.writeJSON.mock.calls[0][0])
+    const nodeManifestFileName = path.basename(fs.writeFile.mock.calls[0][0])
 
     expect(nodeManifestFileName).toEqual(`---------.json`)
   })
