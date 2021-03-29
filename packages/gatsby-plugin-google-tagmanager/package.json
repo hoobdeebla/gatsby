@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^4.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.7",

@@ -33,20 +33,20 @@
   "dependencies": {
     "@babel/runtime": "^7.24.7",
     "@netlify/cache-utils": "^5.1.5",
-    "@netlify/config": "^20.10.0",
+    "@netlify/config": "^20.16.0",
     "@netlify/functions": "^1.6.0",
     "cookie": "^0.6.0",
-    "fastq": "^1.15.0",
+    "fastq": "^1.17.1",
     "fs-extra": "^11.2.0",
     "gatsby-core-utils": "^4.14.0-next.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.7",
     "@babel/core": "^7.24.7",
-    "@netlify/edge-functions": "^2.2.0",
+    "@netlify/edge-functions": "^2.8.1",
     "babel-preset-gatsby-package": "^3.14.0-next.2",
     "cross-env": "^7.0.3",
-    "memfs": "^4.6.0",
+    "memfs": "^4.9.3",
     "rimraf": "^5.0.7",
     "typescript": "^5.1.6"
   },
