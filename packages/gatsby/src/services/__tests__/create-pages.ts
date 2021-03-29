@@ -10,7 +10,7 @@ jest.mock(`../../utils/js-chunk-names`, () => {
   return { generateComponentChunkName: (): string => `--mocked--` }
 })
 
-jest.mock(`fs-extra`, () => {
+jest.mock(`fs`, () => {
   return {
     readFileSync: jest.fn(() => `foo`), // createPage action reads the page template file trying to find `getServerData`
   }

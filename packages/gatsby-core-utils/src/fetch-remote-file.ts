@@ -1,6 +1,6 @@
 import fileType from "file-type"
 import path from "path"
-import fs from "fs-extra"
+import fs from "fs/promises"
 import Queue from "fastq"
 import { createContentDigest } from "./create-content-digest"
 import {
@@ -46,7 +46,13 @@ export async function fetchRemoteFile(
       const cachedPath = path.join(info.directory, info.path)
       const downloadPath = path.join(fileDirectory, info.path)
 
-      if (await fs.pathExists(cachedPath)) {
+      // inline fse.pathExists()
+      if (
+        await fs.access(cachedPath).then(
+          () => true,
+          () => false
+        )
+      ) {
         // If the cached directory is not part of the public directory, we don't need to copy it
         // as it won't be part of the build.
         if (isPublicPath(downloadPath) && cachedPath !== downloadPath) {
@@ -82,9 +88,7 @@ async function copyCachedPathToDownloadPath({
     )
     await copyFileMutex.acquire()
     if (!alreadyCopiedFiles.has(downloadPath)) {
-      await fs.copy(cachedPath, downloadPath, {
-        overwrite: true,
-      })
+      await fs.cp(cachedPath, downloadPath, { recursive: true })
     }
 
     alreadyCopiedFiles.add(downloadPath)
@@ -192,7 +196,7 @@ async function fetchFile({
       httpOptions.password = auth.htaccess_pass
     }
 
-    await fs.ensureDir(finalDirectory)
+    await fs.mkdir(finalDirectory, { recursive: true })
 
     const tmpFilename = createFilePath(fileDirectory, `tmp-${digest}`, ext)
     let filename = createFilePath(finalDirectory, name, ext)
@@ -201,7 +205,13 @@ async function fetchFile({
     // from a previous request.
     const headers = { ...httpHeaders }
 
-    if (cachedEntry?.headers?.etag && (await fs.pathExists(filename))) {
+    if (
+      cachedEntry?.headers?.etag &&
+      (await fs
+        .access(filename)
+        .then(() => true)
+        .catch(() => false))
+    ) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       headers[`If-None-Match`] = cachedEntry.headers.etag
     }
@@ -226,7 +236,7 @@ async function fetchFile({
         }
       }
 
-      await fs.move(tmpFilename, filename, { overwrite: true })
+      await fs.rename(tmpFilename, filename)
 
       const slashedDirectory = slash(finalDirectory)
       await setInFlightObject(url, BUILD_ID, {
@@ -237,7 +247,7 @@ async function fetchFile({
         path: slash(filename).replace(`${slashedDirectory}/`, ``),
       })
     } else if (response.statusCode === 304) {
-      await fs.remove(tmpFilename)
+      await fs.rm(tmpFilename, { recursive: true, force: true })
     }
 
     return filename

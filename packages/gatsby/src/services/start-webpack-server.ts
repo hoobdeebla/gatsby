@@ -1,7 +1,7 @@
 import openurl from "better-opn"
 import report from "gatsby-cli/lib/reporter"
 import chalk from "chalk"
-import { Compiler } from "webpack"
+import { Compiler, WebpackError } from "webpack"
 import { Stage } from "../commands/types"
 
 import {
@@ -111,7 +111,7 @@ export async function startWebpackServer({
           if (!isSuccessful) {
             const errors = structureWebpackErrors(
               Stage.Develop,
-              stats.compilation.errors
+              stats.compilation.errors as Array<WebpackError>
             )
             webpackActivity.panicOnBuild(errors)
           }

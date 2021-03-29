@@ -1,7 +1,7 @@
 const got = require(`got`)
 const _ = require(`lodash`)
 const urlJoin = require(`url-join`)
-import HttpAgent from "agentkeepalive"
+import { HttpAgent, HttpsAgent } from "agentkeepalive"
 
 // const http2wrapper = require(`http2-wrapper`)
 const opentracing = require(`opentracing`)
@@ -11,8 +11,6 @@ const {
   polyfillImageServiceDevRoutes,
   addRemoteFilePolyfillInterface,
 } = require(`gatsby-plugin-utils/polyfill-remote-file`)
-
-const { HttpsAgent } = HttpAgent
 
 const { setOptions, getOptions } = require(`./plugin-options`)
 

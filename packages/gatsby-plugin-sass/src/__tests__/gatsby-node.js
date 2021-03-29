@@ -73,7 +73,7 @@ describe(`pluginOptionsSchema`, () => {
   it(`should provide meaningful errors when fields are invalid`, async () => {
     const expectedErrors = [
       `"implementation" must be of type object`,
-      `"additionalData" must be one of [string, object]`,
+      `"additionalData" must be one of [string, function]`,
       `"cssLoaderOptions" must be of type object`,
       `"postCssPlugins" must be an array`,
       `"sassRuleTest" must be of type object`,

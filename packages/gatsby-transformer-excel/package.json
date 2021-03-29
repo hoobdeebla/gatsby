@@ -9,7 +9,7 @@
   "dependencies": {
     "@babel/runtime": "^7.20.13",
     "lodash": "^4.17.21",
-    "xlsx": "^0.18.3"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@babel/cli": "^7.20.7",

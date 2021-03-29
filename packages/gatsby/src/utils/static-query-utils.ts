@@ -1,5 +1,5 @@
-import fs from "fs-extra"
-import * as path from "path"
+import fs from "fs/promises"
+import path from "path"
 // we want to force posix-style joins, so Windows doesn't produce backslashes for urls
 const { join } = path.posix
 import type { IScriptsAndStyles } from "./client-assets-for-template"

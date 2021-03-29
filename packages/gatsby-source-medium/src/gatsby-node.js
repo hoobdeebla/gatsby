@@ -1,10 +1,3 @@
-const axios = require(`axios`)
-
-const fetch = (username, limit = 100) => {
-  const url = `https://medium.com/${username}/?format=json&limit=${limit}`
-  return axios.get(url)
-}
-
 const prefix = `])}while(1);</x>`
 
 const convertTimestamps = (nextObj, prevObj, prevKey) => {
@@ -26,12 +19,16 @@ const strip = payload => payload.replace(prefix, ``)
 
 exports.sourceNodes = async (
   { actions, createNodeId, createContentDigest },
-  { username, limit }
+  { username, limit = 100 }
 ) => {
   const { createNode } = actions
 
   try {
-    const { data } = await fetch(username, limit)
+    const { data } = await fetch(
+      `https://medium.com/${username}/?format=json&limit=${limit}`
+    ).then(async response =>
+      Object.assign(response, { data: await response.json() })
+    )
     const { payload } = JSON.parse(strip(data))
 
     let importableResources = []

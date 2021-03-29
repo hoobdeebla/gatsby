@@ -1,6 +1,5 @@
 // @ts-check
 import _ from "lodash"
-import origFetch from "node-fetch"
 import fetchRetry from "@vercel/fetch-retry"
 import { polyfillImageServiceDevRoutes } from "gatsby-plugin-utils/polyfill-remote-file"
 export { setFieldsOnGraphQLNodeType } from "./extend-node-type"
@@ -11,12 +10,12 @@ import { maskText } from "./plugin-options"
 export { createSchemaCustomization } from "./create-schema-customization"
 export { sourceNodes } from "./source-nodes"
 
-const fetch = fetchRetry(origFetch)
+const fetchWithRetry = fetchRetry(fetch)
 
 const validateContentfulAccess = async pluginOptions => {
   if (process.env.NODE_ENV === `test`) return undefined
 
-  await fetch(
+  await fetchWithRetry(
     `https://${pluginOptions.host}/spaces/${pluginOptions.spaceId}/environments/${pluginOptions.environment}/content_types`,
     {
       headers: {

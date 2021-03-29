@@ -1,6 +1,6 @@
 /* global BROWSER_ESM_ONLY */
 import React from "react"
-import fs from "fs-extra"
+import fs from "fs"
 import { renderToStaticMarkup, renderToPipeableStream } from "react-dom/server"
 import { get, merge, isObject, flatten, uniqBy, concat } from "lodash"
 import nodePath from "path"

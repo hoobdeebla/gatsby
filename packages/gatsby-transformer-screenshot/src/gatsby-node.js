@@ -1,4 +1,3 @@
-const axios = require(`axios`)
 const Queue = require(`fastq`)
 const { createRemoteFileNode } = require(`gatsby-source-filesystem`)
 
@@ -140,23 +139,23 @@ const createScreenshotNode = async ({
       })
       expires = new Date(2999, 1, 1).getTime()
     } else {
-      const screenshotResponse = await axios.post(
-        pluginOptions.screenshotEndpoint,
-        { url }
-      )
+      const screenshotResponse = await fetch(pluginOptions.screenshotEndpoint, {
+        method: `POST`,
+        body: JSON.stringify({ url }),
+      })
 
       fileNode = await createRemoteFileNode({
-        url: screenshotResponse.data.url,
+        url: screenshotResponse.url,
         cache,
         createNode,
         createNodeId,
         getCache,
         parentNodeId,
       })
-      expires = screenshotResponse.data.expires
+      expires = screenshotResponse.headers.get(`expires`)
 
       if (!fileNode) {
-        throw new Error(`Remote file node is null`, screenshotResponse.data.url)
+        throw new Error(`Remote file node is null`, screenshotResponse.url)
       }
     }
 

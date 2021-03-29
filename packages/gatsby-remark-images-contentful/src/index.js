@@ -1,7 +1,6 @@
 const { selectAll } = require(`unist-util-select`)
 // TODO(v5): use gatsby/sharp
 const getSharpInstance = require(`./safe-sharp`)
-const axios = require(`axios`)
 const _ = require(`lodash`)
 const cheerio = require(`cheerio`)
 const chalk = require(`chalk`)
@@ -68,11 +67,7 @@ module.exports = async (
     // @todo to increase reliablility, this should use the asset downloading function from gatsby-source-contentful
     let response
     try {
-      response = await axios({
-        method: `GET`,
-        url: originalImg, // for some reason there is a './' prefix
-        responseType: `stream`,
-      })
+      response = await fetch(originalImg)
     } catch (err) {
       reporter.panic(
         `Image downloading failed for ${originalImg}, please check if the image still exists on contentful`,

@@ -1,8 +1,8 @@
 import reporter from "gatsby-cli/lib/reporter"
 import _ from "lodash"
 import { createRequire } from "module"
-import { join } from "path"
-import { emptyDir, ensureDir, outputJson } from "fs-extra"
+import { join, dirname } from "path"
+import { mkdir, rm, writeFile } from "fs/promises"
 import execa, { Options as ExecaOptions } from "execa"
 import { version as gatsbyVersionFromPackageJson } from "gatsby/package.json"
 import { satisfies } from "semver"
@@ -15,19 +15,25 @@ export const getAdaptersCacheDir = (): string =>
   join(process.cwd(), `.cache/adapters`)
 
 const createAdaptersCacheDir = async (): Promise<void> => {
-  await ensureDir(getAdaptersCacheDir())
-  await emptyDir(getAdaptersCacheDir())
+  await rm(getAdaptersCacheDir(), { recursive: true, force: true })
+  await mkdir(getAdaptersCacheDir(), { recursive: true })
 
   const packageJsonPath = join(getAdaptersCacheDir(), `package.json`)
 
-  await outputJson(packageJsonPath, {
-    name: `gatsby-adapters`,
-    description: `This directory contains adapters that have been automatically installed by Gatsby.`,
-    version: `1.0.0`,
-    private: true,
-    author: `Gatsby`,
-    license: `MIT`,
-  })
+  await mkdir(dirname(packageJsonPath), { recursive: true })
+  await writeFile(
+    packageJsonPath,
+    JSON.stringify({
+      name: `gatsby-adapters`,
+      description: `This directory contains adapters that have been automatically installed by Gatsby.`,
+      version: `1.0.0`,
+      private: true,
+      author: `Gatsby`,
+      license: `MIT`,
+    }),
+    null,
+    2
+  )
 }
 
 interface IAdapterToUse {

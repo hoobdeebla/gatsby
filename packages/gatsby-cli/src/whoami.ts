@@ -1,4 +1,3 @@
-import fetch from "node-fetch"
 import reporter from "./reporter"
 import { getToken } from "./util/manage-token"
 

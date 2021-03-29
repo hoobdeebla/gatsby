@@ -11,8 +11,8 @@ jest.mock(`webpack`, () => {
     DefinePlugin: jest.fn(),
   }
 })
-jest.mock(`fs-extra`, () => {
-  const { readFileSync, ...rest } = jest.requireActual(`fs-extra`)
+jest.mock(`fs`, () => {
+  const { readFileSync, ...rest } = jest.requireActual(`fs`)
   return {
     ...rest,
     readFileSync: jest
@@ -21,7 +21,7 @@ jest.mock(`fs-extra`, () => {
   }
 })
 const { DefinePlugin } = require(`webpack`)
-const { readFileSync } = require(`fs-extra`)
+const { readFileSync } = require(`fs`)
 const webpackConfig = require(`../webpack.config`)
 const { store } = require(`../../redux`)
 

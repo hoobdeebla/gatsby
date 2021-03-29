@@ -1,5 +1,5 @@
 import path from "path"
-import fs from "fs-extra"
+import fs from "fs"
 import { getPathToLayoutComponent } from "gatsby-core-utils/parse-component-path"
 import { IPageInput as ICreatePageInput } from "../redux/actions/public"
 import { ICreateSliceInput } from "../redux/actions/restricted"

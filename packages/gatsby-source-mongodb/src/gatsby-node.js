@@ -71,7 +71,7 @@ function idToString(id) {
   return Object.hasOwn(id, `toHexString`) ? id.toHexString() : String(id)
 }
 
-function createNodes(
+async function createNodes(
   db,
   pluginOptions,
   dbName,
@@ -81,77 +81,72 @@ function createNodes(
   createContentDigest
 ) {
   const { preserveObjectIds = false, query = {} } = pluginOptions
-  return new Promise((resolve, reject) => {
-    const collection = db.collection(collectionName)
-    const cursor = collection.find(
-      query[collectionName] ? query[collectionName] : {}
-    )
+  const collection = db.collection(collectionName)
+  const cursor = collection.find(
+    query[collectionName] ? query[collectionName] : {}
+  )
 
-    // Execute the each command, triggers for each document
-    cursor.toArray((err, documents) => {
-      if (err) {
-        reject(err)
+  // Execute the each command, triggers for each document
+  cursor.toArray((err, documents) => {
+    if (err) {
+      throw new Error(err)
+    }
+
+    documents.forEach(({ _id, ...item }) => {
+      const id = idToString(_id)
+
+      // only call recursive function to preserve relations represented by objectids if pluginoption set.
+      if (preserveObjectIds) {
+        for (const key in item) {
+          item[key] = stringifyObjectIds(item[key])
+        }
       }
 
-      documents.forEach(({ _id, ...item }) => {
-        const id = idToString(_id)
+      const node = {
+        // Data for the node.
+        ...item,
+        id: createNodeId(`${id}`),
+        mongodb_id: id,
+        parent: `__${collectionName}__`,
+        children: [],
+        internal: {
+          type: `mongodb${sanitizeName(dbName)}${sanitizeName(collectionName)}`,
+          content: JSON.stringify(item),
+          contentDigest: createContentDigest(item),
+        },
+      }
+      const childrenNodes = []
+      if (pluginOptions.map) {
+        let mapObj = pluginOptions.map
+        if (pluginOptions.map[collectionName]) {
+          mapObj = pluginOptions.map[collectionName]
+        }
+        // We need to map certain fields to a contenttype.
+        Object.keys(mapObj).forEach(mediaItemFieldKey => {
+          if (
+            node[mediaItemFieldKey] &&
+            (typeof mapObj[mediaItemFieldKey] === `string` ||
+              mapObj[mediaItemFieldKey] instanceof String)
+          ) {
+            const mappingChildNode = prepareMappingChildNode(
+              node,
+              mediaItemFieldKey,
+              node[mediaItemFieldKey],
+              mapObj[mediaItemFieldKey],
+              createContentDigest
+            )
 
-        // only call recursive function to preserve relations represented by objectids if pluginoption set.
-        if (preserveObjectIds) {
-          for (const key in item) {
-            item[key] = stringifyObjectIds(item[key])
+            node[`${mediaItemFieldKey}___NODE`] = mappingChildNode.id
+            childrenNodes.push(mappingChildNode)
+
+            delete node[mediaItemFieldKey]
           }
-        }
-
-        const node = {
-          // Data for the node.
-          ...item,
-          id: createNodeId(`${id}`),
-          mongodb_id: id,
-          parent: `__${collectionName}__`,
-          children: [],
-          internal: {
-            type: `mongodb${sanitizeName(dbName)}${sanitizeName(
-              collectionName
-            )}`,
-            content: JSON.stringify(item),
-            contentDigest: createContentDigest(item),
-          },
-        }
-        const childrenNodes = []
-        if (pluginOptions.map) {
-          let mapObj = pluginOptions.map
-          if (pluginOptions.map[collectionName]) {
-            mapObj = pluginOptions.map[collectionName]
-          }
-          // We need to map certain fields to a contenttype.
-          Object.keys(mapObj).forEach(mediaItemFieldKey => {
-            if (
-              node[mediaItemFieldKey] &&
-              (typeof mapObj[mediaItemFieldKey] === `string` ||
-                mapObj[mediaItemFieldKey] instanceof String)
-            ) {
-              const mappingChildNode = prepareMappingChildNode(
-                node,
-                mediaItemFieldKey,
-                node[mediaItemFieldKey],
-                mapObj[mediaItemFieldKey],
-                createContentDigest
-              )
-
-              node[`${mediaItemFieldKey}___NODE`] = mappingChildNode.id
-              childrenNodes.push(mappingChildNode)
-
-              delete node[mediaItemFieldKey]
-            }
-          })
-        }
-        createNode(node)
-        childrenNodes.forEach(node => {
-          createNode(node)
         })
+      }
+      createNode(node)
+      childrenNodes.forEach(node => {
+        createNode(node)
       })
-      resolve()
     })
   })
 }

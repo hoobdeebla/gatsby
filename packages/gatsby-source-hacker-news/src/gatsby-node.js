@@ -1,11 +1,5 @@
-const axios = require(`axios`)
 const url = require(`url`)
 const _ = require(`lodash`)
-
-const get = query =>
-  axios.get(
-    `https://www.graphqlhub.com/graphql?query=${encodeURIComponent(query)}`
-  )
 
 exports.createSchemaCustomization = async ({ actions }) => {
   const typeDefs = `
@@ -44,8 +38,9 @@ exports.sourceNodes = async ({
   console.log(
     `starting to fetch data from the Hacker News GraphQL API. Warning, this can take a long time e.g. 10-20 seconds`
   )
-  const result = await get(
-    `
+  const result = await fetch(
+    `https://www.graphqlhub.com/graphql?query=${encodeURIComponent(
+      `
 {
   hn {
     topStories(limit: 30) {
@@ -95,6 +90,9 @@ fragment commentsFragment on HackerNewsItem {
   }
 }
   `
+    )}`
+  ).then(async response =>
+    Object.assign(response, { data: await response.json() })
   )
   console.timeEnd(`fetch HN data`)
 

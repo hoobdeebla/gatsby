@@ -1,6 +1,6 @@
 // @flow
 
-const fs = require(`fs-extra`)
+const fs = require(`fs`)
 import { print, visit, getLocation } from "graphql"
 import { codeFrameColumns } from "@babel/code-frame"
 const { distance: levenshtein } = require(`fastest-levenshtein`)

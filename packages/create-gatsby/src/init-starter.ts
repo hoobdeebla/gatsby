@@ -1,6 +1,6 @@
 import { execSync } from "child_process"
 import execa, { Options } from "execa"
-import fs from "fs-extra"
+import fs from "fs"
 import path from "path"
 import { reporter } from "./utils/reporter"
 import { spin } from "tiny-spin"
@@ -57,7 +57,7 @@ const maybeCreateGitIgnore = async (rootPath: string): Promise<void> => {
     return
   }
 
-  await fs.writeFile(
+  await fs.promises.writeFile(
     path.join(rootPath, `.gitignore`),
     `.cache\nnode_modules\npublic\n`
   )
@@ -75,7 +75,7 @@ const createInitialGitCommit = async (rootPath: string): Promise<void> => {
   } catch {
     // Remove git support if initial commit fails
     reporter.info(`Initial git commit failed - removing git support\n`)
-    fs.removeSync(path.join(rootPath, `.git`))
+    fs.rmSync(path.join(rootPath, `.git`), { recursive: true, force: true })
   }
 }
 
@@ -84,7 +84,9 @@ const setNameInPackage = async (
   npmSafeSiteName: string
 ): Promise<void> => {
   const packageJsonPath = path.join(sitePath, `package.json`)
-  const packageJson = await fs.readJSON(packageJsonPath)
+  const packageJson = await fs.promises
+    .readFile(packageJsonPath, `utf8`)
+    .then(JSON.parse)
   packageJson.name = npmSafeSiteName
   packageJson.description = npmSafeSiteName
   delete packageJson.license
@@ -99,7 +101,10 @@ const setNameInPackage = async (
     delete packageJson.author
   }
 
-  await fs.writeJSON(packageJsonPath, packageJson, { spaces: 2 })
+  await fs.promises.writeFile(
+    packageJsonPath,
+    JSON.stringify(packageJson, null, 2)
+  )
 }
 
 // Executes `npm install` or `yarn install` in rootPath.
@@ -138,10 +143,13 @@ const install = async (
         ? [`add`, `--silent`, ...packages]
         : [`--silent`]
 
-      await fs.remove(`package-lock.json`)
+      await fs.promises.rm(`package-lock.json`, {
+        recursive: true,
+        force: true,
+      })
       await execa(`yarnpkg`, args, options)
     } else {
-      await fs.remove(`yarn.lock`)
+      await fs.promises.rm(`yarn.lock`, { recursive: true, force: true })
       await execa(`npm`, [`install`, ...npmAdditionalCliArgs], options)
       await clearLine()
 
@@ -193,9 +201,15 @@ const clone = async (
   }
 
   stop()
-  await fs.remove(path.join(rootPath, `.git`))
+  await fs.promises.rm(path.join(rootPath, `.git`), {
+    recursive: true,
+    force: true,
+  })
 
-  await fs.remove(path.join(rootPath, `LICENSE`))
+  await fs.promises.rm(path.join(rootPath, `LICENSE`), {
+    recursive: true,
+    force: true,
+  })
 }
 
 export async function gitSetup(rootPath: string): Promise<void> {

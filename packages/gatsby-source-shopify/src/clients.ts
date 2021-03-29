@@ -1,4 +1,3 @@
-import fetch, { Response } from "node-fetch"
 import { HttpError } from "./errors"
 
 const MAX_BACKOFF_MILLISECONDS = 60000

@@ -152,5 +152,5 @@ interface IGraphQLClient {
 }
 
 interface IRestClient {
-  request: (path: string) => Promise<import("node-fetch").Response>
+  request: (path: string) => Promise<Response>
 }

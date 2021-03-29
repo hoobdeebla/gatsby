@@ -23,9 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const promisify = require(`util`).promisify
-const fs = require(`fs`)
-const zlib = require(`zlib`)
+import { promisify } from "util"
+import fs from "fs"
+import zlib from "zlib"
 
 interface IExternalBuffer {
   index: number
@@ -66,11 +66,7 @@ exports.write = async function (path, data, options): Promise<void> {
     dataString = await promisify(zlib.deflate)(dataString)
   }
   // save main json file
-  await promisify(fs.writeFile)(
-    path + `.json` + zipExtension,
-    dataString,
-    `utf8`
-  )
+  await fs.promises.writeFile(path + `.json` + zipExtension, dataString, `utf8`)
 
   // save external buffers
   await Promise.all(
@@ -79,7 +75,7 @@ exports.write = async function (path, data, options): Promise<void> {
       if (options.zip) {
         buffer = await promisify(zlib.deflate)(buffer)
       }
-      await promisify(fs.writeFile)(
+      await fs.promises.writeFile(
         path + `-` + externalBuffer.index + `.bin` + zipExtension,
         buffer,
         `utf8`
@@ -97,12 +93,12 @@ exports.read = async function (path, options): Promise<string> {
   // read main json file
   let dataString
   if (options.zip) {
-    const compressedData = await promisify(fs.readFile)(
+    const compressedData = await fs.promises.readFile(
       path + `.json` + zipExtension
     )
     dataString = (await promisify(zlib.unzip)(compressedData)).toString()
   } else {
-    dataString = await promisify(fs.readFile)(
+    dataString = await fs.promises.readFile(
       path + `.json` + zipExtension,
       `utf8`
     )
@@ -148,16 +144,18 @@ exports.read = async function (path, options): Promise<string> {
   await Promise.all(
     externalBuffers.map(async function (externalBuffer) {
       if (options.zip) {
-        const bufferCompressed = await promisify(fs.readFile)(
+        const bufferCompressed = await fs.promises.readFile(
           path + `-` + +externalBuffer.index + `.bin` + zipExtension
         )
         const buffer = await promisify(zlib.unzip)(bufferCompressed)
         buffer.copy(externalBuffer.buffer)
       } else {
-        const fd = await promisify(fs.open)(
-          path + `-` + +externalBuffer.index + `.bin` + zipExtension,
-          `r`
-        )
+        const fd = (
+          await fs.promises.open(
+            path + `-` + +externalBuffer.index + `.bin` + zipExtension,
+            `r`
+          )
+        ).fd
         await promisify(fs.read)(
           fd,
           externalBuffer.buffer,
@@ -178,12 +176,12 @@ exports.delete = async function (path, options): Promise<void> {
     zipExtension = `.gz`
   }
 
-  await promisify(fs.unlink)(path + `.json` + zipExtension)
+  await fs.promises.unlink(path + `.json` + zipExtension)
 
   // delete binary files
   try {
     for (let i = 0; i < Infinity; i++) {
-      await promisify(fs.unlink)(path + `-` + i + `.bin` + zipExtension)
+      await fs.promises.unlink(path + `-` + i + `.bin` + zipExtension)
     }
   } catch (err) {
     if (err.code === `ENOENT`) {

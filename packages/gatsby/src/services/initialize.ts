@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { slash, isCI } from "gatsby-core-utils"
-import * as fs from "fs-extra"
+import fs from "fs"
 import { releaseAllMutexes } from "gatsby-core-utils/mutex"
 import { md5, md5File } from "gatsby-core-utils"
 import path from "path"
@@ -286,7 +286,9 @@ export async function initialize({
         cwd: program.directory,
       }
     )
-    await Promise.all(files.map(file => fs.remove(file)))
+    await Promise.all(
+      files.map(file => fs.promises.rm(file, { recursive: true, force: true }))
+    )
     activity.end()
   }
 
@@ -300,9 +302,7 @@ export async function initialize({
       }
     )
     activity.start()
-    await fs
-      .remove(workerCacheDirectory)
-      .catch(() => fs.emptyDir(workerCacheDirectory))
+    await fs.promises.rm(workerCacheDirectory, { recursive: true, force: true })
     activity.end()
   }
 
@@ -443,7 +443,11 @@ export async function initialize({
         cwd: program.directory,
       })
 
-      await Promise.all(files.map(file => fs.remove(file)))
+      await Promise.all(
+        files.map(file =>
+          fs.promises.rm(file, { recursive: true, force: true })
+        )
+      )
     } catch (e) {
       reporter.error(`Failed to remove .cache files.`, e)
     }
@@ -466,10 +470,10 @@ export async function initialize({
 
   // Now that we know the .cache directory is safe, initialize the cache
   // directory.
-  await fs.ensureDir(cacheDirectory)
+  await fs.promises.mkdir(cacheDirectory, { recursive: true })
 
   // Ensure the public/static directory
-  await fs.ensureDir(`${publicDirectory}/static`)
+  await fs.promises.mkdir(`${publicDirectory}/static`, { recursive: true })
 
   // Init plugins once cache is initialized
   await apiRunnerNode(`onPluginInit`, {
@@ -488,15 +492,19 @@ export async function initialize({
   const siteDir = cacheDirectory
 
   try {
-    await fs.copy(srcDir, siteDir, {
-      overwrite: true,
+    await fs.promises.cp(srcDir, siteDir, { recursive: true })
+    await fs.promises.mkdir(`${cacheDirectory}/${lmdbCacheDirectoryName}`, {
+      recursive: true,
     })
-    await fs.ensureDir(`${cacheDirectory}/${lmdbCacheDirectoryName}`)
 
     // Ensure .cache/fragments exists and is empty. We want fragments to be
     // added on every run in response to data as fragments can only be added if
     // the data used to create the schema they're dependent on is available.
-    await fs.emptyDir(`${cacheDirectory}/fragments`)
+    await fs.promises.rm(`${cacheDirectory}/fragments`, {
+      recursive: true,
+      force: true,
+    })
+    await fs.promises.mkdir(`${cacheDirectory}/fragments`, { recursive: true })
   } catch (err) {
     reporter.panic(`Unable to copy site files to .cache`, err)
   }

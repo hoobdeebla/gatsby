@@ -1,6 +1,5 @@
 import url from "url"
 
-import type { Headers } from "got"
 import type { Store } from "gatsby"
 
 let loggedWarning = false

@@ -1,8 +1,6 @@
-/* @flow */
+import fs from "fs/promises"
 
-const fs = require(`fs-extra`)
-
-const apiRunnerNode = require(`../../utils/api-runner-node`)
+import apiRunnerNode from "../../utils/api-runner-node"
 import { withBasePath } from "../../utils/path"
 
 exports.onPreBootstrap = async ({ store, parentSpan }) => {

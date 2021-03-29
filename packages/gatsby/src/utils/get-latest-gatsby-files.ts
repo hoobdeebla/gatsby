@@ -1,6 +1,5 @@
 import path from "path"
-import * as fs from "fs-extra"
-import axios from "axios"
+import fs from "fs/promises"
 import { IAdapterManifestEntry } from "./adapter/types"
 import { preferDefault } from "../bootstrap/prefer-default"
 
@@ -26,9 +25,11 @@ export interface IAPIResponse {
 
 const _fetchFile = async (root: string, fileName: string): Promise<any> => {
   try {
-    const { data } = await axios.get(`${root}${fileName}`, {
-      timeout: 5000,
-    })
+    const { data } = await fetch(`${root}${fileName}`, {
+      signal: AbortSignal.timeout(5000),
+    }).then(async response =>
+      Object.assign(response, { data: await response.json() })
+    )
     return data
   } catch (e) {
     return null
@@ -71,13 +72,22 @@ const _getFile = async <T>({
     fileToUse = outputFileName
   } else {
     // if file was previously cached, use it
-    if (await fs.pathExists(outputFileName)) {
+    if (
+      // inline fse.pathExists()
+      await fs.access(outputFileName).then(
+        () => true,
+        () => false
+      )
+    ) {
       fileToUse = outputFileName
     }
   }
 
   if (fileToUse.endsWith(`.json`)) {
-    return fs.readJSON(fileToUse).catch(() => defaultReturn)
+    return await fs
+      .readFile(fileToUse, `utf8`)
+      .then(JSON.parse)
+      .catch(() => defaultReturn)
   } else {
     try {
       const importedFile = await import(fileToUse)

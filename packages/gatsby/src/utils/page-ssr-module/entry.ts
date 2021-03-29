@@ -18,8 +18,8 @@ import type { Request } from "express"
 import type { Span, SpanContext } from "opentracing"
 
 // actual imports
-import * as path from "path"
-import * as fs from "fs-extra"
+import path from "path"
+import fs from "fs/promises"
 import {
   constructPageDataString,
   getPagePathFromPageDataPath,

@@ -72,7 +72,7 @@ const noAnonymousExports: Rule.RuleModule = {
           })
         }
       },
-    }
+    } as Rule.RuleListener
   },
 }
 

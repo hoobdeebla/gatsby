@@ -8,7 +8,7 @@ import execall from "execall"
 import cheerio from "cheerio"
 import url from "url"
 import path from "path"
-import fs from "fs-extra"
+import fs from "fs"
 import { supportedExtensions } from "gatsby-transformer-sharp/supported-extensions"
 import replaceAll from "replaceall"
 import { usingGatsbyV4OrGreater } from "~/utils/gatsby-version"
@@ -396,19 +396,17 @@ const copyFileToStaticAndReturnUrlPath = async (fileNode, helpers) => {
   const publicPath = getFileNodePublicPath(fileNode)
 
   if (!fs.existsSync(publicPath)) {
-    await fs.copy(
-      fileNode.absolutePath,
-      publicPath,
-      { dereference: true },
-      err => {
-        if (err) {
-          console.error(
-            `error copying file from ${fileNode.absolutePath} to ${publicPath}`,
-            err
-          )
-        }
-      }
-    )
+    await fs.promises
+      .cp(fileNode.absolutePath, publicPath, {
+        recursive: true,
+        dereference: true,
+      })
+      .catch(err => {
+        console.error(
+          `error copying file from ${fileNode.absolutePath} to ${publicPath}`,
+          err
+        )
+      })
   }
 
   const fileName = getFileNodeRelativePathname(fileNode)

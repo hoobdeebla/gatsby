@@ -1,5 +1,5 @@
-import * as fs from "fs-extra"
-import { join } from "path"
+import fs from "fs/promises"
+import { join, dirname } from "path"
 import { codegen } from "@graphql-codegen/core"
 import { GraphQLSchema, Kind } from "graphql"
 import type { Types } from "@graphql-codegen/plugin-helpers"
@@ -166,5 +166,6 @@ export async function writeTypeScriptTypes(
     ...codegenOptions,
   })
 
-  await fs.outputFile(filename, result)
+  await fs.mkdir(dirname(filename), { recursive: true })
+  await fs.writeFile(filename, result)
 }

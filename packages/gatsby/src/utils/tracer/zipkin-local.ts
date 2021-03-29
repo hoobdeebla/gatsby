@@ -1,7 +1,6 @@
 import zipkin from "zipkin"
 import { HttpLogger } from "zipkin-transport-http"
 import ZipkinTracer from "zipkin-javascript-opentracing"
-import fetch from "node-fetch"
 import { ZipkinBatchRecorder, ZipkinHttpLogger } from "./zipkin-types"
 
 let logger: ZipkinHttpLogger
@@ -53,7 +52,7 @@ const _processQueue = async (): Promise<void> => {
         method: `POST`,
         body: postBody,
         headers: logger.headers,
-        timeout: logger.timeout,
+        signal: AbortSignal.timeout(logger.timeout),
       })
 
       if (response.status !== 202) {

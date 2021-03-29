@@ -1,12 +1,11 @@
 import type { GatsbyFunctionResponse, GatsbyFunctionRequest } from "gatsby"
-import * as path from "path"
-import * as fs from "fs-extra"
+import path from "path"
+import fs from "fs"
 import { get as httpsGet } from "https"
 import { get as httpGet, IncomingMessage, ClientRequest } from "http"
 import { tmpdir } from "os"
-import { pipeline } from "stream"
+import { pipeline as streamPipeline } from "stream/promises"
 import { URL } from "url"
-import { promisify } from "util"
 
 import type { ISSRData, EnginePage } from "./entry"
 import { link, rewritableMethods as linkRewritableMethods } from "linkfs"
@@ -195,7 +194,9 @@ function setupFsWrapper(): string {
       }
       console.log(`Start copying ${dir}`)
 
-      fs.copySync(path.join(cacheDir, dir), path.join(TEMP_CACHE_DIR, dir))
+      fs.cpSync(path.join(cacheDir, dir), path.join(TEMP_CACHE_DIR, dir), {
+        recursive: true,
+      })
       console.log(`End copying ${dir}`)
     }
 
@@ -237,8 +238,6 @@ const { GraphQLEngine } =
 const { getData, renderPageData, renderHTML, findEnginePageByPath } =
   require(`./index`) as typeof import("./entry")
 
-const streamPipeline = promisify(pipeline)
-
 function get(
   url: string,
   callback?: (res: IncomingMessage) => void
@@ -264,7 +263,7 @@ async function downloadDatastoreFromCDN(origin: string): Promise<void> {
     `Downloading datastore from CDN (${cdnDatastore} -> ${downloadPath})`
   )
 
-  await fs.ensureDir(dbPath)
+  await fs.promises.mkdir(dbPath, { recursive: true })
   await new Promise((resolve, reject) => {
     const req = get(cdnDatastore, response => {
       if (

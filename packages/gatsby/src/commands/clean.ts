@@ -1,4 +1,4 @@
-import fs from "fs-extra"
+import fs from "fs/promises"
 import path from "path"
 import { cache as findCacheDir } from "empathic/package"
 
@@ -18,13 +18,15 @@ module.exports = async function clean(program: IProgram): Promise<void> {
     `public`,
     // Ensure we clean babel loader cache
     findCacheDir(`babel-loader`),
-    findCacheDir(`terser-webpack-plugin`),
+    findCacheDir(`minimizer-webpack-plugin`),
   ].filter(Boolean)
 
   report.info(`Deleting ${directories.join(`, `)}`)
 
   await Promise.all(
-    directories.map(dir => fs.remove(path.join(directory, dir)))
+    directories.map(dir =>
+      fs.rm(path.join(directory, dir!), { recursive: true, force: true })
+    )
   )
 
   report.info(`Successfully deleted directories`)

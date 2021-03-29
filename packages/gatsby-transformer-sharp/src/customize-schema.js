@@ -18,7 +18,7 @@ const {
 const { hasFeature } = require(`gatsby-plugin-utils`)
 
 const sharp = require(`./safe-sharp`)
-const fs = require(`fs-extra`)
+const fs = require(`fs`)
 const imageSize = require(`probe-image-size`)
 const path = require(`path`)
 
@@ -97,38 +97,36 @@ const fixedNodeType = ({
         srcSet: { type: new GraphQLNonNull(GraphQLString) },
         srcWebp: {
           type: GraphQLString,
-          resolve: ({ file, image, fieldArgs }) => {
+          resolve: async ({ file, image, fieldArgs }) => {
             // If the file is already in webp format or should explicitly
             // be converted to webp, we do not create additional webp files
             if (file.extension === `webp` || fieldArgs.toFormat === `webp`) {
               return null
             }
             const args = { ...fieldArgs, pathPrefix, toFormat: `webp` }
-            return Promise.resolve(
-              fixed({
-                file,
-                args,
-                reporter,
-                cache,
-              })
-            ).then(({ src }) => src)
+            const { src } = await fixed({
+              file,
+              args,
+              reporter,
+              cache,
+            })
+            return src
           },
         },
         srcSetWebp: {
           type: GraphQLString,
-          resolve: ({ file, image, fieldArgs }) => {
+          resolve: async ({ file, image, fieldArgs }) => {
             if (file.extension === `webp` || fieldArgs.toFormat === `webp`) {
               return null
             }
             const args = { ...fieldArgs, pathPrefix, toFormat: `webp` }
-            return Promise.resolve(
-              fixed({
-                file,
-                args,
-                reporter,
-                cache,
-              })
-            ).then(({ srcSet }) => srcSet)
+            const { srcSet } = await fixed({
+              file,
+              args,
+              reporter,
+              cache,
+            })
+            return srcSet
           },
         },
         originalName: { type: GraphQLString },
@@ -205,24 +203,21 @@ const fixedNodeType = ({
         defaultValue: false,
       },
     },
-    resolve: (image, fieldArgs, context) => {
+    resolve: async (image, fieldArgs, context) => {
       warnForDeprecation()
       const file = getNodeAndSavePathDependency(image.parent, context.path)
       const args = { ...fieldArgs, pathPrefix }
-      return Promise.resolve(
-        fixed({
-          file,
-          args,
-          reporter,
-          cache,
-        })
-      ).then(o =>
-        Object.assign({}, o, {
-          fieldArgs: args,
-          image,
-          file,
-        })
-      )
+      const o = await fixed({
+        file,
+        args,
+        reporter,
+        cache,
+      })
+      return Object.assign({}, o, {
+        fieldArgs: args,
+        image,
+        file,
+      })
     },
   }
 }
@@ -257,36 +252,34 @@ const fluidNodeType = ({
         srcSet: { type: new GraphQLNonNull(GraphQLString) },
         srcWebp: {
           type: GraphQLString,
-          resolve: ({ file, image, fieldArgs }) => {
+          resolve: async ({ file, image, fieldArgs }) => {
             if (image.extension === `webp` || fieldArgs.toFormat === `webp`) {
               return null
             }
             const args = { ...fieldArgs, pathPrefix, toFormat: `webp` }
-            return Promise.resolve(
-              fluid({
-                file,
-                args,
-                reporter,
-                cache,
-              })
-            ).then(({ src }) => src)
+            const { src } = await fluid({
+              file,
+              args,
+              reporter,
+              cache,
+            })
+            return src
           },
         },
         srcSetWebp: {
           type: GraphQLString,
-          resolve: ({ file, image, fieldArgs }) => {
+          resolve: async ({ file, image, fieldArgs }) => {
             if (image.extension === `webp` || fieldArgs.toFormat === `webp`) {
               return null
             }
             const args = { ...fieldArgs, pathPrefix, toFormat: `webp` }
-            return Promise.resolve(
-              fluid({
-                file,
-                args,
-                reporter,
-                cache,
-              })
-            ).then(({ srcSet }) => srcSet)
+            const { srcSet } = await fluid({
+              file,
+              args,
+              reporter,
+              cache,
+            })
+            return srcSet
           },
         },
         sizes: { type: new GraphQLNonNull(GraphQLString) },
@@ -376,24 +369,21 @@ const fluidNodeType = ({
         description: `A list of image widths to be generated. Example: [ 200, 340, 520, 890 ]`,
       },
     },
-    resolve: (image, fieldArgs, context) => {
+    resolve: async (image, fieldArgs, context) => {
       warnForDeprecation()
       const file = getNodeAndSavePathDependency(image.parent, context.path)
       const args = { ...fieldArgs, pathPrefix }
-      return Promise.resolve(
-        fluid({
-          file,
-          args,
-          reporter,
-          cache,
-        })
-      ).then(o =>
-        Object.assign({}, o, {
-          fieldArgs: args,
-          image,
-          file,
-        })
-      )
+      const o = await fluid({
+        file,
+        args,
+        reporter,
+        cache,
+      })
+      return Object.assign({}, o, {
+        fieldArgs: args,
+        image,
+        file,
+      })
     },
   }
 }
@@ -553,7 +543,7 @@ const imageNodeType = ({
 
 /**
  * Keeps track of asynchronous file copy to prevent sequence errors in the
- * underlying fs-extra module during parallel copies of the same file
+ * underlying fs module during parallel copies of the same file
  */
 const inProgressCopy = new Set()
 
@@ -607,26 +597,25 @@ const createFields = ({
           // keep track of in progress copy, we should rely on `existsSync` but
           // a race condition exists between the exists check and the copy
           inProgressCopy.add(publicPath)
-          fs.copy(
-            details.absolutePath,
-            publicPath,
-            { dereference: true },
-            err => {
-              // this is no longer in progress
+          fs.promises
+            .cp(details.absolutePath, publicPath, {
+              recursive: true,
+              dereference: true,
+            })
+            .catch(err => {
+              // this is no longer in process
               inProgressCopy.delete(publicPath)
-              if (err) {
-                reporter.panic(
-                  {
-                    id: prefixId(CODES.MissingResource),
-                    context: {
-                      sourceMessage: `error copying file from ${details.absolutePath} to ${publicPath}`,
-                    },
+              reporter.panic(
+                {
+                  id: prefixId(CODES.MissingResource),
+                  context: {
+                    sourceMessage: `error copying file from ${details.absolutePath} to ${publicPath}`,
                   },
-                  err
-                )
-              }
-            }
-          )
+                },
+                err
+              )
+            })
+            .then(inProgressCopy.delete(publicPath))
         }
 
         return {

@@ -1,4 +1,4 @@
-import { partytownSnippet } from "@builder.io/partytown/integration"
+import { partytownSnippet } from "@qwik.dev/partytown/integration"
 import { ScriptProps } from "gatsby-script"
 import { getForwards } from "./get-forwards"
 

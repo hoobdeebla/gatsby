@@ -1,5 +1,5 @@
 import path from "path"
-import { copyLibFiles } from "@builder.io/partytown/utils"
+import { copyLibFiles } from "@qwik.dev/partytown/utils"
 import { CreateDevServerArgs } from "gatsby"
 import { thirdPartyProxyPath, partytownProxy } from "./proxy"
 

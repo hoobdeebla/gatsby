@@ -1,7 +1,7 @@
 import type { IFunctionDefinition } from "gatsby"
 import packageJson from "gatsby-adapter-netlify/package.json"
-import fs from "fs-extra"
-import * as path from "path"
+import fs from "fs/promises"
+import path from "path"
 import { slash } from "gatsby-core-utils/path"
 
 interface INetlifyFunctionConfig {
@@ -45,7 +45,7 @@ export async function prepareFunction(
     functionId
   )
 
-  await fs.ensureDir(internalFunctionsDir)
+  await fs.mkdir(internalFunctionsDir, { recursive: true })
 
   // This is a temporary hacky approach, eventually it should be just `fun.name`
   const displayName = isODB
@@ -67,9 +67,9 @@ export async function prepareFunction(
     version: 1,
   }
 
-  await fs.writeJSON(
+  await fs.writeFile(
     path.join(internalFunctionsDir, `${functionId}.json`),
-    functionManifest
+    JSON.stringify(functionManifest)
   )
 
   function getRelativePathToModule(modulePath: string): string {

@@ -20,7 +20,7 @@ type Types =
 
 type BasicType = boolean | number | string | any[] | object | null
 
-type LanguageMessages = Record<string, string>
+type LanguageMessages = Record<string, string | Record<string, string>>
 
 type PresenceMode = "optional" | "required" | "forbidden"
 

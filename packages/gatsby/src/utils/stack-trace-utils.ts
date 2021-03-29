@@ -9,7 +9,7 @@ import {
   sourceContentFor,
 } from "@jridgewell/trace-mapping"
 
-const fs = require(`fs-extra`)
+const fs = require(`fs`)
 const path = require(`path`)
 const chalk = require(`chalk`)
 const { isNodeInternalModulePath } = require(`gatsby-core-utils`)

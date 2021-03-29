@@ -1,7 +1,7 @@
 const chokidar = require(`chokidar`)
 const _ = require(`lodash`)
 const del = require(`del`)
-const fs = require(`fs-extra`)
+const fs = require(`fs`)
 const path = require(`path`)
 const findWorkspaceRoot = require(`find-yarn-workspace-root`)
 
@@ -53,13 +53,13 @@ async function watch(
   let afterPackageInstallation = false
   let queuedCopies = []
 
-  const realCopyPath = arg => {
-    const { oldPath, newPath, quiet, resolve, reject, retry = 0 } = arg
-    fs.copy(oldPath, newPath, err => {
-      if (err) {
+  const realCopyPath = async arg => {
+    const { oldPath, newPath, quiet, retry = 0 } = arg
+    await fs.promises
+      .cp(oldPath, newPath, { recursive: true })
+      .catch(err => {
         if (retry >= MAX_COPY_RETRIES) {
           console.error(err)
-          reject(err)
           return
         } else {
           setTimeout(
@@ -68,38 +68,36 @@ async function watch(
           )
           return
         }
-      }
+      })
+      .then(() => {
+        // When the gatsby binary is copied over, it is not setup with the executable
+        // permissions that it is given when installed via yarn.
+        // This fixes the issue where after running gatsby-dev, running `yarn gatsby develop`
+        // fails with a permission issue.
+        // @fixes https://github.com/gatsbyjs/gatsby/issues/18809
+        // Binary files we target:
+        // - gatsby/bin/gatsby.js
+        //  -gatsby/cli.js
+        //  -gatsby-cli/cli.js
+        if (/(bin\/gatsby.js|gatsby(-cli)?\/cli.js)$/.test(newPath)) {
+          fs.chmodSync(newPath, `0755`)
+        }
 
-      // When the gatsby binary is copied over, it is not setup with the executable
-      // permissions that it is given when installed via yarn.
-      // This fixes the issue where after running gatsby-dev, running `yarn gatsby develop`
-      // fails with a permission issue.
-      // @fixes https://github.com/gatsbyjs/gatsby/issues/18809
-      // Binary files we target:
-      // - gatsby/bin/gatsby.js
-      //  -gatsby/cli.js
-      //  -gatsby-cli/cli.js
-      if (/(bin\/gatsby.js|gatsby(-cli)?\/cli.js)$/.test(newPath)) {
-        fs.chmodSync(newPath, `0755`)
-      }
-
-      numCopied += 1
-      if (!quiet) {
-        console.log(`Copied ${oldPath} to ${newPath}`)
-      }
-      resolve()
-    })
+        numCopied += 1
+        if (!quiet) {
+          console.log(`Copied ${oldPath} to ${newPath}`)
+        }
+      })
   }
 
-  const copyPath = (oldPath, newPath, quiet, packageName) =>
-    new Promise((resolve, reject) => {
-      const argObj = { oldPath, newPath, quiet, packageName, resolve, reject }
-      if (afterPackageInstallation) {
-        realCopyPath(argObj)
-      } else {
-        queuedCopies.push(argObj)
-      }
-    })
+  const copyPath = async (oldPath, newPath, quiet, packageName) => {
+    const argObj = { oldPath, newPath, quiet, packageName }
+    if (afterPackageInstallation) {
+      await realCopyPath(argObj)
+    } else {
+      queuedCopies.push(argObj)
+    }
+  }
 
   const runQueuedCopies = () => {
     afterPackageInstallation = true

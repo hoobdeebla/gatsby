@@ -1,13 +1,10 @@
-import fs from "fs-extra"
+import fs from "fs/promises"
 import { prepareFunction } from "../lambda-handler"
 import { join, relative } from "path"
 import { slash } from "gatsby-core-utils/path"
 
 const writeFileSpy = jest
   .spyOn(fs, `writeFile`)
-  .mockImplementation(async () => {})
-const writeJsonSpy = jest
-  .spyOn(fs, `writeJSON`)
   .mockImplementation(async () => {})
 
 const fixturePath = join(
@@ -31,7 +28,7 @@ test(`produced handler is correct`, async () => {
   // require paths should not have backward slashes (win paths)
   expect(handlerCode).not.toMatch(/require\(["'][^"']*\\[^"']*["']\)/)
 
-  expect(writeJsonSpy).toBeCalledWith(
+  expect(writeFileSpy).toBeCalledWith(
     expect.any(String),
     expect.objectContaining({
       config: expect.objectContaining({

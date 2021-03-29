@@ -4,7 +4,7 @@ import tmp from "tmp"
 import { ChildProcess } from "child_process"
 import execa from "execa"
 import { detectPortInUseAndPrompt } from "../utils/detect-port-in-use-and-prompt"
-import fs from "fs-extra"
+import fs from "fs"
 import onExit from "signal-exit"
 import { slash } from "gatsby-core-utils/path"
 import reporter from "gatsby-cli/lib/reporter"
@@ -58,11 +58,12 @@ class ControllableScript {
     const args: Array<string> = []
 
     const dotCachePath = path.join(process.cwd(), `.cache`)
-    fs.mkdirpSync(dotCachePath)
+    fs.mkdirSync(dotCachePath, { recursive: true })
     const tmpFileName = tmp.tmpNameSync({
       tmpdir: dotCachePath,
     })
-    fs.outputFileSync(tmpFileName, this.script)
+    fs.mkdirSync(path.dirname(tmpFileName), { recursive: true })
+    fs.writeFileSync(tmpFileName, this.script)
     this.isRunning = true
     // Passing --inspect isn't necessary for the child process to launch a port but it allows some editors to automatically attach
     if (this.debugInfo) {

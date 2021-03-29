@@ -15,7 +15,7 @@
  * (asserting correctness of this is not part of this test suite).
  *
  * Mocked systems:
- *  - fs-extra (to not write query results to filesystem when LMDB_STORE is not enabled)
+ *  - fs (to not write query results to filesystem when LMDB_STORE is not enabled)
  *  - cache-lmdb (to not write query results to lmdb when LMDB_STORE is enabled)
  *  - reporter (to not spam output of test runner)
  *  - api-runner-node (to be able to dynamically adjust `sourceNodes` and `createPage` API hooks)
@@ -26,12 +26,13 @@
  *     - this test might need extra maintenance when gatsby internals are being changed,
  *     - it might report false positives in unforeseen scenarios after internal changes.
  */
-
-jest.mock(`fs-extra`, () => {
+jest.mock(`fs`, () => {
   return {
-    outputFile: jest.fn(),
-    ensureDir: jest.fn(),
-    readFileSync: jest.fn(() => `foo`), // createPage action reads the page template file trying to find `getServerData`
+    promises: {
+      writeFile: jest.fn(),
+      mkdir: jest.fn(),
+    },
+    readFileSync: jest.fn(() => `foo`), // createPage action reads the page template file trying to find `getServerData`,
   }
 })
 

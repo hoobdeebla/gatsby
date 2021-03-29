@@ -14,7 +14,7 @@ import { join as pathJoin } from "path"
 let MOCK_FILE_INFO = {}
 let MOCK_LMDBCACHE_INFO = {}
 
-jest.mock(`fs-extra`, () => {
+jest.mock(`fs/promises`, () => {
   return {
     readFile: jest.fn(async (path: string): Promise<any> => {
       if (MOCK_FILE_INFO[path]) {
@@ -22,13 +22,7 @@ jest.mock(`fs-extra`, () => {
       }
       throw new Error(`Cannot read file "${path}"`)
     }),
-    readJSON: jest.fn(async (path: string): Promise<any> => {
-      if (MOCK_FILE_INFO[path]) {
-        return JSON.parse(MOCK_FILE_INFO[path])
-      }
-      throw new Error(`Cannot read file "${path}"`)
-    }),
-    outputFile: jest.fn(async (path: string, content: string): Promise<any> => {
+    writeFile: jest.fn(async (path: string, content: string): Promise<any> => {
       MOCK_FILE_INFO[path] = content
     }),
   }

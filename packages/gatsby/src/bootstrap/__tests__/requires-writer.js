@@ -25,15 +25,17 @@ jest.mock(`../../utils/page-mode`, () => {
   }
 })
 
-jest.mock(`fs-extra`, () => {
+jest.mock(`fs/promises`, () => {
   return {
     writeFile: () => Promise.resolve(),
-    outputFileSync: () => {},
-    move: () => {},
+    rename: () => {},
   }
 })
+jest.mock(`fs`, () => {
+  return { writeFileSync: () => {} }
+})
 
-const mockFsExtra = require(`fs-extra`)
+const mockFsp = require(`fs/promises`)
 
 describe(`requires-writer`, () => {
   const program = {
@@ -68,7 +70,7 @@ describe(`requires-writer`, () => {
         },
       ])
 
-      const spy = jest.spyOn(mockFsExtra, `writeFile`)
+      const spy = jest.spyOn(mockFsp, `writeFile`)
       await requiresWriter.writeAll({
         pages,
         program,
@@ -87,7 +89,7 @@ describe(`requires-writer`, () => {
     let matchPaths = []
 
     beforeEach(() => {
-      mockFsExtra.writeFile.mockImplementation((file, buffer) => {
+      mockFsp.writeFile.mockImplementation((file, buffer) => {
         if (file.includes(`match-paths.json`)) {
           matchPaths = JSON.parse(String(buffer))
         }

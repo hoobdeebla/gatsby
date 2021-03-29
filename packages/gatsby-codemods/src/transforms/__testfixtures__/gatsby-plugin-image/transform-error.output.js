@@ -8,11 +8,10 @@ import ChameleonPortrait from "../img/portrait.jpg"
 export default function Home() {
   return (
     <div>
-      <h1>Testing images</h1>
-      These landscape and portrait images are used in addition to pngs of
-      varying dimensions. The chameleon images make it easier to see where
-      images are getting cropped.
-      <div style={{ display: `flex`, flexDirection: `row` }}>
+      <h1>Testing images</h1>These landscape and portrait images are used in addition to pngs of
+            varying dimensions. The chameleon images make it easier to see where
+            images are getting cropped.
+            <div style={{ display: `flex`, flexDirection: `row` }}>
         <GatsbyImage image={data.file.childImageSharp.gatsbyImageData} alt="headshot" />
         <img alt="Chameleon" height={200} src={ChameleonLandscape} />
         <img alt="Chameleon" height={200} src={ChameleonPortrait} />

@@ -1,4 +1,4 @@
-import fs from "fs-extra"
+import fs from "fs"
 import path from "path"
 import { platform } from "os"
 import reporter from "gatsby-cli/lib/reporter"
@@ -24,10 +24,10 @@ const checkAndRemoveEmptyDir = (publicDir: string, pagePath: string): void => {
   )
   // if page's folder is empty also remove matching page-data folder
   if (checkFolderIsEmpty(pageHtmlDirectory)) {
-    fs.removeSync(pageHtmlDirectory)
+    fs.rmSync(pageHtmlDirectory)
   }
   if (checkFolderIsEmpty(pageDataDirectory)) {
-    fs.removeSync(pageDataDirectory)
+    fs.rmSync(pageDataDirectory)
   }
 }
 
