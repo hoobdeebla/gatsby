@@ -1,4 +1,3 @@
-const _ = require(`lodash`)
 const babylon = require(`@babel/parser`)
 const traverse = require(`@babel/traverse`).default
 
@@ -92,8 +91,7 @@ async function onCreateNode({
       ExportNamedDeclaration: function ExportNamedDeclaration(astPath) {
         const { declaration } = astPath.node
         if (declaration && declaration.type === `VariableDeclaration`) {
-          const dataVariableDeclarator = _.find(
-            declaration.declarations,
+          const dataVariableDeclarator = declaration.declarations.find(
             d => d.id.name === `data`
           )
 

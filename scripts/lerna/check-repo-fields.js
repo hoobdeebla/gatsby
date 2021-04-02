@@ -3,7 +3,6 @@ const path = require(`path`)
 const fs = require(`fs`)
 const { getPackages } = require(`@lerna/project`)
 const yargs = require(`yargs`)
-const _ = require(`lodash`)
 
 const GIT_REPO_URL = `https://github.com/gatsbyjs/gatsby`
 const MAIN_PKG_NAME = `gatsby`
@@ -79,7 +78,7 @@ async function main() {
           )
         })
       } else {
-        if (!_.isEqual(pkg.toJSON(), pkgJson)) {
+        if (pkg.toJSON().value !== pkgJson.value) {
           warned = true
           console.error(
             `[${pkg.name}]` +
