@@ -1,7 +1,6 @@
 const cheerio = require(`cheerio`)
 const path = require(`path`)
 const fs = require(`fs`)
-const _ = require(`lodash`)
 
 module.exports = (htmlPath, pathPrefix) => {
   // load index.html to pull scripts/links necessary for proper offline reload
@@ -51,5 +50,7 @@ module.exports = (htmlPath, pathPrefix) => {
   // Remove the custom prefix (if any) so Workbox can find the files.
   // This is added back at runtime (see modifyUrlPrefix in gatsby-node.js) in
   // order to serve from the correct location.
-  return _.uniq(criticalFilePaths).map(url => url.slice(pathPrefix.length))
+  return Array.from(new Set(criticalFilePaths)).map(url =>
+    url.slice(pathPrefix.length)
+  )
 }

@@ -1,4 +1,4 @@
-const _ = require(`lodash`)
+const isEmpty = require(`lodash/isEmpty`)
 const babylon = require(`@babel/parser`)
 const traverse = require(`@babel/traverse`).default
 
@@ -37,7 +37,7 @@ async function onCreateNode({
       `functionBind`,
       `functionSent`,
       `dynamicImport`,
-      _.includes([`ts`, `tsx`], node.extension) ? `typescript` : `flow`,
+      [`ts`, `tsx`].includes(node.extension) ? `typescript` : `flow`,
     ],
   }
 
@@ -84,8 +84,7 @@ async function onCreateNode({
       ExportNamedDeclaration: function ExportNamedDeclaration(astPath) {
         const { declaration } = astPath.node
         if (declaration && declaration.type === `VariableDeclaration`) {
-          const dataVariableDeclarator = _.find(
-            declaration.declarations,
+          const dataVariableDeclarator = declaration.declarations.find(
             d => d.id.name === `frontmatter`
           )
 
@@ -108,7 +107,7 @@ async function onCreateNode({
     }
   } finally {
     // only create node if frontmatter is not empty
-    if (!_.isEmpty(frontmatter)) {
+    if (!isEmpty(frontmatter)) {
       exportsData = {
         ...frontmatter,
         error: error,

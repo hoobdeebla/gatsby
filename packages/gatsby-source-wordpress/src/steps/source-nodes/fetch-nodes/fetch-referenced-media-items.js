@@ -8,7 +8,6 @@ import { paginatedWpNodeFetch, normalizeNode } from "./fetch-nodes-paginated"
 import { buildTypeName } from "~/steps/create-schema-customization/helpers"
 import fetchGraphql from "~/utils/fetch-graphql"
 import { getFileNodeMetaBySourceUrl } from "~/steps/source-nodes/create-nodes/create-local-file-node"
-import uniq from "lodash/uniq"
 import urlUtil from "url"
 import path from "path"
 import { getPluginOptions } from "~/utils/get-gatsby-api"
@@ -290,25 +289,27 @@ const createScaledImageUrl = url => {
 // size url would have 500x1000 in it, and removing it would make it so we can never
 // fetch this image node.
 const processAndDedupeImageUrls = urls =>
-  uniq(
-    urls.reduce((accumulator, url) => {
-      const scaledUrl = createScaledImageUrl(url)
-      accumulator.push(scaledUrl)
+  Array.from(
+    new Set(
+      urls.reduce((accumulator, url) => {
+        const scaledUrl = createScaledImageUrl(url)
+        accumulator.push(scaledUrl)
 
-      const strippedUrl = stripImageSizesFromUrl(url)
+        const strippedUrl = stripImageSizesFromUrl(url)
 
-      // if the url had no image sizes, don't do anything special
-      if (strippedUrl === url) {
+        // if the url had no image sizes, don't do anything special
+        if (strippedUrl === url) {
+          return accumulator
+        }
+
+        accumulator.push(strippedUrl)
+
+        const scaledStrippedUrl = createScaledImageUrl(strippedUrl)
+        accumulator.push(scaledStrippedUrl)
+
         return accumulator
-      }
-
-      accumulator.push(strippedUrl)
-
-      const scaledStrippedUrl = createScaledImageUrl(strippedUrl)
-      accumulator.push(scaledStrippedUrl)
-
-      return accumulator
-    }, urls)
+      }, urls)
+    )
   )
 
 export const fetchMediaItemsBySourceUrl = async ({

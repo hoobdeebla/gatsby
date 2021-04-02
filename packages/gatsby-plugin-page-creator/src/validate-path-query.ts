@@ -1,4 +1,3 @@
-import _ from "lodash"
 import systemPath from "path"
 
 export function validatePathQuery(
@@ -33,8 +32,8 @@ Please change this to: "${filePath.replace(/index$/, ``)}"`
 
   const absolutePath = systemPath.join(process.cwd(), `src/pages`, filePath)
 
-  const file = _.flatten(
-    extensions.map(ext =>
+  const file = extensions
+    .flatMap(ext =>
       [``, `${systemPath.sep}index`].map(index => {
         try {
           return require.resolve(absolutePath + index + ext)
@@ -43,7 +42,7 @@ Please change this to: "${filePath.replace(/index$/, ``)}"`
         }
       })
     )
-  ).filter(Boolean) as Array<string>
+    .filter(Boolean) as Array<string>
 
   if (file.length === 0 || file[0].length === 0) {
     throw new Error(

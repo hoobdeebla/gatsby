@@ -1,4 +1,4 @@
-const _ = require(`lodash`)
+const { camelCase, isPlainObject, upperFirst } = require(`lodash`)
 const path = require(`path`)
 const HJSON = require(`hjson`)
 
@@ -40,21 +40,21 @@ async function onCreateNode({
   const content = await loadNodeContent(node)
   const parsedContent = HJSON.parse(content)
 
-  if (_.isArray(parsedContent)) {
+  if (Array.isArray(parsedContent)) {
     parsedContent.forEach((obj, i) => {
       transformObject(
         obj,
         obj.id ? obj.id : createNodeId(`${node.id} [${i}] >>> HJSON`),
-        _.upperFirst(_.camelCase(`${node.name} HJson`))
+        upperFirst(camelCase(`${node.name} HJson`))
       )
     })
-  } else if (_.isPlainObject(parsedContent)) {
+  } else if (isPlainObject(parsedContent)) {
     transformObject(
       parsedContent,
       parsedContent.id
         ? parsedContent.id
         : createNodeId(`${node.id} >>> HJSON`),
-      _.upperFirst(_.camelCase(`${path.basename(node.dir)} HJson`))
+      upperFirst(camelCase(`${path.basename(node.dir)} HJson`))
     )
   }
 }

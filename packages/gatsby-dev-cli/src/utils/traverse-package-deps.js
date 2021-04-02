@@ -1,4 +1,3 @@
-const _ = require(`lodash`)
 const path = require(`path`)
 
 /**
@@ -58,17 +57,19 @@ const traversePackagesDeps = ({
       return
     }
 
-    const fromMonoRepo = _.intersection(
+    const fromMonoRepo = [
       Object.keys({ ...pkgJson.dependencies }),
-      monoRepoPackages
-    )
+      monoRepoPackages,
+    ].reduce((a, b) => a.filter(c => b.includes(c)))
 
     fromMonoRepo.forEach(pkgName => {
       depTree[pkgName] = (depTree[pkgName] || new Set()).add(p)
     })
 
     // only traverse not yet seen packages to avoid infinite loops
-    const newPackages = _.difference(fromMonoRepo, seenPackages)
+    const newPackages = [fromMonoRepo, seenPackages].reduce((a, b) =>
+      a.filter(c => !b.includes(c))
+    )
 
     if (newPackages.length) {
       newPackages.forEach(depFromMonorepo => {
