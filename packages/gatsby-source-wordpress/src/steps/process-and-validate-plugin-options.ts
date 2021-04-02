@@ -1,10 +1,8 @@
 import path from "path"
 import { formatLogMessage } from "~/utils/format-log-message"
-import isInteger from "lodash/isInteger"
 import { IPluginOptions } from "~/models/gatsby-api"
 import { GatsbyNodeApiHelpers } from "~/utils/gatsby-types"
 import { usingGatsbyV4OrGreater } from "~/utils/gatsby-version"
-import { cloneDeep } from "lodash"
 
 interface IProcessorOptions {
   userPluginOptions: IPluginOptions
@@ -59,7 +57,7 @@ const optionsProcessors: Array<IOptionsProcessor> = [
     name: `queryDepth-is-not-a-positive-int`,
     test: ({ userPluginOptions }: IProcessorOptions): boolean =>
       typeof userPluginOptions?.schema?.queryDepth !== `undefined` &&
-      (!isInteger(userPluginOptions?.schema?.queryDepth) ||
+      (!Number.isInteger(userPluginOptions?.schema?.queryDepth) ||
         userPluginOptions?.schema?.queryDepth <= 0),
     processor: ({
       helpers,
@@ -139,7 +137,7 @@ export const processAndValidatePluginOptions = (
   helpers: GatsbyNodeApiHelpers,
   pluginOptions: IPluginOptions
 ): IPluginOptions => {
-  let userPluginOptions = cloneDeep(pluginOptions)
+  let userPluginOptions = structuredClone(pluginOptions)
 
   optionsProcessors.forEach(({ test, processor, name }) => {
     if (!name) {
