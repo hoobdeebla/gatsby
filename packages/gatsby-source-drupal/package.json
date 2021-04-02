@@ -16,7 +16,7 @@
     "gatsby-source-filesystem": "^5.17.0-next.0",
     "got": "^11.8.6",
     "http2-wrapper": "^2.2.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "opentracing": "^0.14.7",
     "probe-image-size": "^7.2.3",
     "semver": "^7.7.4",
