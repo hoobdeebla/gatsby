@@ -2,7 +2,7 @@ const prettier = require(`prettier`)
 const Joi = require(`@hapi/joi`)
 const Handlebars = require(`handlebars`)
 const fs = require(`fs-extra`)
-const _ = require(`lodash`)
+const startCase = require(`lodash/startCase`)
 const toc = require(`markdown-toc`)
 const prettierConfig = require(`../../.prettierrc.js`)
 
@@ -62,7 +62,7 @@ function joiKeysToMD({
       mdString += `\n\n`
       mdString += `**Field type**: \`${(trueType || value.type)
         .split(`|`)
-        .map(typename => _.startCase(typename))
+        .map(typename => startCase(typename))
         .join(` | `)}\``
     }
 
