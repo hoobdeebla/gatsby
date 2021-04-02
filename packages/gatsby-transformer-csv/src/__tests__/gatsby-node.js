@@ -1,6 +1,6 @@
 const { Parser: Json2csv } = require(`@json2csv/plainjs`)
 const os = require(`os`)
-const { cloneDeep } = require(`lodash`)
+const cloneDeep = require(`lodash/cloneDeep`) // no structuredClone in jest-env-jsdom
 
 const { onCreateNode } = require(`../gatsby-node`)
 const { typeNameFromDir, typeNameFromFile } = require(`../index`)
@@ -27,7 +27,7 @@ describe(`Process nodes correctly`, () => {
       { blue: true, funny: `yup` },
       { blue: false, funny: `nope` },
     ]
-    node.content = new Json2csv({fields}).parse(data)
+    node.content = new Json2csv({ fields }).parse(data)
 
     const createNode = jest.fn()
     const createParentChildLink = jest.fn()
