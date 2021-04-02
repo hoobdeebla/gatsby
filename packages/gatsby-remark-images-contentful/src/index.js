@@ -1,7 +1,6 @@
 const { selectAll } = require(`unist-util-select`)
 // TODO(v5): use gatsby/sharp
 const getSharpInstance = require(`./safe-sharp`)
-const _ = require(`lodash`)
 const cheerio = require(`cheerio`)
 const chalk = require(`chalk`)
 const { buildResponsiveSizes } = require(`./utils`)
@@ -51,7 +50,7 @@ module.exports = async (
 
     const srcSplit = node.url.split(`/`)
     const fileName = srcSplit[srcSplit.length - 1]
-    const options = _.defaults({}, pluginOptions, defaults)
+    const options = Object.assign({}, defaults, pluginOptions)
 
     const optionsHash = createContentDigest(options)
 

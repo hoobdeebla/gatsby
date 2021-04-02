@@ -1,7 +1,7 @@
 import { getStore, withPluginKey } from "~/store"
 import { typeDefinitionFilters } from "./type-filters"
 import { getPluginOptions } from "~/utils/get-gatsby-api"
-import { cloneDeep, merge } from "lodash"
+import merge from "lodash/merge"
 import { diffString } from "json-diff"
 import { formatLogMessage } from "../../utils/format-log-message"
 import { CODES } from "../../utils/report"
@@ -211,10 +211,10 @@ export const getTypeSettingsByType = type => {
   // the plugin options object containing every type setting
   const allTypeSettings = getStore().getState().gatsbyApi.pluginOptions.type
 
-  const typeSettings = cloneDeep(allTypeSettings[typeName] || {})
+  const typeSettings = structuredClone(allTypeSettings[typeName] || {})
 
   // the type.__all plugin option which is applied to every type setting
-  const __allTypeSetting = cloneDeep(allTypeSettings.__all || {})
+  const __allTypeSetting = structuredClone(allTypeSettings.__all || {})
 
   if (typeName === `MediaItem`) {
     delete __allTypeSetting.limit
@@ -306,7 +306,7 @@ export const introspectionFieldTypeToSDL = fieldType => {
  * This is an expensive fn but it doesn't matter because it's only to show a debugging warning message when something is wrong.
  */
 function mergeDuplicateTypesAndReturnDedupedList(typeDefs) {
-  const clonedDefs = cloneDeep(typeDefs)
+  const clonedDefs = structuredClone(typeDefs)
 
   const newList = []
 
