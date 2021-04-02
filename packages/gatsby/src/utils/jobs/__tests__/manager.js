@@ -1,5 +1,5 @@
 const path = require(`path`)
-const _ = require(`lodash`)
+const cloneDeep = require(`lodash/cloneDeep`) // no structuredClone in jest-env-jsdom
 const { slash } = require(`gatsby-core-utils`)
 const worker = require(`./fixtures/node_modules/gatsby-plugin-test/gatsby-worker`)
 const reporter = require(`gatsby-cli/lib/reporter`)
@@ -192,7 +192,7 @@ describe(`Jobs manager`, () => {
     it(`should only enqueue a job once`, async () => {
       const { enqueueJob } = jobManager
       const jobArgs = createInternalMockJob()
-      const jobArgs2 = _.cloneDeep(jobArgs)
+      const jobArgs2 = cloneDeep(jobArgs)
       const jobArgs3 = createInternalMockJob({
         args: {
           param2: `param2`,
