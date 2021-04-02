@@ -1,13 +1,12 @@
 import { onLogAction } from "../../redux/index"
 import { ActionsUnion, ISetStatus } from "../../redux/types"
 import stripAnsi from "strip-ansi"
-import { cloneDeep } from "lodash"
 
 const isStringPayload = (action: ActionsUnion): action is ISetStatus =>
   typeof action.payload === `string`
 
 const sanitizeAction = (action: ActionsUnion): ActionsUnion => {
-  const copiedAction = cloneDeep(action)
+  const copiedAction = structuredClone(action)
 
   if (isStringPayload(copiedAction)) {
     return copiedAction

@@ -5,7 +5,7 @@ let workboxBuild = require(`workbox-build`)
 const path = require(`path`)
 const { slash } = require(`gatsby-core-utils`)
 const { globSync } = require(`glob`)
-const _ = require(`lodash`)
+const merge = require(`lodash/merge`)
 
 let getResourcesFromHTML = require(`./get-resources-from-html`)
 
@@ -39,10 +39,9 @@ const readStats = () => {
 }
 
 function getAssetsForChunks(chunks) {
-  const files = _.flatten(
-    chunks.map(chunk => readStats().assetsByChunkName[chunk])
-  )
-  return _.compact(files)
+  return chunks
+    .flatMap(chunk => readStats().assetsByChunkName[chunk])
+    .filter(Boolean)
 }
 
 function getPrecachePages(globs, base) {
@@ -91,10 +90,6 @@ exports.onPostBuild = (
   ])
   const appFile = files.find(file => file.startsWith(`app-`))
 
-  function flat(arr) {
-    return Array.prototype.flat ? arr.flat() : [].concat(...arr)
-  }
-
   const offlineShellPath = `${process.cwd()}/${rootDir}/offline-plugin-app-shell-fallback/index.html`
   const precachePages = [
     offlineShellPath,
@@ -104,8 +99,10 @@ exports.onPostBuild = (
     ).filter(page => page !== offlineShellPath),
   ]
 
-  const criticalFilePaths = _.uniq(
-    flat(precachePages.map(page => getResourcesFromHTML(page, pathPrefix)))
+  const criticalFilePaths = Array.from(
+    new Set(
+      precachePages.flatMap(page => getResourcesFromHTML(page, pathPrefix))
+    )
   )
 
   const globPatterns = files.concat([
@@ -168,7 +165,7 @@ exports.onPostBuild = (
     clientsClaim: true,
   }
 
-  const combinedOptions = _.merge(options, workboxConfig)
+  const combinedOptions = merge(options, workboxConfig)
 
   const idbKeyvalFile = `idb-keyval-iife.min.js`
   const idbKeyvalSource = require.resolve(`idb-keyval/dist/${idbKeyvalFile}`)

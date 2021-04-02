@@ -2,7 +2,8 @@ import fs from "fs-extra"
 import { glob as globAsync } from "glob"
 import path from "path"
 import webpack from "webpack"
-import _ from "lodash"
+// eslint-disable-next-line you-dont-need-lodash-underscore/union-by
+import { kebabCase, unionBy } from "lodash"
 import { getMatchPath, urlResolve } from "gatsby-core-utils"
 import { CreateDevServerArgs, ParentSpanPluginArgs } from "gatsby"
 import formatWebpackMessages from "react-dev-utils/formatWebpackMessages"
@@ -52,8 +53,8 @@ async function ensureFunctionIsCompiled(
     fs.utimesSync(functionObj.originalAbsoluteFilePath, time, time)
     await new Promise(resolve => {
       const watcher = chokidar
-        // Watch the root of the compiled function directory in .cache as chokidar
-        // can't watch files in directories that don't yet exist.
+      // Watch the root of the compiled function directory in .cache as chokidar
+      // can't watch files in directories that don't yet exist.
         .watch(compiledFunctionsDir)
         .on(`add`, async _path => {
           if (_path === functionObj.absoluteCompiledFilePath) {
@@ -121,7 +122,7 @@ const createGlobArray = (siteDirectoryPath, plugins): Array<IGlobPattern> => {
   })
 
   // Only return unique paths
-  return _.union(globs)
+  return Array.from(new Set(globs))
 }
 
 const createWebpackConfig = async ({
@@ -163,7 +164,7 @@ const createWebpackConfig = async ({
         const finalName = urlResolve(dir, name === `index` ? `` : name)
 
         // functionId should have only alphanumeric characters and dashes
-        const functionIdBase = _.kebabCase(compiledFunctionName).replace(
+        const functionIdBase = kebabCase(compiledFunctionName).replace(
           /[^a-zA-Z0-9-]/g,
           `-`
         )
@@ -197,7 +198,7 @@ const createWebpackConfig = async ({
   // Combine functions by the route name so that functions in the default
   // functions directory can override the plugin's implementations.
   // @ts-ignore - Seems like a TS bug: https://github.com/microsoft/TypeScript/issues/28010#issuecomment-713484584
-  const knownFunctions = _.unionBy(...allFunctions, func => func.functionRoute)
+  const knownFunctions = unionBy(...allFunctions, func => func.functionRoute)
 
   store.dispatch(internalActions.setFunctions(knownFunctions))
 

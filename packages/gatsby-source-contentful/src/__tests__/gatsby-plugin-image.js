@@ -4,7 +4,6 @@
 // @ts-check
 import fs from "fs-extra"
 import { setPluginOptions } from "gatsby-plugin-sharp/plugin-options"
-import _ from "lodash"
 import { resolve } from "path"
 import { setFieldsOnGraphQLNodeType } from "../extend-node-type"
 import { generateImageSource } from "../gatsby-plugin-image"
@@ -28,7 +27,10 @@ jest
 const createMockCache = () => {
   const actualCacheMap = new Map()
   return {
-    get: jest.fn(key => Promise.resolve(_.cloneDeep(actualCacheMap.get(key)))),
+    get: jest.fn(key =>
+      // structuredClone ok because jest env = node, not jsdom
+      Promise.resolve(structuredClone(actualCacheMap.get(key)))
+    ),
     set: jest.fn((key, value) => actualCacheMap.set(key, value)),
     directory: __dirname,
     actualMap: actualCacheMap,

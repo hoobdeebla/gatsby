@@ -2,7 +2,7 @@
 // @flow
 const fs = require(`fs-extra`)
 const crypto = require(`crypto`)
-const _ = require(`lodash`)
+const { camelCase, uniqBy } = require(`lodash`)
 const slugify = require(`slugify`)
 
 // Traverse is a es6 module...
@@ -39,7 +39,7 @@ const generateQueryName = ({ def, hash, file, queryType }) => {
       lower: false,
     })
     def.name = {
-      value: `${_.camelCase(`${queryType}-${slugified}-${hash}`)}`,
+      value: `${camelCase(`${queryType}-${slugified}-${hash}`)}`,
       kind: `Name`,
     }
   }
@@ -466,7 +466,7 @@ async function findGraphQLTags(
   })
 
   // Remove duplicate queries
-  const uniqueQueries = _.uniqBy(documents, q => documentLocations.get(q))
+  const uniqueQueries = uniqBy(documents, q => documentLocations.get(q))
 
   return uniqueQueries
 }

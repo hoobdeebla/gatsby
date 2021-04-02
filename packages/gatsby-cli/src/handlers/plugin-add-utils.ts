@@ -1,6 +1,6 @@
 import * as fs from "fs-extra"
 import execa from "execa"
-import _ from "lodash"
+import { debounce, groupBy } from "lodash"
 import {
   readConfigFile,
   lock,
@@ -131,7 +131,7 @@ let installs: Array<{
 }> = []
 const executeInstalls = async (root: string): Promise<void> => {
   // @ts-ignore - fix me
-  const types = _.groupBy(installs, c => c.resource.dependencyType)
+  const types = groupBy(installs, c => c.resource.dependencyType)
 
   // Grab the key of the first install & delete off installs these packages
   // then run intall
@@ -161,7 +161,7 @@ const executeInstalls = async (root: string): Promise<void> => {
     })
   } catch (e) {
     // A package failed so call the rejects
-    return packagesToInstall.forEach(p => {
+    return packagesToInstall?.forEach(p => {
       // @ts-ignore - fix me
       p.outsideReject(
         JSON.stringify({
@@ -184,7 +184,7 @@ const executeInstalls = async (root: string): Promise<void> => {
   return undefined
 }
 
-const debouncedExecute = _.debounce(executeInstalls, 25)
+const debouncedExecute = debounce(executeInstalls, 25)
 
 interface IPackageCreateInput {
   root: string

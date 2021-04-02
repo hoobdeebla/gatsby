@@ -1,7 +1,6 @@
 const startVerdaccio = require(`verdaccio`).default
 
 const fs = require(`fs-extra`)
-const _ = require(`lodash`)
 
 let VerdaccioInitPromise = null
 
@@ -69,7 +68,9 @@ exports.publishPackagesLocallyAndInstall = async ({
     })
   }
 
-  const packagesToInstall = _.intersection(packagesToPublish, localPackages)
+  const packagesToInstall = [packagesToPublish, localPackages].reduce((a, b) =>
+    a.filter(c => b.includes(c))
+  )
 
   await installPackages({
     packagesToInstall,

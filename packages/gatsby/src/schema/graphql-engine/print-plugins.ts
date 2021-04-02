@@ -1,7 +1,6 @@
-/* eslint @typescript-eslint/no-unused-vars: ["error", { "ignoreRestSiblings": true }] */
 import * as fs from "fs-extra"
 import * as path from "path"
-import * as _ from "lodash"
+import cloneDeepWith from "lodash/cloneDeepWith"
 import { slash } from "gatsby-core-utils"
 import { store } from "../../redux"
 import { IGatsbyState } from "../../redux/types"
@@ -118,7 +117,7 @@ export const flattenedPlugins =
     sanitizedUsedPlugins.map(plugin => {
       return {
         ...plugin,
-        pluginOptions: _.cloneDeepWith(
+        pluginOptions: cloneDeepWith(
           plugin.pluginOptions,
           (value: any): any => {
             if (

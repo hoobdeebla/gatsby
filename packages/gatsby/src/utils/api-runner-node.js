@@ -1,4 +1,4 @@
-const _ = require(`lodash`)
+const { isEmpty, merge } = require(`lodash`)
 const chalk = require(`chalk`)
 const { bindActionCreators: origBindActionCreators } = require(`redux`)
 const memoize = require(`memoizee`)
@@ -117,7 +117,7 @@ const initAPICallTracing = parentSpan => {
   const startSpan = (spanName, spanArgs = {}) => {
     const defaultSpanArgs = { childOf: parentSpan }
 
-    return tracer.startSpan(spanName, _.merge(defaultSpanArgs, spanArgs))
+    return tracer.startSpan(spanName, merge(defaultSpanArgs, spanArgs))
   }
 
   return {
@@ -537,9 +537,11 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
     const apiSpan = tracer.startSpan(`run-api`, apiSpanArgs)
 
     apiSpan.setTag(`api`, api)
-    _.forEach(traceTags, (value, key) => {
-      apiSpan.setTag(key, value)
-    })
+    if (traceTags) {
+      Array.from(traceTags).forEach((value, key) => {
+        apiSpan.setTag(key, value)
+      })
+    }
 
     const apiRunInstance = {
       api,
@@ -568,7 +570,8 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
       // When tracing is turned on, the `args` object will have a
       // `parentSpan` field that can be quite large. So we omit it
       // before calling stringify
-      const argsJson = JSON.stringify(_.omit(args, `parentSpan`))
+      const { parentSpan, ...argsWithoutParentSpan } = args
+      const argsJson = JSON.stringify(argsWithoutParentSpan)
       id = `${api}|${apiRunInstance.startTime}|${apiRunInstance.traceId}|${argsJson}`
     }
     apiRunInstance.id = id
@@ -706,7 +709,7 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
       }
 
       // Filter empty results
-      apiRunInstance.results = results.filter(result => !_.isEmpty(result))
+      apiRunInstance.results = results.filter(result => !isEmpty(result))
 
       // Filter out empty responses and return if the
       // api caller isn't waiting for cascading actions to finish.

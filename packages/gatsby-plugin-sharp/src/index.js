@@ -3,7 +3,7 @@ const { generateImageData } = require(`./image-data`)
 const imageSize = require(`probe-image-size`)
 const { isCI } = require(`gatsby-core-utils/ci`)
 
-const _ = require(`lodash`)
+const { maxBy, memoize, minBy, sortBy } = require(`lodash`)
 const fs = require(`fs-extra`)
 const path = require(`path`)
 
@@ -356,7 +356,7 @@ It is probably corrupt, so please try replacing it.  If it still fails, please o
 const generateCacheKey = ({ file, args }) =>
   `${file.internal.contentDigest}${JSON.stringify(args)}`
 
-const memoizedBase64 = _.memoize(generateBase64, generateCacheKey)
+const memoizedBase64 = memoize(generateBase64, generateCacheKey)
 
 const cachifiedProcess = async ({ cache, ...arg }, genKey, processFn) => {
   const cachedKey = genKey(arg)
@@ -493,7 +493,7 @@ async function fluid({ file, args = {}, reporter, cache }) {
   // is available for small images. Also so we can link to
   // the original image.
   filteredSizes.push(fixedDimension === `maxWidth` ? width : height)
-  filteredSizes = _.sortBy(filteredSizes)
+  filteredSizes = sortBy(filteredSizes)
 
   // Queue sizes for processing.
   const dimensionAttr = fixedDimension === `maxWidth` ? `width` : `height`
@@ -569,8 +569,8 @@ async function fluid({ file, args = {}, reporter, cache }) {
   }
 
   // Construct src and srcSet strings.
-  const originalImg = _.maxBy(images, image => image.width).src
-  const fallbackSrc = _.minBy(images, image =>
+  const originalImg = maxBy(images, image => image.width).src
+  const fallbackSrc = minBy(images, image =>
     Math.abs(options[fixedDimension] - image[dimensionAttr])
   ).src
 
@@ -665,7 +665,7 @@ async function fixed({ file, args = {}, reporter, cache }) {
   }
 
   // Sort images for prettiness.
-  const transforms = _.sortBy(filteredSizes).map(size => {
+  const transforms = sortBy(filteredSizes).map(size => {
     const arrrgs = createTransformObject(options)
     arrrgs[fixedDimension] = Math.round(size)
 

@@ -1,5 +1,5 @@
 const got = require(`got`)
-const _ = require(`lodash`)
+const { isEmpty, map, range } = require(`lodash`)
 const urlJoin = require(`url-join`)
 import { HttpAgent, HttpsAgent } from "agentkeepalive"
 
@@ -504,7 +504,7 @@ ${JSON.stringify(webhookBody, null, 4)}`
       },
     ])
     allData = await Promise.all(
-      _.map(res.body.links, async (url, type) => {
+      map(res.body.links, async (url, type) => {
         const dataArray = []
         if (disallowedLinkTypes.includes(type)) return
         if (!url) return
@@ -634,7 +634,7 @@ ${JSON.stringify(webhookBody, null, 4)}`
 
               const newUrl = new URL(d.body.links.next.href)
               await Promise.all(
-                _.range(requestsCount).map((pageOffset: number) => {
+                range(requestsCount).map((pageOffset: number) => {
                   // We're starting 1 ahead.
                   pageOffset += 1
                   // Construct URL with new pageOffset.
@@ -852,7 +852,7 @@ exports.onCreateDevServer = (
       console.warn(
         `The ___updatePreview callback is now deprecated and will be removed in the future. Please use the __refresh callback instead.`
       )
-      if (!_.isEmpty(req.body)) {
+      if (!isEmpty(req.body)) {
         const requestBody = JSON.parse(JSON.parse(req.body))
         const { secret, action, id } = requestBody
         if (pluginOptions.secret && pluginOptions.secret !== secret) {

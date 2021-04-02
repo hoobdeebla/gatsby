@@ -8,7 +8,7 @@
     "@babel/parser": "^7.20.13",
     "@babel/runtime": "^7.20.13",
     "@babel/traverse": "^7.20.13",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.23"
   },
   "devDependencies": {
     "@babel/cli": "^7.20.7",

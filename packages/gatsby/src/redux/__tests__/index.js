@@ -1,4 +1,4 @@
-const _ = require(`lodash`)
+const cloneDeep = require(`lodash/cloneDeep`) // no structuredClone in jest-env-jsdom
 const path = require(`path`)
 const v8 = require(`v8`)
 const reporter = require(`gatsby-cli/lib/reporter`)
@@ -118,7 +118,7 @@ function getFakeNodes() {
 }
 
 describe(`redux db`, () => {
-  const initialComponentsState = _.cloneDeep(store.getState().components)
+  const initialComponentsState = cloneDeep(store.getState().components)
 
   function createPages(pages) {
     // mock Date.now so Date.now() doesn't change in between tests

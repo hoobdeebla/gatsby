@@ -1,5 +1,4 @@
 // @ts-check
-import _ from "lodash"
 import { fetchContentTypes } from "./fetch"
 import { createPluginConfig } from "./plugin-options"
 import { CODES } from "./report"

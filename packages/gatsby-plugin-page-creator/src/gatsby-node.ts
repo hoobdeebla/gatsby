@@ -1,4 +1,4 @@
-import _ from "lodash"
+import camelCase from "lodash/camelCase"
 import glob from "globby"
 import systemPath from "path"
 import { sync as existsSync } from "fs-exists-cached"
@@ -352,7 +352,7 @@ export function setFieldsOnGraphQLNodeType(
   try {
     const extensions = store.getState().program.extensions
     const { trailingSlash = `always` } = store.getState().config
-    const collectionQuery = _.camelCase(`all ${type.name}`)
+    const collectionQuery = camelCase(`all ${type.name}`)
     if (knownCollections.has(collectionQuery)) {
       return {
         gatsbyPath: {

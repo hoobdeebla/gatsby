@@ -5,7 +5,7 @@ jest.mock(`glob`, () => {
   }
 })
 
-const _ = require(`lodash`)
+const orderBy = require(`lodash/orderBy`)
 const { parse, buildSchema } = require(`graphql`)
 const fs = require(`fs-extra`)
 const path = require(`path`)
@@ -835,7 +835,7 @@ describe(`actual compiling`, () => {
         errors.push(e)
       },
     })
-    expect(_.orderBy(errors, e => e.id)).toMatchInlineSnapshot(`
+    expect(orderBy(errors, e => e.id)).toMatchInlineSnapshot(`
       Array [
         Object {
           "context": Object {

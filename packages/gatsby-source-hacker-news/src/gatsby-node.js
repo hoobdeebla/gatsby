@@ -1,6 +1,6 @@
 const axios = require(`axios`)
 const url = require(`url`)
-const _ = require(`lodash`)
+const omit = require(`lodash/omit`)
 
 const get = query =>
   axios.get(
@@ -115,16 +115,15 @@ fragment commentsFragment on HackerNewsItem {
       }
     }
 
-    const kids = _.pick(story, `kids`)
+    const { kids, ...storyWithoutKids } = story
     if (!kids.kids) {
       kids.kids = []
     }
-    const kidLessStory = _.omit(story, `kids`)
     const childIds = kids.kids.filter(Boolean).map(k => createNodeId(k.id))
 
     const storyNode = {
-      ...kidLessStory,
-      id: createNodeId(kidLessStory.id),
+      ...storyWithoutKids,
+      id: createNodeId(storyWithoutKids.id),
       children: childIds,
       parent: null,
       content: storyStr,
@@ -154,7 +153,7 @@ fragment commentsFragment on HackerNewsItem {
         }
         const commentChildIds = comment.kids.map(k => createNodeId(k.id))
         const commentNode = {
-          ..._.omit(comment, `kids`),
+          ...omit(comment, `kids`),
           id: createNodeId(comment.id),
           children: commentChildIds,
           parent,

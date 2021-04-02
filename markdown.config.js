@@ -1,6 +1,7 @@
 const fs = require(`fs-extra`)
 const path = require(`path`)
-const _ = require(`lodash`)
+const process = require(`process`)
+const makeTemplate = require(`lodash/template`)
 
 const exclusionList = [
   `gatsby-starter-minimal`,
@@ -49,7 +50,7 @@ module.exports = {
         path.join(process.cwd(), `starters`, `README-template.md`),
         `utf8`
       )
-      return _.template(template)({
+      return makeTemplate(template)({
         name: starter,
       })
     },

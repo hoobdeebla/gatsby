@@ -7,7 +7,7 @@ import {
   IPluginEntryWithParentDir,
 } from "../../utils/merge-gatsby-config"
 import { mapSeries } from "../../utils/async-utils"
-import { flattenDeep, isEqual, isFunction, uniqWith } from "lodash"
+import { isEqual, uniqWith } from "lodash"
 import DebugCtor from "debug"
 import { preferDefault } from "../prefer-default"
 import { getConfigFile } from "../get-config-file"
@@ -82,9 +82,10 @@ const resolveTheme = async (
     preferDefault(configModule)
 
   // if theme is a function, call it with the themeConfig
-  const themeConfig = isFunction(theme)
-    ? theme(typeof themeSpec === `string` ? {} : themeSpec.options)
-    : theme
+  const themeConfig =
+    typeof theme === `function`
+      ? theme(typeof themeSpec === `string` ? {} : themeSpec.options)
+      : theme
 
   return {
     themeName,
@@ -126,11 +127,11 @@ const processTheme = (
         return processTheme(themeObj, { rootDir: themeDir })
       }
     ).then(arr =>
-      flattenDeep(
-        arr.concat([
+      arr
+        .concat([
           { themeName, themeConfig, themeSpec, themeDir, parentDir: rootDir },
         ])
-      )
+        .flat(Infinity)
     )
   } else {
     // if a theme doesn't define additional themes, return the original theme
@@ -169,8 +170,7 @@ export async function loadThemes(
       )
       return processTheme(themeObj, { rootDir })
     }
-  )
-  const themesA = flattenDeep(themesNested)
+  ).then(arr => arr.flat(Infinity) as Array<IThemeObj>)
 
   // log out flattened themes list to aid in debugging
   debug(themesA)

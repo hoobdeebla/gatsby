@@ -1,9 +1,8 @@
 // @flow
 const reporter = require(`gatsby-cli/lib/reporter`)
 const chalk = require(`chalk`)
-const _ = require(`lodash`)
+const memoize = require(`lodash/memoize`)
 const { stripIndent } = require(`common-tags`)
-const report = require(`gatsby-cli/lib/reporter`)
 const { platform } = require(`os`)
 const path = require(`path`)
 const { trueCasePathSync } = require(`true-case-path`)
@@ -42,7 +41,7 @@ const isTestEnv = process.env.NODE_ENV === `test`
 // Ideally, we should invalidate memoized values if there are any FS operations
 // on files that are in shadowing chain, but webpack currently doesn't handle
 // shadowing changes during develop session, so no invalidation is not a deal breaker.
-const shadowCreatePagePath = _.memoize(
+const shadowCreatePagePath = memoize(
   require(`../../internal-plugins/webpack-theme-component-shadowing/create-page`)
 )
 const { createInternalJob } = require(`../../utils/jobs/manager`)
@@ -69,7 +68,7 @@ const findChildren = initialChildren => {
     }
     traversedNodes.add(currentChild.id)
     const newChildren = currentChild.children
-    if (_.isArray(newChildren) && newChildren.length > 0) {
+    if (Array.isArray(newChildren) && newChildren.length > 0) {
       children.push(...newChildren)
       queue.push(...newChildren)
     }
@@ -195,7 +194,7 @@ actions.createPage = (
     const message = `${name} must set the page path when creating a page`
     // Don't log out when testing
     if (isNotTestEnv) {
-      report.panic({
+      reporter.panic({
         id: `11323`,
         context: {
           pluginName: name,
@@ -247,7 +246,7 @@ ${reservedFields.map(f => `  * "${f}"`).join(`\n`)}
         // version.  People in v1 often thought that they needed to also pass
         // the path to context for it to be available in GraphQL
       } else if (invalidFields.some(f => page.context[f] !== page[f])) {
-        report.panic({
+        reporter.panic({
           id: `11324`,
           context: {
             message: error,
@@ -255,7 +254,7 @@ ${reservedFields.map(f => `  * "${f}"`).join(`\n`)}
         })
       } else {
         if (!hasWarnedForPageComponentInvalidContext.has(page.component)) {
-          report.warn(error)
+          reporter.warn(error)
           hasWarnedForPageComponentInvalidContext.add(page.component)
         }
       }
@@ -265,7 +264,7 @@ ${reservedFields.map(f => `  * "${f}"`).join(`\n`)}
   // Check if a component is set.
   if (!page.component) {
     if (isNotTestEnv) {
-      report.panic({
+      reporter.panic({
         id: `11322`,
         context: {
           input: page,
@@ -302,9 +301,9 @@ ${reservedFields.map(f => `  * "${f}"`).join(`\n`)}
   if (error) {
     if (isNotTestEnv) {
       if (panicOnBuild) {
-        report.panicOnBuild(error)
+        reporter.panicOnBuild(error)
       } else {
-        report.panic(error)
+        reporter.panic(error)
       }
     }
     return `${name} must set the absolute path to the page component when creating a page`
@@ -360,7 +359,7 @@ ${reservedFields.map(f => `  * "${f}"`).join(`\n`)}
             })
             .join(``)
 
-          report.warn(
+          reporter.warn(
             stripIndent`
           ${name} created a page with a component path that doesn't match the casing of the actual file. This may work locally, but will break on systems which are case-sensitive, e.g. most CI/CD pipelines.
 
@@ -394,8 +393,8 @@ ${reservedFields.map(f => `  * "${f}"`).join(`\n`)}
 
   if (invalidPathSegments.length > 0) {
     const truncatedPath = truncatePath(page.path)
-    report.warn(
-      report.stripIndent(`
+    reporter.warn(
+      reporter.stripIndent(`
         The path to the following page is longer than the supported limit on most
         operating systems and will cause an ENAMETOOLONG error. The path has been
         truncated to prevent this.
@@ -447,18 +446,17 @@ ${reservedFields.map(f => `  * "${f}"`).join(`\n`)}
 
   const oldPage: Page = store.getState().pages.get(internalPage.path)
   const contextModified =
-    !!oldPage && !_.isEqual(oldPage.context, internalPage.context)
+    !!oldPage && !(oldPage.context === internalPage.context)
   const componentModified =
-    !!oldPage && !_.isEqual(oldPage.component, internalPage.component)
-  const slicesModified =
-    !!oldPage && !_.isEqual(oldPage.slices, internalPage.slices)
+    !!oldPage && !(oldPage.component === internalPage.component)
+  const slicesModified = !!oldPage && !(oldPage.slices === internalPage.slices)
 
   const alternateSlashPath = page.path.endsWith(`/`)
     ? page.path.slice(0, -1)
     : page.path + `/`
 
   if (store.getState().pages.has(alternateSlashPath)) {
-    report.warn(
+    reporter.warn(
       chalk.bold.yellow(`Non-deterministic routing danger: `) +
         `Attempting to create page: "${page.path}", but page "${alternateSlashPath}" already exists\n` +
         chalk.bold.yellow(
@@ -679,7 +677,7 @@ const createNode = (
   plugin?: Plugin,
   actionOptions?: ActionOptions = {}
 ) => {
-  if (!_.isObject(node)) {
+  if (!(node instanceof Object)) {
     return console.log(
       chalk.bold.red(
         `The node passed to the "createNode" action creator must be an object`
@@ -693,7 +691,7 @@ const createNode = (
   }
 
   // Ensure the new node has a children array.
-  if (!node.array && !_.isArray(node.children)) {
+  if (!node.array && !Array.isArray(node.children)) {
     node.children = []
   }
 
@@ -704,8 +702,8 @@ const createNode = (
 
   // Tell user not to set the owner name themself.
   if (node.internal.owner) {
-    report.error(JSON.stringify(node, null, 4))
-    report.panic(
+    reporter.error(JSON.stringify(node, null, 4))
+    reporter.panic(
       chalk.bold.red(
         `The node internal.owner field is set automatically by Gatsby and not by plugins`
       )
@@ -742,7 +740,7 @@ const createNode = (
         }
       }
 
-      report.error(errorObj)
+      reporter.error(errorObj)
       hasErroredBecauseOfNodeValidation.add(result.error.message)
     }
 
@@ -926,9 +924,7 @@ actions.createNodeField = (
   }
 
   // Normalized name of the field that will be used in schema
-  const schemaFieldName = _.includes(name, `___NODE`)
-    ? name.split(`___`)[0]
-    : name
+  const schemaFieldName = name.includes(`___NODE`) ? name.split(`___`)[0] : name
 
   // Check that this field isn't owned by another plugin.
   const fieldOwner = node.internal.fieldOwners[schemaFieldName]
@@ -997,7 +993,7 @@ actions.createParentChildLink = (
  */
 actions.setWebpackConfig = (config: Object, plugin?: ?Plugin = null) => {
   if (config.node?.fs === `empty`) {
-    report.warn(
+    reporter.warn(
       `[deprecated${
         plugin ? ` ` + plugin.name : ``
       }] node.fs is deprecated. Please set "resolve.fallback.fs = false".`
@@ -1026,7 +1022,7 @@ actions.setWebpackConfig = (config: Object, plugin?: ?Plugin = null) => {
  */
 actions.replaceWebpackConfig = (config: Object, plugin?: ?Plugin = null) => {
   if (config.node?.fs === `empty`) {
-    report.warn(
+    reporter.warn(
       `[deprecated${
         plugin ? ` ` + plugin.name : ``
       }] node.fs is deprecated. Please set "resolve.fallback.fs = false".`
@@ -1061,7 +1057,7 @@ actions.setBabelOptions = (options: Object, plugin?: ?Plugin = null) => {
   if (plugin.name === `default-site-plugin`) {
     name = `Your site's "gatsby-node.js"`
   }
-  if (!_.isObject(options)) {
+  if (!(options instanceof Object)) {
     console.log(`${name} must pass an object to "setBabelOptions"`)
     console.log(JSON.stringify(options, null, 4))
     if (isNotTestEnv) {
@@ -1069,7 +1065,7 @@ actions.setBabelOptions = (options: Object, plugin?: ?Plugin = null) => {
     }
   }
 
-  if (!_.isObject(options.options)) {
+  if (!(options?.options instanceof Object)) {
     console.log(`${name} must pass options to "setBabelOptions"`)
     console.log(JSON.stringify(options, null, 4))
     if (isNotTestEnv) {

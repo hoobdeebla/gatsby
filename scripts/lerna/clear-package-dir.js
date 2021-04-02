@@ -6,7 +6,6 @@ const { collectUpdates } = require(`@lerna/collect-updates`)
 const { PackageGraph } = require(`@lerna/package-graph`)
 const { Project } = require(`@lerna/project`)
 const { promptConfirmation } = require(`@lerna/prompt`)
-const _ = require(`lodash`)
 const path = require(`path`)
 const packlist = require(`npm-packlist`)
 const { execSync } = require(`child_process`)
@@ -130,9 +129,9 @@ const run = async () => {
       }
     )
 
-    const filesToDelete = _.flatten(
+    const filesToDelete = (
       await Promise.all(changed.map(getListOfFilesToClear))
-    )
+    ).flat()
 
     if (!argv[`dry-run`] && filesToDelete.length > 0) {
       if (

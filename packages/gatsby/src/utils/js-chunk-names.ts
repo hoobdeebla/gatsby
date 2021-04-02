@@ -1,5 +1,5 @@
 import memoize from "memoizee"
-import { kebabCase as _kebabCase } from "lodash"
+import _kebabCase from "lodash/kebabCase"
 import { murmurhash as _murmurhash } from "gatsby-core-utils/murmurhash"
 import path from "path"
 import { store } from "../redux"

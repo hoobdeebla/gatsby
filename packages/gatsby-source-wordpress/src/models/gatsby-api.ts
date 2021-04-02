@@ -2,7 +2,6 @@ import { GatsbyNodeApiHelpers } from "~/utils/gatsby-types"
 import merge from "lodash/merge"
 import { createLocalFileNode } from "~/steps/source-nodes/create-nodes/create-local-file-node"
 import { menuBeforeChangeNode } from "~/steps/source-nodes/before-change-node/menu"
-import { cloneDeep } from "lodash"
 import { inPreviewMode } from "~/steps/preview"
 import { usingGatsbyV4OrGreater } from "~/utils/gatsby-version"
 import { createModel } from "@rematch/core"
@@ -329,7 +328,7 @@ const gatsbyApi = createModel<IRootModel>()({
       state: IGatsbyApiState,
       payload: IGatsbyApiState
     ): IGatsbyApiState {
-      const stateCopy = cloneDeep(state)
+      const stateCopy = structuredClone(state)
 
       const defaultPresets = stateCopy.pluginOptions?.presets || []
       const userPresets = payload.pluginOptions?.presets || []

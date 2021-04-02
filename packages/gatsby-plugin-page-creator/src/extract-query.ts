@@ -1,5 +1,6 @@
 import { hasFeature } from "gatsby-plugin-utils"
-import _ from "lodash"
+// eslint-disable-next-line you-dont-need-lodash-underscore/get
+import { camelCase, get } from "lodash"
 import path from "path"
 import {
   convertUnionSyntaxToGraphql,
@@ -19,7 +20,7 @@ export function generateQueryFromString(
   const fields = extractUrlParamsForQuery(fileAbsolutePath)
 
   // In case queryOrModel is not capitalized
-  const connectionQuery = _.camelCase(`all ${queryOrModel}`)
+  const connectionQuery = camelCase(`all ${queryOrModel}`)
 
   const connectionArgs = nodeIds
     ? `(filter: { id: { in: ${JSON.stringify(nodeIds)} } })`
@@ -46,7 +47,7 @@ export function reverseLookupParams(
     extracted.forEach(extract => {
       if (extract === ``) return
 
-      const results = _.get(
+      const results = get(
         queryResults.nodes ? queryResults.nodes[0] : queryResults,
         // replace __ with accessors '.'
         switchToPeriodDelimiters(extract)
