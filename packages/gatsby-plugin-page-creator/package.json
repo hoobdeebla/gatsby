@@ -41,6 +41,7 @@
     "@babel/cli": "^7.24.7",
     "@babel/core": "^7.24.7",
     "@types/fs-extra": "^11.0.4",
+    "@types/lodash": "^4.17.6",
     "babel-preset-gatsby-package": "^3.14.0-next.2",
     "cross-env": "^7.0.3"
   },

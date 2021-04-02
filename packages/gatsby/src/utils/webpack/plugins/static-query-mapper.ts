@@ -1,7 +1,7 @@
-import path from "path"
+import { resolve, join } from "node:path"
 import { Store } from "redux"
 import { Compiler, NormalModule } from "webpack"
-import { isEqual, cloneDeep } from "lodash"
+import isEqual from "lodash/isEqual"
 import { enqueueFlush } from "../../page-data"
 import type { IGatsbyState, IGatsbyPageComponent } from "../../../redux/types"
 import {
@@ -53,7 +53,7 @@ function getRealPath(
   componentPath: string
 ): string {
   if (!cache.has(componentPath)) {
-    cache.set(componentPath, path.resolve(componentPath))
+    cache.set(componentPath, resolve(componentPath))
   }
 
   return cache.get(componentPath) as string
@@ -95,14 +95,10 @@ export class StaticQueryMapper {
 
         const entryModules = new Set()
         const gatsbyBrowserPlugins = slash(
-          path.join(
-            program.directory,
-            `.cache`,
-            `api-runner-browser-plugins.js`
-          )
+          join(program.directory, `.cache`, `api-runner-browser-plugins.js`)
         )
         const asyncRequiresPath = slash(
-          path.join(
+          join(
             program.directory,
             `.cache`,
             `_this_is_virtual_fs_path_`,
@@ -308,7 +304,7 @@ export class StaticQueryMapper {
 
           const allSlices = mergePreviouslyCollectedSlices(
             slicesByComponents.get(component.componentPath) ?? {},
-            component.isSlice ? {} : cloneDeep(globalSliceUsage)
+            component.isSlice ? {} : structuredClone(globalSliceUsage)
           )
 
           const slices = Object.keys(allSlices)

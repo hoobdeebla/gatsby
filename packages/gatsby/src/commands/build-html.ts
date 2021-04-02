@@ -1,10 +1,10 @@
-import Bluebird from "bluebird"
-import fs from "fs-extra"
+import { map as mapPromise } from "bluebird"
+import { remove } from "fs-extra"
 import reporter from "gatsby-cli/lib/reporter"
 import { createErrorFromString } from "gatsby-cli/lib/reporter/errors"
-import { chunk } from "lodash"
+import chunk from "lodash/chunk"
 import { build, watch } from "../utils/webpack/bundle"
-import * as path from "path"
+import { join } from "node:path"
 import fastq from "fastq"
 
 import { emitter, store } from "../redux"
@@ -293,11 +293,7 @@ export const buildPartialHydrationRenderer = async (
   // TODO add caching
   config.cache = false
 
-  config.output.path = path.join(
-    program.directory,
-    `.cache`,
-    `partial-hydration`
-  )
+  config.output.path = join(program.directory, `.cache`, `partial-hydration`)
 
   // require.resolve might fail the build if the package is not installed
   // Instead of failing it'll be ignored
@@ -316,8 +312,8 @@ export const buildPartialHydrationRenderer = async (
 // TODO remove after v4 release and update cloud internals
 export const deleteRenderer = async (rendererPath: string): Promise<void> => {
   try {
-    await fs.remove(rendererPath)
-    await fs.remove(`${rendererPath}.map`)
+    await remove(rendererPath)
+    await remove(`${rendererPath}.map`)
   } catch (e) {
     // This function will fail on Windows with no further consequences.
   }
@@ -368,7 +364,7 @@ const renderHTMLQueue = async (
   const uniqueUnsafeBuiltinUsedStacks = new Set<string>()
 
   try {
-    await Bluebird.map(segments, async pageSegment => {
+    await mapPromise(segments, async pageSegment => {
       const renderHTMLResult = await renderHTML({
         envVars,
         htmlComponentRendererPath,
@@ -726,13 +722,13 @@ export async function buildHTMLPagesAndDeleteStaleArtifacts({
     })
 
     await stitchSlicesIntoPagesHTML({
-      publicDir: path.join(program.directory, `public`),
+      publicDir: join(program.directory, `public`),
       parentSpan,
     })
   }
 
   if (toDelete.length > 0) {
-    const publicDir = path.join(program.directory, `public`)
+    const publicDir = join(program.directory, `public`)
     const deletePageDataActivityTimer = reporter.activityTimer(
       `Delete previous page data`
     )
@@ -792,7 +788,7 @@ export async function buildSlices({
       }
 
       await workerPool.single.renderSlices({
-        publicDir: path.join(program.directory, `public`),
+        publicDir: join(program.directory, `public`),
         htmlComponentRendererPath,
         slices,
         slicesProps,

@@ -1,6 +1,6 @@
 // @ts-check
 // This is more an integration test than it is a unit test. We try to mock as little as we can
-import _ from "lodash"
+import isPlainObject from "lodash/isPlainObject"
 import {
   createSchemaCustomization,
   sourceNodes,
@@ -37,7 +37,7 @@ fetchContentTypes.mockImplementation(() =>
 const createMockCache = () => {
   const actualCacheMap = new Map()
   return {
-    get: jest.fn(key => _.cloneDeep(actualCacheMap.get(key))),
+    get: jest.fn(key => structuredClone(actualCacheMap.get(key))),
     set: jest.fn((key, value) => actualCacheMap.set(key, value)),
     directory: __dirname,
     actualMap: actualCacheMap,
@@ -69,7 +69,7 @@ describe(`gatsby-node`, () => {
     }),
     createNode: jest.fn(async node => {
       // similar checks as gatsby does
-      if (!_.isPlainObject(node)) {
+      if (!isPlainObject(node)) {
         throw new Error(
           `The node passed to the "createNode" action creator must be an object`
         )
@@ -139,8 +139,9 @@ describe(`gatsby-node`, () => {
   // returning clones of nodes to test if we are updating nodes correctly
   // as it's not enough to mutate a node, we need to call an update function
   // to actually update datastore
-  const getNodes = () => Array.from(currentNodeMap.values()).map(_.cloneDeep)
-  const getNode = id => _.cloneDeep(currentNodeMap.get(id))
+  const getNodes = () =>
+    Array.from(currentNodeMap.values()).map(structuredClone)
+  const getNode = id => structuredClone(currentNodeMap.get(id))
 
   const getFieldValue = (
     value,
