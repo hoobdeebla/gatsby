@@ -1,16 +1,17 @@
-const Promise = require(`bluebird`)
-const _ = require(`lodash`)
+const { fromCallback, map: mapPromise, mapSeries } = require(`bluebird`)
+const { isEmpty, merge } = require(`lodash`)
 const chalk = require(`chalk`)
 const { bindActionCreators: origBindActionCreators } = require(`redux`)
 const memoize = require(`memoizee`)
 
 const bindActionCreators = memoize(origBindActionCreators)
 
-const tracer = require(`opentracing`).globalTracer()
+const { globalTracer } = require(`opentracing`)
+const tracer = globalTracer()
 const reporter = require(`gatsby-cli/lib/reporter`)
 const stackTrace = require(`stack-trace`)
 const { codeFrameColumns } = require(`@babel/code-frame`)
-const fs = require(`fs-extra`)
+const { readFileSync } = require(`fs-extra`)
 const { getCache } = require(`./get-cache`)
 import { createNodeId } from "./create-node-id"
 const {
@@ -56,15 +57,6 @@ function createContentDigest(node) {
     },
     fields: undefined,
   })
-}
-
-if (!process.env.BLUEBIRD_DEBUG && !process.env.BLUEBIRD_LONG_STACK_TRACES) {
-  // Unless specified - disable longStackTraces
-  // as this have severe perf penalty ( http://bluebirdjs.com/docs/api/promise.longstacktraces.html )
-  // This is mainly for `gatsby develop` due to NODE_ENV being set to development
-  // which cause bluebird to enable longStackTraces
-  // `gatsby build` (with NODE_ENV=production) already doesn't enable longStackTraces
-  Promise.config({ longStackTraces: false })
 }
 
 const nodeMutationsWrappers = {
@@ -127,7 +119,7 @@ const initAPICallTracing = parentSpan => {
   const startSpan = (spanName, spanArgs = {}) => {
     const defaultSpanArgs = { childOf: parentSpan }
 
-    return tracer.startSpan(spanName, _.merge(defaultSpanArgs, spanArgs))
+    return tracer.startSpan(spanName, merge(defaultSpanArgs, spanArgs))
   }
 
   return {
@@ -486,7 +478,7 @@ const runAPI = async (plugin, api, args, activity) => {
     // If the plugin is using a callback use that otherwise
     // expect a Promise to be returned.
     if (gatsbyNode[api].length === 3) {
-      return Promise.fromCallback(callback => {
+      return fromCallback(callback => {
         const cb = (err, val) => {
           pluginSpan.finish()
           apiFinished = true
@@ -551,9 +543,11 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
     const apiSpan = tracer.startSpan(`run-api`, apiSpanArgs)
 
     apiSpan.setTag(`api`, api)
-    _.forEach(traceTags, (value, key) => {
-      apiSpan.setTag(key, value)
-    })
+    if (traceTags) {
+      Array.from(traceTags).forEach((value, key) => {
+        apiSpan.setTag(key, value)
+      })
+    }
 
     const apiRunInstance = {
       api,
@@ -582,7 +576,8 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
       // When tracing is turned on, the `args` object will have a
       // `parentSpan` field that can be quite large. So we omit it
       // before calling stringify
-      const argsJson = JSON.stringify(_.omit(args, `parentSpan`))
+      const { parentSpan, ...argsObject } = args
+      const argsJson = JSON.stringify(argsObject)
       id = `${api}|${apiRunInstance.startTime}|${apiRunInstance.traceId}|${argsJson}`
     }
     apiRunInstance.id = id
@@ -624,10 +619,10 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
       api === `sourceNodes` &&
       process.env.GATSBY_EXPERIMENTAL_PARALLEL_SOURCING
     ) {
-      runPromise = Promise.map
+      runPromise = mapPromise
       apiRunPromiseOptions.concurrency = 20
     } else {
-      runPromise = Promise.mapSeries
+      runPromise = mapSeries
       apiRunPromiseOptions = undefined
     }
 
@@ -680,7 +675,7 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
               const trimmedFileName = fileName.match(/^(async )?(.*)/)[2]
 
               try {
-                const code = fs.readFileSync(trimmedFileName, {
+                const code = readFileSync(trimmedFileName, {
                   encoding: `utf-8`,
                 })
                 codeFrame = codeFrameColumns(
@@ -735,7 +730,7 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
       }
 
       // Filter empty results
-      apiRunInstance.results = results.filter(result => !_.isEmpty(result))
+      apiRunInstance.results = results.filter(result => !isEmpty(result))
 
       // Filter out empty responses and return if the
       // api caller isn't waiting for cascading actions to finish.

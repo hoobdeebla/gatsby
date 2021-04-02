@@ -9,7 +9,6 @@
   "dependencies": {
     "@babel/runtime": "^7.24.7",
     "async": "^3.2.5",
-    "bluebird": "^3.7.2",
     "debug": "^4.3.5",
     "filenamify": "^4.3.0",
     "fs-extra": "^11.2.0",
@@ -24,6 +23,7 @@
     "@babel/cli": "^7.24.7",
     "@babel/core": "^7.24.7",
     "@types/fs-extra": "^11.0.4",
+    "@types/lodash": "^4.17.6",
     "babel-preset-gatsby-package": "^3.14.0-next.2",
     "cross-env": "^7.0.3",
     "gatsby-plugin-image": "^3.14.0-next.2"
