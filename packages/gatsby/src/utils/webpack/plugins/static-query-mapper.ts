@@ -1,7 +1,7 @@
 import path from "path"
 import { Store } from "redux"
 import { Compiler, NormalModule } from "webpack"
-import { isEqual, cloneDeep } from "lodash"
+import isEqual from "lodash/isEqual"
 import { enqueueFlush } from "../../page-data"
 import type { IGatsbyState, IGatsbyPageComponent } from "../../../redux/types"
 import {
@@ -308,7 +308,7 @@ export class StaticQueryMapper {
 
           const allSlices = mergePreviouslyCollectedSlices(
             slicesByComponents.get(component.componentPath) ?? {},
-            component.isSlice ? {} : cloneDeep(globalSliceUsage)
+            component.isSlice ? {} : structuredClone(globalSliceUsage)
           )
 
           const slices = Object.keys(allSlices)
