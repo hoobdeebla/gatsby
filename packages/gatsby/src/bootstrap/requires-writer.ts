@@ -1,4 +1,4 @@
-import _ from "lodash"
+import { debounce, orderBy, uniqBy } from "lodash"
 import { relative } from "path"
 import { writeFile } from "fs/promises"
 import { move } from "fs-extra" // must use
@@ -57,9 +57,9 @@ export const getComponents = (
     }
   }
 
-  return _.orderBy(
-    _.uniqBy(
-      _.map([...pages, ...slices.values()], pickComponentFields),
+  return orderBy(
+    uniqBy(
+      [...pages, ...slices.values()].map(pickComponentFields),
       c => c.componentChunkName
     ),
     c => c.componentChunkName
@@ -320,7 +320,7 @@ exports.head = {\n${components
   return true
 }
 
-const debouncedWriteAll = _.debounce(
+const debouncedWriteAll = debounce(
   async (): Promise<void> => {
     const activity = reporter.activityTimer(`write out requires`, {
       id: `requires-writer`,

@@ -3,7 +3,7 @@ import hasha from "hasha"
 import { existsSync } from "fs"
 import { mkdir } from "fs/promises"
 import pDefer from "p-defer"
-import _ from "lodash"
+import isPlainObject from "lodash/isPlainObject"
 import { createContentDigest, slash, uuid } from "gatsby-core-utils"
 import reporter from "gatsby-cli/lib/reporter"
 import { IPhantomReporter } from "gatsby-cli"
@@ -303,7 +303,7 @@ export async function enqueueJob(
   try {
     const result = await runJob(job)
     // this check is to keep our worker results consistent for cloud
-    if (result != null && !_.isPlainObject(result)) {
+    if (result != null && !isPlainObject(result)) {
       throw new Error(
         `Result of a worker should be an object, type of "${typeof result}" was given`
       )

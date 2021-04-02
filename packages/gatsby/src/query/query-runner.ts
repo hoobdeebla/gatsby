@@ -1,5 +1,4 @@
 import { Span } from "opentracing"
-import _ from "lodash"
 import { outputFile } from "fs-extra" // must use
 import report from "gatsby-cli/lib/reporter"
 import { ExecutionResult, GraphQLError } from "graphql"

@@ -1,4 +1,3 @@
-import _ from "lodash"
 import { slash, isCI } from "gatsby-core-utils"
 import { existsSync, readFileSync, writeFileSync } from "fs"
 import { mkdir, rm, cp } from "fs/promises"
@@ -619,7 +618,7 @@ export async function initialize({
 
   store.dispatch({
     type: `SET_PROGRAM_EXTENSIONS`,
-    payload: _.flattenDeep([extensions, apiResults]),
+    payload: [extensions, apiResults].flat(Infinity),
   })
 
   const workerPool = WorkerPool.create()

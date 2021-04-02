@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/no-unused-vars: ["error", { "ignoreRestSiblings": true }] */
 import { rm, writeFile } from "fs/promises"
 import { relative, dirname } from "path"
 import cloneDeepWith from "lodash/cloneDeepWith"

@@ -1,5 +1,6 @@
-const fs = require(`fs-extra`)
-const path = require(`path`)
+const { readFileSync, rmSync } = require(`fs`)
+const { outputFileSync } = require(`fs-extra`) // must use
+const { join, dirname } = require(`path`)
 
 const { promisifiedSpawn } = require(`../utils/promisified-spawn`)
 const { registryUrl } = require(`./verdaccio-config`)
@@ -33,10 +34,7 @@ const adjustPackageJson = ({
   // adjust version selector to point to dev version of package so local registry is used
   // for dependencies.
 
-  const monorepoPKGjsonString = fs.readFileSync(
-    monoRepoPackageJsonPath,
-    `utf-8`
-  )
+  const monorepoPKGjsonString = readFileSync(monoRepoPackageJsonPath, `utf-8`)
   const monorepoPKGjson = JSON.parse(monorepoPKGjsonString)
 
   monorepoPKGjson.version = `${monorepoPKGjson.version}-dev-${versionPostFix}`
@@ -46,7 +44,7 @@ const adjustPackageJson = ({
       monorepoPKGjson.dependencies[packageThatWillBePublished]
     ) {
       const currentVersion = JSON.parse(
-        fs.readFileSync(
+        readFileSync(
           getMonorepoPackageJsonPath({
             packageName: packageThatWillBePublished,
             packageNameToPath,
@@ -69,13 +67,13 @@ const adjustPackageJson = ({
   ])
 
   // change version and dependency versions
-  fs.outputFileSync(monoRepoPackageJsonPath, temporaryMonorepoPKGjsonString)
+  outputFileSync(monoRepoPackageJsonPath, temporaryMonorepoPKGjsonString)
 
   return {
     newPackageVersion: monorepoPKGjson.version,
     unadjustPackageJson: registerCleanupTask(() => {
       // restore original package.json
-      fs.outputFileSync(monoRepoPackageJsonPath, monorepoPKGjsonString)
+      outputFileSync(monoRepoPackageJsonPath, monorepoPKGjsonString)
       unignorePackageJSONChanges()
     }),
   }
@@ -88,15 +86,15 @@ const adjustPackageJson = ({
  * This is not verdaccio restriction.
  */
 const createTemporaryNPMRC = ({ pathToPackage, root }) => {
-  const NPMRCPathInPackage = path.join(pathToPackage, `.npmrc`)
-  fs.outputFileSync(NPMRCPathInPackage, NPMRCContent)
+  const NPMRCPathInPackage = join(pathToPackage, `.npmrc`)
+  outputFileSync(NPMRCPathInPackage, NPMRCContent)
 
-  const NPMRCPathInRoot = path.join(root, `.npmrc`)
-  fs.outputFileSync(NPMRCPathInRoot, NPMRCContent)
+  const NPMRCPathInRoot = join(root, `.npmrc`)
+  outputFileSync(NPMRCPathInRoot, NPMRCContent)
 
   return registerCleanupTask(() => {
-    fs.removeSync(NPMRCPathInPackage)
-    fs.removeSync(NPMRCPathInRoot)
+    rmSync(NPMRCPathInPackage, { recursive: true, force: true })
+    rmSync(NPMRCPathInRoot, { recursive: true, force: true })
   })
 }
 
@@ -122,7 +120,7 @@ const publishPackage = async ({
     ignorePackageJSONChanges,
   })
 
-  const pathToPackage = path.dirname(monoRepoPackageJsonPath)
+  const pathToPackage = dirname(monoRepoPackageJsonPath)
 
   const uncreateTemporaryNPMRC = createTemporaryNPMRC({ pathToPackage, root })
 

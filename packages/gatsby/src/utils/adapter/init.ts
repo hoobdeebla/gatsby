@@ -1,5 +1,4 @@
 import reporter from "gatsby-cli/lib/reporter"
-import _ from "lodash"
 import { createRequireFromPath } from "gatsby-core-utils/create-require-from-path"
 import { join } from "path"
 import { mkdir } from "fs/promises"

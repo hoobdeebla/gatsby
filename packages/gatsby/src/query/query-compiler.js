@@ -5,7 +5,7 @@
  * have global scope and can be used in any other query or fragment.
  */
 
-const _ = require(`lodash`)
+const kebabCase = require(`lodash/kebabCase`)
 
 const path = require(`path`)
 const normalize = require(`normalize-path`)
@@ -154,7 +154,7 @@ export const parseQueries = async ({
     Array.from(store.getState().components.keys(), c => normalize(c))
   )
 
-  files = _.uniq(files)
+  files = Array.from(new Set(files))
 
   const parser = new FileParser({ parentSpan: parentSpan })
 
@@ -450,7 +450,7 @@ const processDefinitions = ({
     if (query.isStaticQuery) {
       query.id =
         `sq--` +
-        _.kebabCase(
+        kebabCase(
           `${path.relative(store.getState().program.directory, filePath)}`
         )
     }

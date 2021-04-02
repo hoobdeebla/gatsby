@@ -1,5 +1,4 @@
 const { watch: chokidarWatch } = require(`chokidar`)
-const _ = require(`lodash`)
 const del = require(`del`)
 const { chmodSync, existsSync } = require(`fs`)
 const { cp } = require(`fs/promises`)
@@ -131,13 +130,13 @@ async function watch(
   // add them to packages list
   const { seenPackages, depTree } = traversePackagesDeps({
     root,
-    packages: _.uniq(localPackages),
+    packages: Array.from(new Set(localPackages)),
     monoRepoPackages,
     packageNameToPath,
   })
 
   const allPackagesToWatch = packages
-    ? _.intersection(packages, seenPackages)
+    ? [packages, seenPackages].reduce((a, b) => a.filter(c => b.includes(c)))
     : seenPackages
 
   const ignoredPackageJSON = new Map()
@@ -198,10 +197,12 @@ async function watch(
       p => new RegExp(`${p}[\\/\\\\]src[\\/\\\\]`, `i`)
     )
   )
-  const watchers = _.uniq(
-    allPackagesToWatch
-      .map(p => join(packageNameToPath.get(p)))
-      .filter(p => existsSync(p))
+  const watchers = Array.from(
+    new Set(
+      allPackagesToWatch
+        .map(p => join(packageNameToPath.get(p)))
+        .filter(p => existsSync(p))
+    )
   )
 
   let allCopies = []
@@ -215,7 +216,7 @@ async function watch(
   const watchEvents = [`change`, `add`]
   const packagePathMatchingEntries = Array.from(packageNameToPath.entries())
   chokidarWatch(watchers, {
-    ignored: [filePath => _.some(ignored, reg => reg.test(filePath))],
+    ignored: [filePath => ignored.some(reg => reg.test(filePath))],
   })
     .on(`all`, async (event, filePath) => {
       if (!watchEvents.includes(event)) {
@@ -241,7 +242,7 @@ async function watch(
 
       // Copy it over local version.
       // Don't copy over the Gatsby bin file as that breaks the NPM symlink.
-      if (_.includes(filePath, `dist/gatsby-cli.js`)) {
+      if (filePath.includes(`dist/gatsby-cli.js`)) {
         return
       }
 
@@ -317,7 +318,7 @@ async function watch(
       const localCopies = [copyPath(filePath, newPath, quiet, packageName)]
 
       // If this is from "cache-dir" also copy it into the site's .cache
-      if (_.includes(filePath, `cache-dir`)) {
+      if (filePath.includes(`cache-dir`)) {
         const newCachePath = join(
           `.cache/`,
           relative(join(prefix, `cache-dir`), filePath)

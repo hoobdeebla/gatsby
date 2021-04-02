@@ -2,7 +2,7 @@
 
 const Configstore = require(`configstore`)
 const pkg = require(`../package.json`)
-const _ = require(`lodash`)
+const { isEmpty, merge } = require(`lodash`)
 const { existsSync, readdirSync, readFileSync } = require(`fs`)
 const { join, resolve } = require(`path`)
 const { homedir } = require(`os`)
@@ -119,12 +119,12 @@ const monoRepoPackages = readdirSync(join(gatsbyLocation, `packages`)).map(
 
 const localPkg = JSON.parse(readFileSync(`package.json`))
 // intersect dependencies with monoRepoPackages to get list of packages that are used
-const localPackages = _.intersection(
+const localPackages = [
   monoRepoPackages,
-  Object.keys(_.merge({}, localPkg.dependencies, localPkg.devDependencies))
-)
+  Object.keys(merge({}, localPkg.dependencies, localPkg.devDependencies)),
+].reduce((a, b) => a.filter(c => b.includes(c)))
 
-if (!argv.packages && _.isEmpty(localPackages)) {
+if (!argv.packages && isEmpty(localPackages)) {
   console.error(
     `
 You haven't got any gatsby dependencies into your current package.json

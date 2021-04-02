@@ -1,6 +1,6 @@
 const { Parser: Json2csv } = require(`@json2csv/plainjs`)
 const os = require(`os`)
-const { cloneDeep } = require(`lodash`)
+const cloneDeep = require(`lodash/cloneDeep`) // no structuredClone in jest-env-jsdom
 
 const { onCreateNode } = require(`../gatsby-node`)
 const { typeNameFromDir, typeNameFromFile } = require(`../index`)
