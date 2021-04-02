@@ -3,7 +3,6 @@ const visit = require(`unist-util-visit`)
 const isRelativeUrl = require(`is-relative-url`)
 const fsExtra = require(`fs-extra`)
 const path = require(`path`)
-const _ = require(`lodash`)
 const cheerio = require(`cheerio`)
 const imageSize = require(`probe-image-size`)
 
@@ -21,7 +20,7 @@ const validateDestinationDir = dir => {
   } else if (typeof dir === `string`) {
     // need to pass dummy data for validation to work
     return destinationIsValid(`${dir}/n/h/a`)
-  } else if (_.isFunction(dir)) {
+  } else if (typeof dir === `function`) {
     // need to pass dummy data for validation to work
     return destinationIsValid(
       `${dir({ name: `n`, hash: `h`, absolutePath: `a` })}`
@@ -35,13 +34,13 @@ const defaultDestination = linkNode =>
   `${linkNode.internal.contentDigest}/${linkNode.name}.${linkNode.extension}`
 
 const getDestination = (linkNode, dir) => {
-  if (_.isFunction(dir)) {
+  if (typeof dir === `function`) {
     return `${dir({
       name: linkNode.name,
       hash: linkNode.internal.contentDigest,
       absolutePath: linkNode.absolutePath,
     })}.${linkNode.extension}`
-  } else if (_.isString(dir)) {
+  } else if (dir && typeof dir.valueOf() === `string`) {
     return `${dir}/${defaultDestination(linkNode)}`
   } else {
     return defaultDestination(linkNode)
@@ -85,7 +84,7 @@ module.exports = (
   if (!validateDestinationDir(destinationDir))
     return Promise.reject(invalidDestinationDirMessage(destinationDir))
 
-  const options = _.defaults({}, pluginOptions, defaults)
+  const options = Object.assign({}, defaults, pluginOptions)
 
   const filesToCopy = new Map()
   // Copy linked files to the destination directory and modify the AST to point
@@ -96,7 +95,7 @@ module.exports = (
         getNode(markdownNode.parent).dir,
         link.url
       )
-      const linkNode = _.find(files, file => {
+      const linkNode = files.find(file => {
         if (file && file.absolutePath) {
           return file.absolutePath === linkPath
         }
@@ -122,7 +121,7 @@ module.exports = (
       getNode(markdownNode.parent).dir,
       image.attr(`src`)
     )
-    const imageNode = _.find(files, file => {
+    const imageNode = files.find(file => {
       if (file && file.absolutePath) {
         return file.absolutePath === imagePath
       }
@@ -201,7 +200,7 @@ module.exports = (
       getNode(markdownNode.parent).dir,
       image.url
     )
-    const imageNode = _.find(files, file => {
+    const imageNode = files.find(file => {
       if (file && file.absolutePath) {
         return file.absolutePath === imagePath
       }
