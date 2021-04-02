@@ -8,7 +8,6 @@ import { render } from "@testing-library/react"
 import { renderRichText } from "gatsby-source-contentful/rich-text"
 import { BLOCKS, INLINES } from "@contentful/rich-text-types"
 import { initialSync } from "../__fixtures__/rich-text-data"
-import { cloneDeep } from "lodash"
 
 const raw = JSON.stringify({
   nodeType: `document`,
@@ -434,8 +433,8 @@ describe(`rich text`, () => {
     const { container } = render(
       <>
         {renderRichText({
-          raw: cloneDeep(raw),
-          references: cloneDeep(references),
+          raw: structuredClone(raw),
+          references: structuredClone(references),
         })}
       </>
     )
@@ -518,7 +517,10 @@ describe(`rich text`, () => {
     const { container } = render(
       <>
         {renderRichText(
-          { raw: cloneDeep(raw), references: cloneDeep(references) },
+          {
+            raw: structuredClone(raw),
+            references: structuredClone(references),
+          },
           options
         )}
       </>

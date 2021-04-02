@@ -1,6 +1,6 @@
-import _ from "lodash"
-import path from "path"
-import fs from "fs-extra"
+import { debounce, orderBy, uniqBy } from "lodash"
+import { relative } from "node:path"
+import { writeFile, move } from "fs-extra"
 import reporter from "gatsby-cli/lib/reporter"
 import { match } from "@gatsbyjs/reach-router"
 import { joinPath, md5, slash } from "gatsby-core-utils"
@@ -56,9 +56,9 @@ export const getComponents = (
     }
   }
 
-  return _.orderBy(
-    _.uniqBy(
-      _.map([...pages, ...slices.values()], pickComponentFields),
+  return orderBy(
+    uniqBy(
+      [...pages, ...slices.values()].map(pickComponentFields),
       c => c.componentChunkName
     ),
     c => c.componentChunkName
@@ -231,7 +231,7 @@ const preferDefault = m => (m && m.default) || m
     asyncRequires = `exports.components = {\n${components
       .map((c: IGatsbyPageComponent): string => {
         // we need a relative import path to keep contenthash the same if directory changes
-        const relativeComponentPath = path.relative(
+        const relativeComponentPath = relative(
           getAbsolutePathForVirtualModule(`$virtual`),
           c.componentPath
         )
@@ -253,7 +253,7 @@ exports.head = {\n${components
           return undefined
         }
         // we need a relative import path to keep contenthash the same if directory changes
-        const relativeComponentPath = path.relative(
+        const relativeComponentPath = relative(
           getAbsolutePathForVirtualModule(`$virtual`),
           c.componentPath
         )
@@ -273,7 +273,7 @@ exports.head = {\n${components
     asyncRequires = `exports.components = {\n${components
       .map((c: IGatsbyPageComponent): string => {
         // we need a relative import path to keep contenthash the same if directory changes
-        const relativeComponentPath = path.relative(
+        const relativeComponentPath = relative(
           getAbsolutePathForVirtualModule(`$virtual`),
           c.componentPath
         )
@@ -297,9 +297,9 @@ exports.head = {\n${components
     // `match-paths.json` to setup routing)
     const destination = joinPath(program.directory, `.cache`, file)
     const tmp = `${destination}.${Date.now()}`
-    return fs
-      .writeFile(tmp, data)
-      .then(() => fs.move(tmp, destination, { overwrite: true }))
+    return writeFile(tmp, data).then(() =>
+      move(tmp, destination, { overwrite: true })
+    )
   }
 
   await Promise.all([
@@ -319,7 +319,7 @@ exports.head = {\n${components
   return true
 }
 
-const debouncedWriteAll = _.debounce(
+const debouncedWriteAll = debounce(
   async (): Promise<void> => {
     const activity = reporter.activityTimer(`write out requires`, {
       id: `requires-writer`,

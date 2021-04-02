@@ -1,8 +1,7 @@
-const chokidar = require(`chokidar`)
-const _ = require(`lodash`)
+const { watch: chokidarWatch } = require(`chokidar`)
 const del = require(`del`)
-const fs = require(`fs-extra`)
-const path = require(`path`)
+const { chmodSync, copy, existsSync } = require(`fs-extra`)
+const { join, relative } = require(`node:path`)
 const findWorkspaceRoot = require(`find-yarn-workspace-root`)
 
 const { publishPackagesLocallyAndInstall } = require(`./local-npm-registry`)
@@ -55,7 +54,7 @@ async function watch(
 
   const realCopyPath = arg => {
     const { oldPath, newPath, quiet, resolve, reject, retry = 0 } = arg
-    fs.copy(oldPath, newPath, err => {
+    copy(oldPath, newPath, err => {
       if (err) {
         if (retry >= MAX_COPY_RETRIES) {
           console.error(err)
@@ -80,7 +79,7 @@ async function watch(
       //  -gatsby/cli.js
       //  -gatsby-cli/cli.js
       if (/(bin\/gatsby.js|gatsby(-cli)?\/cli.js)$/.test(newPath)) {
-        fs.chmodSync(newPath, `0755`)
+        chmodSync(newPath, `0755`)
       }
 
       numCopied += 1
@@ -130,13 +129,13 @@ async function watch(
   // add them to packages list
   const { seenPackages, depTree } = traversePackagesDeps({
     root,
-    packages: _.uniq(localPackages),
+    packages: Array.from(new Set(localPackages)),
     monoRepoPackages,
     packageNameToPath,
   })
 
   const allPackagesToWatch = packages
-    ? _.intersection(packages, seenPackages)
+    ? [packages, seenPackages].reduce((a, b) => a.filter(c => b.includes(c)))
     : seenPackages
 
   const ignoredPackageJSON = new Map()
@@ -197,10 +196,12 @@ async function watch(
       p => new RegExp(`${p}[\\/\\\\]src[\\/\\\\]`, `i`)
     )
   )
-  const watchers = _.uniq(
-    allPackagesToWatch
-      .map(p => path.join(packageNameToPath.get(p)))
-      .filter(p => fs.existsSync(p))
+  const watchers = Array.from(
+    new Set(
+      allPackagesToWatch
+        .map(p => join(packageNameToPath.get(p)))
+        .filter(p => existsSync(p))
+    )
   )
 
   let allCopies = []
@@ -213,10 +214,9 @@ async function watch(
 
   const watchEvents = [`change`, `add`]
   const packagePathMatchingEntries = Array.from(packageNameToPath.entries())
-  chokidar
-    .watch(watchers, {
-      ignored: [filePath => _.some(ignored, reg => reg.test(filePath))],
-    })
+  chokidarWatch(watchers, {
+    ignored: [filePath => ignored.some(reg => reg.test(filePath))],
+  })
     .on(`all`, async (event, filePath) => {
       if (!watchEvents.includes(event)) {
         return
@@ -226,7 +226,7 @@ async function watch(
       let packageName
 
       for (const [_packageName, packagePath] of packagePathMatchingEntries) {
-        const relativeToThisPackage = path.relative(packagePath, filePath)
+        const relativeToThisPackage = relative(packagePath, filePath)
         if (!relativeToThisPackage.startsWith(`..`)) {
           packageName = _packageName
           break
@@ -241,16 +241,13 @@ async function watch(
 
       // Copy it over local version.
       // Don't copy over the Gatsby bin file as that breaks the NPM symlink.
-      if (_.includes(filePath, `dist/gatsby-cli.js`)) {
+      if (filePath.includes(`dist/gatsby-cli.js`)) {
         return
       }
 
-      const relativePackageFile = path.relative(prefix, filePath)
+      const relativePackageFile = relative(prefix, filePath)
 
-      const newPath = path.join(
-        `./node_modules/${packageName}`,
-        relativePackageFile
-      )
+      const newPath = join(`./node_modules/${packageName}`, relativePackageFile)
 
       if (relativePackageFile === `package.json`) {
         // package.json files will change during publish to adjust version of package (and dependencies), so ignore
@@ -320,10 +317,10 @@ async function watch(
       const localCopies = [copyPath(filePath, newPath, quiet, packageName)]
 
       // If this is from "cache-dir" also copy it into the site's .cache
-      if (_.includes(filePath, `cache-dir`)) {
-        const newCachePath = path.join(
+      if (filePath.includes(`cache-dir`)) {
+        const newCachePath = join(
           `.cache/`,
-          path.relative(path.join(prefix, `cache-dir`), filePath)
+          relative(join(prefix, `cache-dir`), filePath)
         )
         localCopies.push(copyPath(filePath, newCachePath, quiet))
       }
