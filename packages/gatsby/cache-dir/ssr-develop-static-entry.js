@@ -2,7 +2,7 @@
 import React from "react"
 import fs from "fs-extra"
 import { renderToStaticMarkup, renderToPipeableStream } from "react-dom/server"
-import { get, merge, isObject, flatten, uniqBy, concat } from "lodash"
+import { merge, isObject, uniqBy } from "lodash"
 import nodePath from "path"
 import { apiRunner, apiRunnerAsync } from "./api-runner-ssr"
 import { grabMatchParams } from "./find-path"
@@ -169,13 +169,13 @@ export default async function staticPage({
 
     const pageComponent = await syncRequires.ssrComponents[componentChunkName]
 
-    let scriptsAndStyles = flatten(
-      [`commons`].map(chunkKey => {
+    let scriptsAndStyles = [`commons`]
+      .flatMap(chunkKey => {
         const fetchKey = `assetsByChunkName[${chunkKey}]`
 
         const stats = getStats(publicDir)
-        let chunks = get(stats, fetchKey)
-        const namedChunkGroups = get(stats, `namedChunkGroups`)
+        let chunks = stats[fetchKey]
+        const { namedChunkGroups } = stats
 
         if (!chunks) {
           return null
@@ -195,8 +195,7 @@ export default async function staticPage({
         const childAssets = namedChunkGroups[chunkKey].childAssets
         for (const rel in childAssets) {
           if (Object.hasOwn(childAssets, rel)) {
-            chunks = concat(
-              chunks,
+            chunks.concat(
               childAssets[rel].map(chunk => {
                 return { rel, name: chunk }
               })
@@ -206,7 +205,6 @@ export default async function staticPage({
 
         return chunks
       })
-    )
       .filter(s => isObject(s))
       .sort((s1, _s2) => (s1.rel == `preload` ? -1 : 1)) // given priority to preload
 
