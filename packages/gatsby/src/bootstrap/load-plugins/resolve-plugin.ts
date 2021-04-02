@@ -7,7 +7,8 @@ import { IPluginInfo, PluginRef } from "./types"
 import { createPluginId } from "./utils/create-id"
 import { createFileContentHash } from "./utils/create-hash"
 import reporter from "gatsby-cli/lib/reporter"
-import { isString } from "lodash"
+// eslint-disable-next-line you-dont-need-lodash-underscore/is-string
+import isString from "lodash/isString"
 import { checkLocalPlugin } from "./utils/check-local-plugin"
 import { getResolvedFieldsForPlugin } from "../../utils/parcel/compile-gatsby-files"
 
