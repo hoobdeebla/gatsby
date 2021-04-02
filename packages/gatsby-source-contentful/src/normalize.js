@@ -1,6 +1,6 @@
 // @ts-check
 import stringify from "json-stringify-safe"
-import _ from "lodash"
+import { camelCase, isPlainObject, mapValues, upperFirst } from "lodash"
 import { getGatsbyVersion } from "gatsby-core-utils"
 import { lt, prerelease } from "semver"
 import fastq from "fastq"
@@ -10,7 +10,7 @@ import fastq from "fastq"
  * @param {string} typePrefix
  */
 export const makeTypeName = (type, typePrefix) =>
-  _.upperFirst(_.camelCase(`${typePrefix} ${type}`))
+  upperFirst(camelCase(`${typePrefix} ${type}`))
 
 const GATSBY_VERSION_MANIFEST_V2 = `4.3.0`
 const gatsbyVersion =
@@ -23,11 +23,11 @@ export const getLocalizedField = ({ field, locale, localesFallback }) => {
   if (!field) {
     return null
   }
-  if (!_.isUndefined(field[locale.code])) {
+  if (field[locale.code] !== undefined) {
     return field[locale.code]
   } else if (
-    !_.isUndefined(locale.code) &&
-    !_.isUndefined(localesFallback[locale.code])
+    locale.code !== undefined &&
+    localesFallback[locale.code] !== undefined
   ) {
     return getLocalizedField({
       field,
@@ -40,8 +40,7 @@ export const getLocalizedField = ({ field, locale, localesFallback }) => {
 }
 export const buildFallbackChain = locales => {
   const localesFallback = {}
-  _.each(
-    locales,
+  locales.forEach(
     locale => (localesFallback[locale.code] = locale.fallbackCode)
   )
   return localesFallback
@@ -240,14 +239,14 @@ export const buildForeignReferenceMap = ({
 }
 
 function prepareTextNode(id, node, key, text) {
-  const str = _.isString(text) ? text : ``
+  const str = typeof text.valueOf() === `string` ? text : ``
   const textNode = {
     id,
     parent: node.id,
     children: [],
     [key]: str,
     internal: {
-      type: _.camelCase(`${node.internal.type} ${key} TextNode`),
+      type: camelCase(`${node.internal.type} ${key} TextNode`),
       mediaType: `text/markdown`,
       content: str,
       // entryItem.sys.updatedAt is source of truth from contentful
@@ -266,12 +265,12 @@ function prepareTextNode(id, node, key, text) {
 function prepareJSONNode(id, node, key, content) {
   const str = JSON.stringify(content)
   const JSONNode = {
-    ...(_.isPlainObject(content) ? { ...content } : { content: content }),
+    ...(isPlainObject(content) ? { ...content } : { content: content }),
     id,
     parent: node.id,
     children: [],
     internal: {
-      type: _.camelCase(`${node.internal.type} ${key} JSONNode`),
+      type: camelCase(`${node.internal.type} ${key} JSONNode`),
       mediaType: `application/json`,
       content: str,
       // entryItem.sys.updatedAt is source of truth from contentful
@@ -501,7 +500,7 @@ export const createNodesForContentType = async ({
       }
 
       // Get localized fields.
-      const entryItemFields = _.mapValues(entryItem.fields, (v, k) => {
+      const entryItemFields = mapValues(entryItem.fields, (v, k) => {
         const fieldProps = contentTypeItem.fields.find(field => field.id === k)
 
         const localizedField = fieldProps.localized
@@ -674,7 +673,7 @@ export const createNodesForContentType = async ({
           delete entryItemFields[entryItemFieldKey]
         } else if (
           fieldType === `RichText` &&
-          _.isPlainObject(entryItemFields[entryItemFieldKey])
+          isPlainObject(entryItemFields[entryItemFieldKey])
         ) {
           const fieldValue = entryItemFields[entryItemFieldKey]
 
@@ -715,7 +714,7 @@ export const createNodesForContentType = async ({
           }
         } else if (
           fieldType === `Object` &&
-          _.isPlainObject(entryItemFields[entryItemFieldKey])
+          isPlainObject(entryItemFields[entryItemFieldKey])
         ) {
           const jsonNodeId = createNodeId(
             `${entryNodeId}${entryItemFieldKey}JSONNode`
@@ -739,7 +738,7 @@ export const createNodesForContentType = async ({
           delete entryItemFields[entryItemFieldKey]
         } else if (
           fieldType === `Object` &&
-          _.isArray(entryItemFields[entryItemFieldKey])
+          Array.isArray(entryItemFields[entryItemFieldKey])
         ) {
           entryItemFields[`${entryItemFieldKey}___NODE`] = []
 

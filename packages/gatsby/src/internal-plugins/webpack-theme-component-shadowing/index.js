@@ -1,7 +1,7 @@
 const path = require(`path`)
 const debug = require(`debug`)(`gatsby:component-shadowing`)
 const fs = require(`fs`)
-const _ = require(`lodash`)
+const { groupBy, uniqBy } = require(`lodash`)
 const { splitComponentPath } = require(`gatsby-core-utils`)
 
 // A file can be shadowed by a file of the same extension, or a file of a
@@ -76,7 +76,7 @@ module.exports = class GatsbyThemeComponentShadowingResolverPlugin {
   }
 
   buildAdditionalShadowExtensions() {
-    const extensionsByCategory = _.groupBy(
+    const extensionsByCategory = groupBy(
       this.extensions,
       ext => this.extensionsCategory[ext.substring(1)] || `undefined`
     )
@@ -244,7 +244,7 @@ module.exports = class GatsbyThemeComponentShadowingResolverPlugin {
 
     // The same theme can be included twice in the themes list causing multiple
     // matches. This case should only be counted as a single match for that theme.
-    const matchingThemes = _.uniqBy(allMatchingThemes, `themeName`)
+    const matchingThemes = uniqBy(allMatchingThemes, `themeName`)
 
     // 0 matching themes happens a lot for paths we don't want to handle
     // > 1 matching theme means we have a path like
@@ -315,6 +315,8 @@ module.exports = class GatsbyThemeComponentShadowingResolverPlugin {
       )
     }
 
-    return _.uniq([componentName, ...additionalNames, ...legacyAdditionalNames])
+    return Array.from(
+      new Set([componentName, ...additionalNames, ...legacyAdditionalNames])
+    )
   }
 }
