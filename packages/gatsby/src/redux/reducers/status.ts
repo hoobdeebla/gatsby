@@ -1,4 +1,4 @@
-import _ from "lodash"
+import merge from "lodash/merge"
 import { uuid } from "gatsby-core-utils"
 import { ActionsUnion, IGatsbyState } from "../types"
 
@@ -34,7 +34,7 @@ export const statusReducer = (
       if (!action.plugin || !action.plugin?.name) {
         throw new Error(`You can't set plugin status without a plugin`)
       }
-      if (!_.isObject(action.payload)) {
+      if (!(action?.payload instanceof Object)) {
         throw new Error(
           `You must pass an object into setPluginStatus. What was passed in was ${JSON.stringify(
             action.payload,
@@ -47,7 +47,7 @@ export const statusReducer = (
         ...state,
         plugins: {
           ...state.plugins,
-          [action.plugin.name]: _.merge(
+          [action.plugin.name]: merge(
             {},
             state.plugins[action.plugin.name],
             action.payload
