@@ -1,5 +1,6 @@
 import type { ISharpGatsbyImageArgs, Fit } from "gatsby-plugin-image"
-import { pickBy, defaults, mergeWith, omitBy, isNil, identity } from "lodash"
+/* eslint-disable you-dont-need-lodash-underscore/defaults */ /* eslint-disable you-dont-need-lodash-underscore/is-nil */
+import { defaults, identity, isNil, mergeWith, omitBy, pickBy } from "lodash"
 import type { FailOnOptions, SharpOptions } from "sharp"
 
 export type PluginOptionsDefaults = Pick<
