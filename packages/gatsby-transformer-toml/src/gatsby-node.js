@@ -1,5 +1,5 @@
 const toml = require(`toml`)
-const _ = require(`lodash`)
+const { camelCase, upperFirst } = require(`lodash`)
 
 function shouldOnCreateNode({ node }) {
   // Filter out non-toml content
@@ -38,7 +38,7 @@ async function onCreateNode({
       contentDigest,
 
       // Use the relative filepath as "type"
-      type: _.upperFirst(_.camelCase(node.relativePath)),
+      type: upperFirst(camelCase(node.relativePath)),
     },
   }
 

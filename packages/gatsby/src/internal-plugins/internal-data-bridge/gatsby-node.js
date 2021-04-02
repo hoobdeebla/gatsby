@@ -1,7 +1,7 @@
 const moment = require(`moment`)
 const chokidar = require(`chokidar`)
 const systemPath = require(`path`)
-const _ = require(`lodash`)
+const pick = require(`lodash/pick`)
 
 const { emitter, store } = require(`../../redux`)
 const { actions } = require(`../../redux/actions`)
@@ -11,15 +11,18 @@ const {
 } = require(`../../utils/parcel/compile-gatsby-files`)
 
 function transformPackageJson(json) {
-  const transformDeps = deps =>
-    _.entries(deps).map(([name, version]) => {
-      return {
-        name,
-        version,
-      }
-    })
+  const transformDeps = deps => {
+    if (deps) {
+      Object.entries(deps).map(([name, version]) => {
+        return {
+          name,
+          version,
+        }
+      })
+    }
+  }
 
-  json = _.pick(json, [
+  json = pick(json, [
     `name`,
     `description`,
     `version`,

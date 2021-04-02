@@ -1,5 +1,4 @@
 // @ts-check
-import _ from "lodash"
 import fetchRetry from "@vercel/fetch-retry"
 import { polyfillImageServiceDevRoutes } from "gatsby-plugin-utils/polyfill-remote-file"
 export { setFieldsOnGraphQLNodeType } from "./extend-node-type"

@@ -1,4 +1,4 @@
-import _ from "lodash"
+import { debounce, orderBy, uniqBy } from "lodash"
 import path from "path"
 import fs from "fs/promises"
 import reporter from "gatsby-cli/lib/reporter"
@@ -56,9 +56,9 @@ export const getComponents = (
     }
   }
 
-  return _.orderBy(
-    _.uniqBy(
-      _.map([...pages, ...slices.values()], pickComponentFields),
+  return orderBy(
+    uniqBy(
+      [...pages, ...slices.values()].map(pickComponentFields),
       c => c.componentChunkName
     ),
     c => c.componentChunkName
@@ -317,7 +317,7 @@ exports.head = {\n${components
   return true
 }
 
-const debouncedWriteAll = _.debounce(
+const debouncedWriteAll = debounce(
   async (): Promise<void> => {
     const activity = reporter.activityTimer(`write out requires`, {
       id: `requires-writer`,

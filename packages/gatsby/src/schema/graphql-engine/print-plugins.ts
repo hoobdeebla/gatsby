@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/no-unused-vars: ["error", { "ignoreRestSiblings": true }] */
 import fs from "fs/promises"
 import path from "path"
 import cloneDeepWith from "lodash/cloneDeepWith"
