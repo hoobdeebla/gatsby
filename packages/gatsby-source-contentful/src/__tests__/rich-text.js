@@ -8,7 +8,8 @@ import { render } from "@testing-library/react"
 import { renderRichText } from "gatsby-source-contentful/rich-text"
 import { BLOCKS, INLINES } from "@contentful/rich-text-types"
 import { initialSync } from "../__fixtures__/rich-text-data"
-import { cloneDeep } from "lodash"
+// eslint-disable-next-line you-dont-need-lodash-underscore/clone-deep
+import cloneDeep from "lodash/cloneDeep" // no structuredClone in jest-env-jsdom
 
 const raw = JSON.stringify({
   nodeType: `document`,

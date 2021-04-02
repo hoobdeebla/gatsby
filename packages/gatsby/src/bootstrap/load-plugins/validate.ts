@@ -1,4 +1,3 @@
-import _ from "lodash"
 import path from "path"
 import * as semver from "semver"
 import * as stringSimilarity from "string-similarity"
@@ -63,13 +62,15 @@ function getBadExports(
   let badExports: Array<IEntry> = []
   // Discover any exports from plugins which are not "known"
   badExports = badExports.concat(
-    _.difference(pluginAPIKeys, apis).map(e => {
-      return {
-        exportName: e,
-        pluginName: plugin.name,
-        pluginVersion: plugin.version,
-      }
-    })
+    [pluginAPIKeys, apis]
+      .reduce((a, b) => a.filter(c => !b.includes(c)))
+      .map(e => {
+        return {
+          exportName: e,
+          pluginName: plugin.name,
+          pluginVersion: plugin.version,
+        }
+      })
   )
   return badExports
 }
@@ -162,7 +163,7 @@ export async function handleBadExports({
   if (hasBadExports) {
     const latestAPIs = await getLatestAPIs()
     // Output error messages for all bad exports
-    _.toPairs(badExports).forEach(badItem => {
+    Object.entries(badExports).forEach(badItem => {
       const [exportType, entries] = badItem
       if (entries.length > 0) {
         const context = getErrorContext(
@@ -473,16 +474,17 @@ export async function collatePluginAPIs({
     )
 
     if (pluginNodeExports.length > 0) {
-      plugin.nodeAPIs = _.intersection(pluginNodeExports, currentAPIs.node)
+      plugin.nodeAPIs = [pluginNodeExports, currentAPIs.node].reduce((a, b) =>
+        a.filter(c => b.includes(c))
+      )
       badExports.node = badExports.node.concat(
         getBadExports(plugin, pluginNodeExports, currentAPIs.node)
       ) // Collate any bad exports
     }
 
     if (pluginBrowserExports.length > 0) {
-      plugin.browserAPIs = _.intersection(
-        pluginBrowserExports,
-        currentAPIs.browser
+      plugin.browserAPIs = [pluginBrowserExports, currentAPIs.browser].reduce(
+        (a, b) => a.filter(c => b.includes(c))
       )
       badExports.browser = badExports.browser.concat(
         getBadExports(plugin, pluginBrowserExports, currentAPIs.browser)
@@ -490,7 +492,9 @@ export async function collatePluginAPIs({
     }
 
     if (pluginSSRExports.length > 0) {
-      plugin.ssrAPIs = _.intersection(pluginSSRExports, currentAPIs.ssr)
+      plugin.ssrAPIs = [pluginSSRExports, currentAPIs.ssr].reduce((a, b) =>
+        a.filter(c => b.includes(c))
+      )
       badExports.ssr = badExports.ssr.concat(
         getBadExports(plugin, pluginSSRExports, currentAPIs.ssr)
       ) // Collate any bad exports
@@ -561,7 +565,7 @@ export function warnOnIncompatiblePeerDependency(
   packageJSON: PackageJson
 ): void {
   // Note: In the future the peer dependency should be enforced for all plugins.
-  const gatsbyPeerDependency = _.get(packageJSON, `peerDependencies.gatsby`)
+  const gatsbyPeerDependency = packageJSON.peerDependencies?.gatsby
   if (
     !isWorker &&
     gatsbyPeerDependency &&
