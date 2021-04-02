@@ -1,4 +1,3 @@
-import _ from "lodash"
 import semver from "semver"
 
 // Does this experiment run for only builds
@@ -9,7 +8,7 @@ export const satisfiesSemvers = (
 ): boolean => {
   // Check each semver check for the flag.
   // If any are false, then the flag doesn't pass
-  const result = _.toPairs(semverConstraints).every(
+  const result = Object.entries(semverConstraints).every(
     ([packageName, semverConstraint]) => {
       let packageVersion: string
       try {
