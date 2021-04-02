@@ -1,6 +1,7 @@
-const fs = require(`fs-extra`)
-const path = require(`path`)
-const _ = require(`lodash`)
+const { readdirSync, readFileSync, statSync } = require(`fs-extra`)
+const { basename, dirname, join } = require(`node:path`)
+const { cwd } = require(`node:process`)
+const makeTemplate = require(`lodash/template`)
 
 const exclusionList = [
   `gatsby-starter-minimal`,
@@ -12,15 +13,14 @@ const exclusionList = [
 module.exports = {
   transforms: {
     LIST_STARTERS() {
-      const base = path.join(process.cwd(), `starters`)
-      const starters = fs
-        .readdirSync(base)
-        .filter(dir => fs.statSync(path.join(base, dir)).isDirectory())
+      const base = join(cwd(), `starters`)
+      const starters = readdirSync(base)
+        .filter(dir => statSync(join(base, dir)).isDirectory())
         // Filter out excluded starters
         .filter(dir => !exclusionList.includes(dir))
         .reduce((merged, dir) => {
           merged[dir] = JSON.parse(
-            fs.readFileSync(path.join(base, dir, `package.json`), `utf8`)
+            readFileSync(join(base, dir, `package.json`), `utf8`)
           )
           return merged
         }, {})
@@ -39,17 +39,17 @@ module.exports = {
       `.replace(/^[^|]+/gm, ``)
     },
     STARTER(content, options, { originalPath }) {
-      const starter = path.basename(path.dirname(originalPath))
+      const starter = basename(dirname(originalPath))
 
       if (exclusionList.includes(starter)) {
         return ``
       }
 
-      const template = fs.readFileSync(
-        path.join(process.cwd(), `starters`, `README-template.md`),
+      const template = readFileSync(
+        join(cwd(), `starters`, `README-template.md`),
         `utf8`
       )
-      return _.template(template)({
+      return makeTemplate(template)({
         name: starter,
       })
     },

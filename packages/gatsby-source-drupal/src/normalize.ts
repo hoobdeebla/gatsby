@@ -1,7 +1,7 @@
-const { URL } = require(`url`)
+const { URL } = require(`node:url`)
 const { createRemoteFileNode } = require(`gatsby-source-filesystem`)
-const path = require(`path`)
-const { capitalize } = require(`lodash`)
+const { parse } = require(`node:path`)
+const capitalize = require(`lodash/capitalize`)
 const probeImageSize = require(`probe-image-size`)
 
 import { getOptions } from "./plugin-options"
@@ -333,7 +333,7 @@ export const downloadFile = async (
       : {}
   const fileNode = await createRemoteFileNode({
     url: url.href,
-    name: path.parse(decodeURIComponent(url.pathname)).name,
+    name: parse(decodeURIComponent(url.pathname)).name,
     cache,
     createNode,
     createNodeId,

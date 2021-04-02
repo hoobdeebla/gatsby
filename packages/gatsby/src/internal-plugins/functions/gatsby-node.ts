@@ -1,13 +1,20 @@
-import fs from "fs-extra"
+import {
+  emptyDir,
+  ensureDir,
+  readFileSync,
+  stat,
+  utimesSync,
+  writeFileSync,
+} from "fs-extra"
 import glob from "glob"
-import path from "path"
+import { join, parse, relative } from "node:path"
 import webpack from "webpack"
-import _ from "lodash"
+import unionBy from "lodash/unionBy"
 import { getMatchPath, urlResolve } from "gatsby-core-utils"
 import { CreateDevServerArgs, ParentSpanPluginArgs } from "gatsby"
 import formatWebpackMessages from "react-dev-utils/formatWebpackMessages"
-import dotenv from "dotenv"
-import chokidar from "chokidar"
+import { parse as parseDotenv } from "dotenv"
+import { watch } from "chokidar"
 import { reportWebpackWarnings } from "../../utils/webpack-error-utils"
 import { internalActions } from "../../redux/actions"
 import { IGatsbyFunction } from "../../redux/types"
@@ -39,7 +46,7 @@ async function ensureFunctionIsCompiled(
   // stat the compiled function. If it's there, then return.
   let compiledFileExists = false
   try {
-    compiledFileExists = !!(await fs.stat(functionObj.absoluteCompiledFilePath))
+    compiledFileExists = !!(await stat(functionObj.absoluteCompiledFilePath))
   } catch (e) {
     // ignore
   }
@@ -49,19 +56,17 @@ async function ensureFunctionIsCompiled(
     // Otherwise, restart webpack by touching the file and watch for the file to be
     // compiled.
     const time = new Date()
-    fs.utimesSync(functionObj.originalAbsoluteFilePath, time, time)
+    utimesSync(functionObj.originalAbsoluteFilePath, time, time)
     await new Promise(resolve => {
-      const watcher = chokidar
-        // Watch the root of the compiled function directory in .cache as chokidar
-        // can't watch files in directories that don't yet exist.
-        .watch(compiledFunctionsDir)
-        .on(`add`, async _path => {
-          if (_path === functionObj.absoluteCompiledFilePath) {
-            await watcher.close()
+      // Watch the root of the compiled function directory in .cache as chokidar
+      // can't watch files in directories that don't yet exist.
+      const watcher = watch(compiledFunctionsDir).on(`add`, async _path => {
+        if (_path === functionObj.absoluteCompiledFilePath) {
+          await watcher.close()
 
-            resolve(null)
-          }
-        })
+          resolve(null)
+        }
+      })
     })
   }
 }
@@ -87,7 +92,7 @@ const createGlobArray = (siteDirectoryPath, plugins): Array<IGlobPattern> => {
   globs.push({
     globPattern: `${siteDirectoryPath}/src/api/**/*.{js,ts}`,
     ignorePattern: globIgnorePatterns(siteDirectoryPath),
-    rootPath: path.join(siteDirectoryPath, `src/api`),
+    rootPath: join(siteDirectoryPath, `src/api`),
     pluginName: `default-site-plugin`,
   })
 
@@ -114,14 +119,14 @@ const createGlobArray = (siteDirectoryPath, plugins): Array<IGlobPattern> => {
     const glob = {
       globPattern: `${plugin.resolve}/src/api/${plugin.name}/**/*.{js,ts}`,
       ignorePattern: globIgnorePatterns(plugin.resolve, plugin.name),
-      rootPath: path.join(plugin.resolve, `src/api`),
+      rootPath: join(plugin.resolve, `src/api`),
       pluginName: plugin.name,
     } as IGlobPattern
     globs.push(glob)
   })
 
   // Only return unique paths
-  return _.union(globs)
+  return Array.from(new Set(globs))
 }
 
 async function globAsync(
@@ -144,11 +149,7 @@ const createWebpackConfig = async ({
   store,
   reporter,
 }): Promise<webpack.Configuration> => {
-  const compiledFunctionsDir = path.join(
-    siteDirectoryPath,
-    `.cache`,
-    `functions`
-  )
+  const compiledFunctionsDir = join(siteDirectoryPath, `.cache`, `functions`)
 
   const globs = createGlobArray(
     siteDirectoryPath,
@@ -166,15 +167,12 @@ const createWebpackConfig = async ({
       })
       files.map(file => {
         const originalAbsoluteFilePath = file
-        const originalRelativeFilePath = path.relative(glob.rootPath, file)
+        const originalRelativeFilePath = relative(glob.rootPath, file)
 
-        const { dir, name } = path.parse(originalRelativeFilePath)
+        const { dir, name } = parse(originalRelativeFilePath)
         // Ignore the original extension as all compiled functions now end with js.
-        const compiledFunctionName = path.join(dir, name + `.js`)
-        const compiledPath = path.join(
-          compiledFunctionsDir,
-          compiledFunctionName
-        )
+        const compiledFunctionName = join(dir, name + `.js`)
+        const compiledPath = join(compiledFunctionsDir, compiledFunctionName)
         const finalName = urlResolve(dir, name === `index` ? `` : name)
 
         // functionId should have only alphanumeric characters and dashes
@@ -212,13 +210,13 @@ const createWebpackConfig = async ({
   // Combine functions by the route name so that functions in the default
   // functions directory can override the plugin's implementations.
   // @ts-ignore - Seems like a TS bug: https://github.com/microsoft/TypeScript/issues/28010#issuecomment-713484584
-  const knownFunctions = _.unionBy(...allFunctions, func => func.functionRoute)
+  const knownFunctions = unionBy(...allFunctions, func => func.functionRoute)
 
   store.dispatch(internalActions.setFunctions(knownFunctions))
 
   // Write out manifest for use by `gatsby serve` and plugins
-  fs.writeFileSync(
-    path.join(compiledFunctionsDir, `manifest.json`),
+  writeFileSync(
+    join(compiledFunctionsDir, `manifest.json`),
     JSON.stringify(knownFunctions, null, 4)
   )
 
@@ -235,10 +233,10 @@ const createWebpackConfig = async ({
   // config env is dependent on the env that it's run, this can be anything from staging-production
   // this allows you to set use different .env environments or conditions in gatsby files
   const configEnv = process.env.GATSBY_ACTIVE_ENV || nodeEnv
-  const envFile = path.join(siteDirectoryPath, `./.env.${configEnv}`)
+  const envFile = join(siteDirectoryPath, `./.env.${configEnv}`)
   let parsed = {}
   try {
-    parsed = dotenv.parse(fs.readFileSync(envFile, { encoding: `utf8` }))
+    parsed = parseDotenv(readFileSync(envFile, { encoding: `utf8` }))
   } catch (err) {
     if (err.code !== `ENOENT`) {
       reporter.error(
@@ -287,11 +285,8 @@ const createWebpackConfig = async ({
 
   functionsList.forEach(functionObj => {
     // Get path without the extension (as it could be ts or js)
-    const parsedFile = path.parse(functionObj.originalRelativeFilePath)
-    const compiledNameWithoutExtension = path.join(
-      parsedFile.dir,
-      parsedFile.name
-    )
+    const parsedFile = parse(functionObj.originalRelativeFilePath)
+    const compiledNameWithoutExtension = join(parsedFile.dir, parsedFile.name)
 
     let entryToTheFunction = functionObj.originalAbsoluteFilePath
     // we wrap user defined function with our preamble that handles matchPath as well as body parsing
@@ -333,7 +328,7 @@ const createWebpackConfig = async ({
     cache: {
       type: `filesystem`,
       name: stage,
-      cacheLocation: path.join(
+      cacheLocation: join(
         siteDirectoryPath,
         `.cache`,
         `webpack`,
@@ -437,14 +432,10 @@ export async function onPreBootstrap({
     program: { directory: siteDirectoryPath },
   } = store.getState()
 
-  const compiledFunctionsDir = path.join(
-    siteDirectoryPath,
-    `.cache`,
-    `functions`
-  )
+  const compiledFunctionsDir = join(siteDirectoryPath, `.cache`, `functions`)
 
-  await fs.ensureDir(compiledFunctionsDir)
-  await fs.emptyDir(compiledFunctionsDir)
+  await ensureDir(compiledFunctionsDir)
+  await emptyDir(compiledFunctionsDir)
 
   try {
     // We do this ungainly thing as we need to make accessible
@@ -508,39 +499,35 @@ export async function onPreBootstrap({
         )
 
         // Watch for env files to change and restart the webpack watcher.
-        chokidar
-          .watch(
-            [
-              `${siteDirectoryPath}/.env*`,
-              ...globs.map(glob => glob.globPattern),
-            ],
-            { ignoreInitial: true }
-          )
-          .on(`all`, async (event, path) => {
-            // Ignore change events from the API directory for functions we're
-            // already watching.
-            if (
-              event === `change` &&
-              Object.values(activeEntries).includes(path) &&
-              path.includes(`/src/api/`)
-            ) {
-              return
-            }
+        watch(
+          [
+            `${siteDirectoryPath}/.env*`,
+            ...globs.map(glob => glob.globPattern),
+          ],
+          { ignoreInitial: true }
+        ).on(`all`, async (event, path) => {
+          // Ignore change events from the API directory for functions we're
+          // already watching.
+          if (
+            event === `change` &&
+            Object.values(activeEntries).includes(path) &&
+            path.includes(`/src/api/`)
+          ) {
+            return
+          }
 
-            reporter.log(
-              `Restarting function watcher due to change to "${path}"`
-            )
+          reporter.log(`Restarting function watcher due to change to "${path}"`)
 
-            // Otherwise, restart the watcher
-            compiler.close(async () => {
-              const config = await createWebpackConfig({
-                siteDirectoryPath,
-                store,
-                reporter,
-              })
-              compiler = webpack(config).watch({}, callback)
+          // Otherwise, restart the watcher
+          compiler.close(async () => {
+            const config = await createWebpackConfig({
+              siteDirectoryPath,
+              store,
+              reporter,
             })
+            compiler = webpack(config).watch({}, callback)
           })
+        })
       }
     })
   } catch (error) {
@@ -565,11 +552,7 @@ export async function onCreateDevServer({
     program: { directory: siteDirectoryPath },
   } = store.getState()
 
-  const compiledFunctionsDir = path.join(
-    siteDirectoryPath,
-    `.cache`,
-    `functions`
-  )
+  const compiledFunctionsDir = join(siteDirectoryPath, `.cache`, `functions`)
 
   app.use(
     `/api/*`,

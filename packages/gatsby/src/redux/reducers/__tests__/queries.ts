@@ -25,8 +25,6 @@ import {
   IQueryStartAction,
 } from "../../types"
 
-import { cloneDeep } from "lodash"
-
 type QueriesState = IGatsbyState["queries"]
 
 let state: QueriesState
@@ -383,7 +381,7 @@ describe(`createPages API end`, () => {
   })
 
   it(`doesn't alter state on any API other than createPages`, () => {
-    const baseLine = cloneDeep(state)
+    const baseLine = structuredClone(state)
     state = reducer(state, {
       type: `API_FINISHED`,
       payload: { apiName: `sourceNodes` },
@@ -880,7 +878,7 @@ describe(`delete node`, () => {
 
 describe(`delete cache`, () => {
   it(`restores original state`, () => {
-    const initialState = cloneDeep(state)
+    const initialState = structuredClone(state)
     state = createPage(state, Pages.foo)
     state = createPage(state, Pages.bar)
     state = reducer(state, replaceStaticQuery(StaticQueries.q1))

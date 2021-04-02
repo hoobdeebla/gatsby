@@ -32,7 +32,6 @@
     "shift-left": "^0.1.5"
   },
   "devDependencies": {
-    "@types/node": "^18.16.18",
     "@types/node-fetch": "^2.6.11",
     "cross-env": "^7.0.3",
     "gatsby-plugin-image": "^3.14.0-next.2",

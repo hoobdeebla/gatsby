@@ -1,6 +1,6 @@
 const { Parser: json2csv } = require(`json2csv`)
-const os = require(`os`)
-const { cloneDeep } = require(`lodash`)
+const { tmpdir } = require(`node:os`)
+const cloneDeep = require(`lodash/cloneDeep`)
 
 const { onCreateNode } = require(`../gatsby-node`)
 const { typeNameFromDir, typeNameFromFile } = require(`../index`)
@@ -27,7 +27,7 @@ describe(`Process nodes correctly`, () => {
       { blue: true, funny: `yup` },
       { blue: false, funny: `nope` },
     ]
-    node.content = json2csv({fields}).parse(data)
+    node.content = json2csv({ fields }).parse(data)
 
     const createNode = jest.fn()
     const createParentChildLink = jest.fn()
@@ -168,7 +168,7 @@ describe(`Process nodes correctly`, () => {
   it(`correctly handles the typeName option with the provided typeNameFromDir function`, async () => {
     node.name = `theTypeWontBeThis`
     node.content = `letter,number\na,65\nb,42\nc,23`
-    node.dir = `${os.tmpdir()}/foo/` // The type will be FooCsv
+    node.dir = `${tmpdir()}/foo/` // The type will be FooCsv
     node.internal.type = `File`
 
     const createNode = jest.fn()
