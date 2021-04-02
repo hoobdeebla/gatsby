@@ -1,4 +1,4 @@
-import { debounce, cloneDeep } from "lodash"
+import debounce from "lodash/debounce"
 import { emitter, store } from "../redux"
 import { rebuild } from "../schema"
 import { haveEqualFields } from "../schema/infer/inference-metadata"
@@ -38,7 +38,7 @@ const maybeRebuildSchema = debounce(async (): Promise<void> => {
 
 function snapshotInferenceMetadata(): void {
   const { inferenceMetadata } = store.getState()
-  lastMetadata = cloneDeep(inferenceMetadata)
+  lastMetadata = structuredClone(inferenceMetadata)
 }
 
 export function bootstrapSchemaHotReloader(): void {

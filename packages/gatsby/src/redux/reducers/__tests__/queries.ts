@@ -25,7 +25,7 @@ import {
   IQueryStartAction,
 } from "../../types"
 
-import { cloneDeep } from "lodash"
+import cloneDeep from "lodash/cloneDeep" // no structuredClone in jest-env-jsdom
 
 type QueriesState = IGatsbyState["queries"]
 

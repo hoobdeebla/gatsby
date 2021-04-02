@@ -1,4 +1,4 @@
-const _ = require(`lodash`)
+const { camelCase, isPlainObject, upperFirst } = require(`lodash`)
 const path = require(`path`)
 
 function shouldOnCreateNode({ node }) {
@@ -11,16 +11,20 @@ async function onCreateNode(
   pluginOptions
 ) {
   function getType({ node, object, isArray }) {
-    if (pluginOptions && _.isFunction(pluginOptions.typeName)) {
+    if (pluginOptions && typeof pluginOptions.typeName === `function`) {
       return pluginOptions.typeName({ node, object, isArray })
-    } else if (pluginOptions && _.isString(pluginOptions.typeName)) {
+    } else if (
+      pluginOptions &&
+      pluginOptions.typeName &&
+      typeof pluginOptions.typeName.valueOf() === `string`
+    ) {
       return pluginOptions.typeName
     } else if (node.internal.type !== `File`) {
-      return _.upperFirst(_.camelCase(`${node.internal.type} Json`))
+      return upperFirst(camelCase(`${node.internal.type} Json`))
     } else if (isArray) {
-      return _.upperFirst(_.camelCase(`${node.name} Json`))
+      return upperFirst(camelCase(`${node.name} Json`))
     } else {
-      return _.upperFirst(_.camelCase(`${path.basename(node.dir)} Json`))
+      return upperFirst(camelCase(`${path.basename(node.dir)} Json`))
     }
   }
 
@@ -55,7 +59,7 @@ async function onCreateNode(
     throw new Error(`Unable to parse JSON: ${hint}`)
   }
 
-  if (_.isArray(parsedContent)) {
+  if (Array.isArray(parsedContent)) {
     for (let i = 0, l = parsedContent.length; i < l; i++) {
       const obj = parsedContent[i]
 
@@ -65,7 +69,7 @@ async function onCreateNode(
         getType({ node, object: obj, isArray: true })
       )
     }
-  } else if (_.isPlainObject(parsedContent)) {
+  } else if (isPlainObject(parsedContent)) {
     await transformObject(
       parsedContent,
       createNodeId(`${node.id} >>> JSON`),

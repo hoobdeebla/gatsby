@@ -10,7 +10,7 @@ const getDefinitions = require(`mdast-util-definitions`)
 const path = require(`path`)
 const queryString = require(`query-string`)
 const isRelativeUrl = require(`is-relative-url`)
-const _ = require(`lodash`)
+const { defaults, escape } = require(`lodash`)
 const { fluid, stats, traceSVG } = require(`gatsby-plugin-sharp`)
 const cheerio = require(`cheerio`)
 const { slash } = require(`gatsby-core-utils`)
@@ -47,7 +47,7 @@ module.exports = (
   },
   pluginOptions
 ) => {
-  const options = _.defaults({}, pluginOptions, { pathPrefix }, DEFAULT_OPTIONS)
+  const options = defaults({}, pluginOptions, { pathPrefix }, DEFAULT_OPTIONS)
 
   const findParentLinks = ({ children }) =>
     children.some(
@@ -127,7 +127,7 @@ module.exports = (
     const captionString = getCaptionString()
 
     if (!options.markdownCaptions || !compiler) {
-      return _.escape(captionString)
+      return escape(captionString)
     }
 
     return compiler.generateHTML(await compiler.parseString(captionString))
@@ -184,7 +184,7 @@ module.exports = (
       })
     } else {
       // Legacy: no context, slower version of image query
-      imageNode = _.find(files, file => {
+      imageNode = files.find(file => {
         if (file && file.absolutePath) {
           return file.absolutePath === imagePath
         }
@@ -221,11 +221,11 @@ module.exports = (
 
     const alt = isEmptyAlt
       ? ``
-      : _.escape(
+      : escape(
           overWrites.alt ? overWrites.alt : node.alt ? node.alt : defaultAlt
         )
 
-    const title = node.title ? _.escape(node.title) : ``
+    const title = node.title ? escape(node.title) : ``
 
     const loading = options.loading
 
@@ -295,7 +295,7 @@ module.exports = (
         async ({ format, propertyName }) => {
           const formatFluidResult = await fluid({
             file: imageNode,
-            args: _.defaults(
+            args: defaults(
               { toFormat: format },
               // override options if it's an object, otherwise just pass through defaults
               options[propertyName] === true ? {} : options[propertyName],

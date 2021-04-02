@@ -1,10 +1,10 @@
 const documentation = require(`documentation`)
 const remark = require(`remark`)
-const _ = require(`lodash`)
+const { isPlainObject, pick } = require(`lodash`)
 const Prism = require(`prismjs`)
 
 const stringifyMarkdownAST = (node = ``) => {
-  if (_.isString(node)) {
+  if (typeof node.valueOf() === `string`) {
     return node
   } else {
     return remark().stringify(node)
@@ -298,7 +298,7 @@ exports.onCreateNode = async ({ node, actions, ...helpers }) => {
 
       const children = []
 
-      let picked = _.pick(docsJson, [
+      let picked = pick(docsJson, [
         `kind`,
         `memberof`,
         `name`,
@@ -399,7 +399,7 @@ exports.onCreateNode = async ({ node, actions, ...helpers }) => {
         }
       })
 
-      if (_.isPlainObject(docsJson.members)) {
+      if (isPlainObject(docsJson.members)) {
         /*
         docsJson.members = {
           events: [],
@@ -411,9 +411,8 @@ exports.onCreateNode = async ({ node, actions, ...helpers }) => {
         each member type has array of jsdocs in same shape as top level jsdocs
         so we use same transformation as top level ones
         */
-        picked.members = _.reduce(
-          docsJson.members,
-          (acc, membersOfType, key) => {
+        picked.members = Object.entries(docsJson.members).reduce(
+          (acc, [key, membersOfType]) => {
             if (membersOfType.length > 0) {
               acc[`${key}___NODE`] = membersOfType.map(member => {
                 const nodeHierarchy = prepareNodeForDocs(member, {
