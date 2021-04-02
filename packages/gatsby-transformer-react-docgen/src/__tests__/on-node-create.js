@@ -1,16 +1,7 @@
-import fs from "fs"
-import { groupBy } from "lodash"
+import fs from "fs/promises"
+import groupBy from "lodash/groupBy"
 import { onCreateNode } from "../on-node-create"
 import path from "path"
-
-const readFile = file =>
-  new Promise((y, n) => {
-    fs.readFile(
-      path.join(__dirname, `fixtures`, file),
-      `utf8`,
-      (err, content) => (err ? n(err) : y(content))
-    )
-  })
 
 describe(`transformer-react-doc-gen: onCreateNode`, () => {
   let loadNodeContent
@@ -58,7 +49,12 @@ describe(`transformer-react-doc-gen: onCreateNode`, () => {
       },
       __fixture: `classes.js`,
     }
-    loadNodeContent = jest.fn(node => readFile(node.__fixture))
+    loadNodeContent = jest.fn(node =>
+      fs
+        .readFile(path.join(__dirname, `fixtures`, node.__fixture), `utf8`)
+        .then(content => content)
+        .catch(err => err)
+    )
     actions = {
       createNode: jest.fn(n => createdNodes.push(n)),
       createParentChildLink: jest.fn(n => updatedNodes.push(n)),
