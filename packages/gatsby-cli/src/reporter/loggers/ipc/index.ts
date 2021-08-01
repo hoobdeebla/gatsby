@@ -1,7 +1,7 @@
 import { onLogAction } from "../../redux/index"
 import { ISetStatus, ActionsUnion } from "../../redux/types"
 import { Actions, LogLevels } from "../../constants"
-import stripAnsi from "strip-ansi"
+import { stripVTControlCharacters as stripAnsi } from "util"
 import { cloneDeep } from "lodash"
 
 const isStringPayload = (action: ActionsUnion): action is ISetStatus =>

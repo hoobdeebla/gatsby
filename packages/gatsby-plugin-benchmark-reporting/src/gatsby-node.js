@@ -2,7 +2,6 @@ const { performance } = require(`perf_hooks`)
 
 const { globSync } = require(`tinyglobby`)
 const nodeFetch = require(`node-fetch`)
-const { uuid } = require(`gatsby-core-utils`)
 const { execSync } = require(`child_process`)
 const fs = require(`fs`)
 
@@ -166,7 +165,7 @@ class BenchMeta {
 
     return {
       time: this.localTime,
-      sessionId: process.gatsbyTelemetrySessionId || uuid.v4(),
+      sessionId: process.gatsbyTelemetrySessionId || crypto.randomUUID(),
       cwd: process.cwd() ?? ``,
       timestamps: this.timestamps,
       gitHash,

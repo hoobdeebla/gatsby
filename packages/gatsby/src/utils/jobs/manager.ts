@@ -3,7 +3,7 @@ import hasha from "hasha"
 import fs from "fs-extra"
 import pDefer from "p-defer"
 import _ from "lodash"
-import { createContentDigest, slash, uuid } from "gatsby-core-utils"
+import { createContentDigest, slash } from "gatsby-core-utils"
 import reporter from "gatsby-cli/lib/reporter"
 import { IPhantomReporter } from "gatsby-cli"
 import {
@@ -221,7 +221,7 @@ export function createInternalJob(
   })
 
   const internalJob: InternalJob = {
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     name,
     contentDigest: ``,
     inputPaths: inputPathsWithContentDigest,

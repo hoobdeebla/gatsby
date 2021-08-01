@@ -85,15 +85,17 @@ jest.mock(`tinyglobby`, () => {
     }),
   }
 })
+jest.mock(`crypto`, () => {
+  return {
+    randomUUIzd: jest.fn(() => `1234567890`),
+  }
+})
 
 jest.mock(`gatsby-core-utils`, () => {
   return {
     ...jest.requireActual(`gatsby-core-utils`),
     murmurhash: {
       murmurhash: jest.fn(() => `1234567890`),
-    },
-    uuid: {
-      v4: jest.fn(() => `1234567890`),
     },
   }
 })

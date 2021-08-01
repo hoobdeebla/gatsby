@@ -8,7 +8,7 @@ import { createHandler as createGraphqlEndpointHandler } from "graphql-http/lib/
 import type { OperationContext } from "graphql-http"
 import graphiqlExplorer from "gatsby-graphiql-explorer"
 import { FragmentDefinitionNode, GraphQLError, Kind } from "graphql"
-import { slash, uuid } from "gatsby-core-utils"
+import { slash } from "gatsby-core-utils"
 import http from "http"
 import https from "https"
 import cors from "cors"
@@ -227,7 +227,7 @@ export async function startServer(
     req: express.Request,
     pluginName?: string
   ): Promise<void> => {
-    global.__GATSBY.buildId = uuid.v4()
+    global.__GATSBY.buildId = crypto.randomUUID()
 
     emitter.emit(`WEBHOOK_RECEIVED`, {
       webhookBody: req.body,

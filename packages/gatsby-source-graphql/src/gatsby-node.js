@@ -1,4 +1,3 @@
-const { uuid } = require(`gatsby-core-utils`)
 const { buildSchema, printSchema } = require(`gatsby/graphql`)
 const {
   wrapSchema,
@@ -169,7 +168,7 @@ function createSchemaNodeId({ typeName, createNodeId }) {
 }
 
 function createSchemaNode({ id, typeName, fieldName, createContentDigest }) {
-  const nodeContent = uuid.v4()
+  const nodeContent = crypto.randomUUID()
   const nodeContentDigest = createContentDigest(nodeContent)
   return {
     id,
