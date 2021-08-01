@@ -1,10 +1,9 @@
 import crypto, { BinaryLike } from "crypto"
-import objectHash from "node-object-hash"
+import { hasher as objectHash } from "node-object-hash"
 
 const hasher = objectHash({
   coerce: false,
   alg: `md5`,
-  enc: `hex`,
   sort: {
     map: true,
     object: true,
