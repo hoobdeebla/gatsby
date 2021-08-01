@@ -17,7 +17,7 @@ const { spawn, execSync } = require(`child_process`)
 const yargs = require(`yargs`)
 const { globSync } = require(`glob`)
 
-const gatsbyPKG = require(`../packages/gatsby/package.json`)
+const gatsbyPKG = require(`../../packages/gatsby/package.json`)
 const nextMajor = String(Number(gatsbyPKG.version.match(/[^.]+/)[0]) + 1)
 
 const argv = yargs

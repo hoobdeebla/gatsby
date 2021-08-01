@@ -4,7 +4,7 @@ const exec = util.promisify(require(`child_process`).exec)
 const argv = require(`yargs`)
   .command(`$0 <user>`, `Add new owner to gatsby packages`)
   .help().argv
-const getUnownedPackages = require(`../get-unowned-packages`)
+const getUnownedPackages = require(`../lerna/get-unowned-packages`)
 
 const user = argv.user
 
