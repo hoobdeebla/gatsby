@@ -1,7 +1,7 @@
 const { writeFileSync } = require(`fs`)
 const yargs = require(`yargs`)
 const { getPackages } = require(`@lerna/project`)
-const PackageGraph = require(`@lerna/package-graph`)
+const { PackageGraph } = require(`@lerna/package-graph`)
 const semver = require(`semver`)
 
 let warned = false
