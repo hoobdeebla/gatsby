@@ -1,6 +1,6 @@
 import path from "path"
 import report from "gatsby-cli/lib/reporter"
-import signalExit from "signal-exit"
+import { onExit } from "signal-exit"
 import fs from "fs-extra"
 import telemetry from "gatsby-telemetry"
 import {
@@ -118,7 +118,7 @@ module.exports = async function build(
   buildActivity.start()
 
   telemetry.trackCli(`BUILD_START`)
-  signalExit(exitCode => {
+  onExit(exitCode => {
     telemetry.trackCli(`BUILD_END`, {
       exitCode: exitCode as number | undefined,
     })
