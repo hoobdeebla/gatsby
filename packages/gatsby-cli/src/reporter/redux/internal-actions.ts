@@ -1,4 +1,3 @@
-import { uuid } from "gatsby-core-utils"
 import signalExit from "signal-exit"
 import { Dispatch } from "redux"
 
@@ -197,7 +196,7 @@ export const startActivity = ({
       type: Actions.StartActivity,
       payload: {
         id,
-        uuid: uuid.v4(),
+        uuid: crypto.randomUUID(),
         text,
         type,
         status,

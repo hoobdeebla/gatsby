@@ -6,7 +6,7 @@ const reporter = require(`gatsby-cli/lib/reporter`)
 const hasha = require(`hasha`)
 const fs = require(`fs-extra`)
 const pDefer = require(`p-defer`)
-const { uuid } = require(`gatsby-core-utils`)
+const { randomUUID } = require(`crypto`)
 const timers = require(`timers`)
 const { MESSAGE_TYPES } = require(`../types`)
 
@@ -26,15 +26,12 @@ jest.mock(`gatsby-cli/lib/reporter`, () => {
   }
 })
 
-jest.mock(`gatsby-core-utils`, () => {
-  const realCoreUtils = jest.requireActual(`gatsby-core-utils`)
+jest.mock(`crypto`, () => {
+  const realCrypto = jest.requireActual(`crypto`)
 
   return {
-    ...realCoreUtils,
-    uuid: {
-      ...realCoreUtils.uuid,
-      v4: jest.fn(realCoreUtils.uuid.v4),
-    },
+    ...realCrypto,
+    randomUUID: jest.fn(realCrypto.randomUUID),
   }
 })
 
@@ -82,7 +79,7 @@ describe(`Jobs manager`, () => {
     worker.NEXT_JOB.mockReset()
     endActivity.mockClear()
     pDefer.mockClear()
-    uuid.v4.mockClear()
+    randomUUID.mockClear()
     reporter.phantomActivity.mockImplementation(() => {
       return {
         start: jest.fn(),
@@ -158,7 +155,7 @@ describe(`Jobs manager`, () => {
       const internalJob = createInternalJob(createMockJob(), plugin)
       createInternalJob(internalJob, plugin)
 
-      expect(uuid.v4).toHaveBeenCalledTimes(1)
+      expect(randomUUID).toHaveBeenCalledTimes(1)
     })
   })
 
