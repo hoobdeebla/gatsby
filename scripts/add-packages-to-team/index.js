@@ -8,7 +8,7 @@ const argv = require(`yargs`)
     },
   })
   .help().argv
-const getUnownedPackages = require(`../get-unowned-packages`)
+const getUnownedPackages = require(`../lerna/get-unowned-packages`)
 
 const user = argv.user
 
