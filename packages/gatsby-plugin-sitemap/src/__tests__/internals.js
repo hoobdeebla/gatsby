@@ -9,7 +9,7 @@ const {
   pageFilter,
 } = require(`../internals`)
 
-const minimatch = require(`minimatch`)
+const { minimatch } = require(`minimatch`)
 
 beforeEach(() => {
   global.__PATH_PREFIX__ = ``

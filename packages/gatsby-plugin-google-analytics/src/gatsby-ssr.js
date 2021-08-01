@@ -49,7 +49,7 @@ export const onRenderBody = (
 
   const excludeGAPaths = []
   if (typeof pluginOptions.exclude !== `undefined`) {
-    const Minimatch = require(`minimatch`).Minimatch
+    const { Minimatch } = require(`minimatch`)
     pluginOptions.exclude.map(exclude => {
       const mm = new Minimatch(exclude)
       excludeGAPaths.push(mm.makeRe())
