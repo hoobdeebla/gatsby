@@ -6,7 +6,7 @@ import express from "express"
 import inspector from "inspector"
 import { initTracer } from "../utils/tracer"
 import { detectPortInUseAndPrompt } from "../utils/detect-port-in-use-and-prompt"
-import onExit from "signal-exit"
+import { onExit } from "signal-exit"
 import {
   userGetsSevenDayFeedback,
   userPassesFeedbackRequestHeuristic,

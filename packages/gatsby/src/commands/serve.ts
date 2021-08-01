@@ -5,7 +5,7 @@ import compression from "compression"
 import express from "express"
 import chalk from "chalk"
 import { match as reachMatch } from "@gatsbyjs/reach-router"
-import onExit from "signal-exit"
+import { onExit } from "signal-exit"
 import report from "gatsby-cli/lib/reporter"
 import telemetry from "gatsby-telemetry"
 

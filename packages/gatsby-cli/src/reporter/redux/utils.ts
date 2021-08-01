@@ -2,7 +2,7 @@ import { getStore } from "./index"
 import convertHrtime from "convert-hrtime"
 import { Actions, ActivityTypes, ActivityStatuses } from "../constants"
 import { ActionsUnion, IActivity } from "./types"
-import signalExit from "signal-exit"
+import { onExit } from "signal-exit"
 
 export function isActivityInProgress(
   activityStatus: ActivityStatuses
@@ -84,7 +84,7 @@ export const delayedCall = (fn: () => void, timeout: number): (() => void) => {
   }
 
   const timeoutID = setTimeout(fnWrap, timeout)
-  const cancelSignalExit = signalExit(fnWrap)
+  const cancelSignalExit = onExit(fnWrap)
 
   const clear = (): void => {
     clearTimeout(timeoutID)
