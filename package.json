@@ -7,7 +7,6 @@
     "@babel/node": "^7.25.7",
     "@babel/plugin-transform-typescript": "^7.25.7",
     "@babel/runtime": "^7.25.7",
-    "@lerna/prompt": "3.18.5",
     "@types/bluebird": "^3.5.38",
     "@types/common-tags": "^1.8.1",
     "@types/jaeger-client": "^3.18.4",
@@ -47,10 +46,10 @@
     "jest-silent-reporter": "^0.6.0",
     "joi": "^14.3.1",
     "js-yaml": "^3.14.1",
-    "lerna": "^3.22.1",
-    "lint-staged": "^10.5.4",
-    "markdown-magic": "^0.2.1",
-    "npm-packlist": "^2.2.2",
+    "lerna": "^6.6.2",
+    "lint-staged": "^15.2.10",
+    "markdown-magic": "^2.6.1",
+    "npm-packlist": "^8.0.2",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.8",
     "rimraf": "^3.0.2",
@@ -110,5 +109,13 @@
   "workspaces": [
     "packages/*"
   ],
-  "resolutions": {}
+  "resolutions": {
+    "@npmcli/arborist": "^7.5.4",
+    "@npmcli/run-script": "^8.1.0",
+    "@technote-space/doctoc": "^2.6.4",
+    "libnpmpublish": "^7.5.2",
+    "make-fetch-happen": "^13.0.1",
+    "pacote": "^18.0.6",
+    "tar": "^6.2.1"
+  }
 }
