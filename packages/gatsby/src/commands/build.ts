@@ -4,7 +4,6 @@ import fs from "fs-extra"
 import {
   updateInternalSiteMetadata,
   isTruthy,
-  uuid,
   cpuCoreCount,
 } from "gatsby-core-utils"
 import {
@@ -76,7 +75,7 @@ module.exports = async function build(
 ): Promise<void> {
   // global gatsby object to use without store
   global.__GATSBY = {
-    buildId: uuid.v4(),
+    buildId: crypto.randomUUID(),
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     root: program!.directory,
   }
