@@ -1,10 +1,9 @@
 import crypto, { BinaryLike } from "crypto"
-import objectHash from "node-object-hash"
+import { hasher } from "node-object-hash"
 
-const hasher = objectHash({
+const objectHasher = hasher({
   coerce: false,
   alg: `md5`,
-  enc: `hex`,
   sort: {
     map: true,
     object: true,
@@ -27,7 +26,7 @@ export const createContentDigest = (
   input: BinaryLike | string | any
 ): string => {
   if (typeof input === `object` && !Buffer.isBuffer(input)) {
-    return hasher.hash(input)
+    return objectHasher.hash(input)
   }
 
   return hashPrimitive(input)
