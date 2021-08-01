@@ -63,7 +63,7 @@
     "babel-preset-gatsby-package": "^3.14.0-next.2",
     "cross-env": "^7.0.3",
     "msw": "^1.2.2",
-    "rimraf": "^5.0.1",
+    "rimraf": "^5.0.10",
     "typescript": "^5.1.6"
   },
   "peerDependencies": {
