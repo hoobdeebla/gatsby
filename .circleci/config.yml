@@ -1,5 +1,7 @@
+version: 2.1
+
 orbs:
-  win: circleci/windows@2.4.0
+  win: circleci/windows@4
 
 executors:
   node:
@@ -50,7 +52,7 @@ aliases:
   validate_renovate: &validate_renovate
     run:
       name: Validate renovate-config
-      command: (node scripts/renovate-config-generator.js && (git status --porcelain renovate.json5 | grep "M renovate.json5")) && (echo "Please run \"node scripts/renovate-config-generator.js\" to update renovate.json5" && exit 1) || npx -p renovate@31.28.5 renovate-config-validator .
+      command: (node scripts/renovate-config-generator.js && (git status --porcelain renovate.json5 | grep "M renovate.json5")) && (echo "Please run \"node scripts/renovate-config-generator.js\" to update renovate.json5" && exit 1) || npx -p renovate renovate-config-validator
 
   attach_to_bootstrap: &attach_to_bootstrap
     attach_workspace:
@@ -237,8 +239,6 @@ commands:
       - run:
           name: Run tests (using defaults)
           command: ./scripts/e2e-test.sh "<< parameters.test_path >>" "<< parameters.test_command >>" "<< parameters.pre_gatsby_dev_command >>"
-
-version: 2.1
 
 jobs:
   bootstrap:
