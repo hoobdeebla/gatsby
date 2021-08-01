@@ -11,7 +11,7 @@ const {
 const { ServerLocation, Router } = require(`@gatsbyjs/reach-router`)
 const { renderToString } = require(`react-dom/server`)
 const { parse } = require(`node-html-parser`)
-const styleToOjbect = require(`style-to-object`)
+const styleToOjbect = require(`style-to-object`).default
 
 import {
   ITEM_PROP_WORKAROUND_KEY,

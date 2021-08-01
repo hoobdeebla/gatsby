@@ -19,7 +19,7 @@
     "fs-extra": "^11.2.0",
     "got": "^11.8.6",
     "lodash": "^4.17.21",
-    "signal-exit": "^3.0.7",
+    "signal-exit": "^4.1.0",
     "verdaccio": "^5.25.0",
     "yargs": "^15.4.1"
   },

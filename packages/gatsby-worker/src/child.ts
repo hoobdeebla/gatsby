@@ -1,4 +1,4 @@
-import signalExit from "signal-exit"
+import { onExit } from "signal-exit"
 import fs from "fs-extra"
 import {
   ParentMessageUnion,
@@ -44,7 +44,7 @@ if (
   const listeners: Array<(msg: any) => void> = []
 
   const inFlightMessages = new Set<ChildMessageUnion>()
-  signalExit(() => {
+  onExit(() => {
     if (inFlightMessages.size > 0) {
       // this need to be sync
       fs.outputJsonSync(

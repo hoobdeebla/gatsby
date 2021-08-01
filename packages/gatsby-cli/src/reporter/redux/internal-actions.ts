@@ -1,5 +1,5 @@
 import { uuid } from "gatsby-core-utils"
-import signalExit from "signal-exit"
+import { onExit } from "signal-exit"
 import { Dispatch } from "redux"
 
 import { getStore } from "./"
@@ -38,7 +38,7 @@ const ActivityStatusToLogLevel = {
 }
 
 let weShouldExit = false
-signalExit(() => {
+onExit(() => {
   weShouldExit = true
 })
 
