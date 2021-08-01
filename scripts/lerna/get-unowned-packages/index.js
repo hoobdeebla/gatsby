@@ -1,6 +1,6 @@
 const { getPackages } = require(`@lerna/project`)
-const PackageGraph = require(`@lerna/package-graph`)
-const filterPackages = require(`@lerna/filter-packages`)
+const { PackageGraph } = require(`@lerna/package-graph`)
+const { filterPackages } = require(`@lerna/filter-packages`)
 const util = require(`util`)
 const path = require(`path`)
 const { exec, execSync } = require(`child_process`)
