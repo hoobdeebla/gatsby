@@ -1,5 +1,4 @@
 import _ from "lodash"
-import { uuid } from "gatsby-core-utils"
 import { ActionsUnion, IGatsbyState } from "../types"
 
 const defaultState: IGatsbyState["status"] = {
@@ -21,7 +20,7 @@ export const statusReducer = (
       }
     case `INIT`: {
       if (!state.cdnObfuscatedPrefix) {
-        state.cdnObfuscatedPrefix = uuid.v4()
+        state.cdnObfuscatedPrefix = crypto.randomUUID()
       }
       return state
     }
