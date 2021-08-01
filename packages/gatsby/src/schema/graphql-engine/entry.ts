@@ -3,7 +3,6 @@
 import "./bootstrap"
 
 import { ExecutionResult, Source } from "graphql"
-import { uuid } from "gatsby-core-utils"
 import { build } from "../index"
 import { setupLmdbStore } from "../../datastore/lmdb/lmdb-datastore"
 import { store } from "../../redux"
@@ -133,7 +132,7 @@ export class GraphQLEngine {
     opts?: IQueryOptions
   ): Promise<ExecutionResult> {
     const engineContext = {
-      requestId: uuid.v4(),
+      requestId: crypto.randomUUID(),
     }
 
     const doRunQuery = async (): Promise<ExecutionResult> => {

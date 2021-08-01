@@ -5,9 +5,11 @@ jest.mock(`gatsby-core-utils`, () => {
   return {
     ...jest.requireActual(`gatsby-core-utils`),
     isCI: () => true,
-    uuid: {
-      v4: jest.fn(() => `1234`),
-    },
+  }
+})
+jest.mock(`crypto`, () => {
+  return {
+    randomUUID: jest.fn(() => `1234`),
   }
 })
 

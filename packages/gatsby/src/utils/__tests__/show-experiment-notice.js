@@ -1,5 +1,5 @@
 import { createNoticeMessage } from "../show-experiment-notice"
-import stripAnsi from "strip-ansi"
+import { stripVTControlCharacters as stripAnsi } from "util"
 
 describe(`show-experiment-notice`, () => {
   it(`generates a message`, () => {
