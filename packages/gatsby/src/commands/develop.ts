@@ -6,7 +6,6 @@ import execa from "execa"
 import { detectPortInUseAndPrompt } from "../utils/detect-port-in-use-and-prompt"
 import fs from "fs-extra"
 import onExit from "signal-exit"
-import { v4 } from "gatsby-core-utils/uuid"
 import { slash } from "gatsby-core-utils/path"
 import reporter from "gatsby-cli/lib/reporter"
 import { getSslCert } from "../utils/get-ssl-cert"
@@ -161,7 +160,7 @@ const REGEX_IP =
 
 module.exports = async (program: IProgram): Promise<void> => {
   global.__GATSBY = {
-    buildId: v4(),
+    buildId: crypto.randomUUID(),
     root: program.directory,
   }
 
