@@ -3,7 +3,7 @@ import manager from "cache-manager"
 import fs from "fs-extra"
 import fsStore from "cache-manager-fs-hash"
 import path from "path"
-import rimraf from "rimraf"
+import { rm } from "fs/promises"
 
 import { getStore, withPluginKey } from "~/store"
 import { getGatsbyApi } from "~/utils/get-gatsby-api"
@@ -210,11 +210,8 @@ export const setHardCachedNodes = async ({
 }
 
 export const clearHardCache = async (): Promise<void> => {
-  await new Promise(resolve => {
-    const directory = new Cache().cacheBase
-
-    rimraf(directory, resolve)
-  })
+  const directory = new Cache().cacheBase
+  await rm(directory, { recursive: true, force: true })
 }
 
 export const clearHardCachedNodes = async (): Promise<void> => {
