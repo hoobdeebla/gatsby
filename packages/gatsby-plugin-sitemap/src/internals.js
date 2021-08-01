@@ -1,4 +1,4 @@
-import minimatch from "minimatch"
+import { minimatch } from "minimatch"
 
 export const REPORTER_PREFIX = `[gatsby-plugin-sitemap]:`
 
