@@ -2,7 +2,7 @@
  * This module is used to catch if the user kills the gatsby process via cmd+c
  * When this happens, there is some clean up logic we need to fire offf
  */
-import signalExit from "signal-exit"
+import { onExit } from "signal-exit"
 import { getStore } from "./redux"
 import { createPendingActivity } from "./redux/actions"
 import { ActivityStatuses } from "./constants"
@@ -34,7 +34,7 @@ export const prematureEnd = (): void => {
 }
 
 export const catchExitSignals = (): void => {
-  signalExit((code, signal) => {
+  onExit((code, signal) => {
     if (code !== 0 && signal !== `SIGINT` && signal !== `SIGTERM`)
       prematureEnd()
     else interruptActivities()
