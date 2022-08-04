@@ -46,7 +46,7 @@
     "eslint-plugin-react": "^7.32.2",
     "fs-extra": "^11.2.0",
     "glob": "^7.2.3",
-    "husky": "3.1.0",
+    "husky": "^9.1.7",
     "ignore": "^5.2.4",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
@@ -77,11 +77,6 @@
     "interfaces",
     "**/__tests__/fixtures/"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged || node scripts/on-lint-error.js"
-    }
-  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --ext .js,.jsx,.ts,.tsx --fix",
     "*.{md,css,scss,yaml,yml}": "prettier --write"
@@ -94,8 +89,6 @@
     "format": "npm run format:code && npm run format:other",
     "format:code": "npm run lint:code -- --fix",
     "format:other": "npm run prettier -- --write",
-    "hooks:install": "node node_modules/husky/husky.js install",
-    "hooks:uninstall": "node node_modules/husky/husky.js uninstall",
     "jest": "jest",
     "jest:inspect": "node --inspect node_modules/.bin/jest --runInBand",
     "jest:inspect-brk": "node --inspect-brk node_modules/.bin/jest --runInBand",
@@ -107,6 +100,7 @@
     "markdown": "md-magic --path \"starters/**/README.md\"",
     "postmarkdown": "prettier --write \"starters/**/README.md\"",
     "prebootstrap": "yarn && npm run check-versions && cross-env COMPILER_OPTIONS=\"GATSBY_MAJOR=5\" lerna run prepare --scope gatsby-core-utils",
+    "prepare": "husky",
     "prettier": "prettier \"**/*.{md,css,scss,yaml,yml}\"",
     "publish": "echo \"Use 'yarn publish-next' or 'yarn publish-release' instead of 'yarn run publish'\"",
     "publish-canary": "node scripts/check-publish-access && lerna publish --canary --yes",
