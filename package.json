@@ -7,7 +7,6 @@
     "@babel/node": "^7.20.7",
     "@babel/plugin-transform-typescript": "^7.20.13",
     "@babel/runtime": "^7.20.13",
-    "@lerna/prompt": "3.18.5",
     "@types/babel__code-frame": "^7.0.3",
     "@types/better-queue": "^3.8.3",
     "@types/bluebird": "^3.5.38",
@@ -56,7 +55,7 @@
     "jest-silent-reporter": "^0.5.0",
     "joi": "^14.3.1",
     "js-yaml": "^3.14.1",
-    "lerna": "^3.22.1",
+    "lerna": "^5.6.2",
     "lint-staged": "^10.5.4",
     "markdown-magic": "^2.6.1",
     "node-notifier": "^10.0.1",
@@ -92,7 +91,6 @@
     "jest": "jest",
     "jest:inspect": "node --inspect node_modules/.bin/jest --runInBand",
     "jest:inspect-brk": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "lerna": "lerna",
     "lerna-prepare": "lerna run prepare --ignore gatsby-core-utils",
     "lint": "npm-run-all --continue-on-error -p lint:code lint:other",
     "lint:code": "eslint --ext .js,.jsx,.ts,.tsx --quiet .",
@@ -124,6 +122,9 @@
   ],
   "resolutions": {
     "@babel/plugin-transform-modules-commonjs": "7.18.6",
-    "@technote-space/doctoc": "^2.6.4"
+    "@npmcli/arborist": "^6.2.9",
+    "@technote-space/doctoc": "^2.6.4",
+    "pacote": "^15.2.0",
+    "tar": "^6.1.15"
   }
 }
