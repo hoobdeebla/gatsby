@@ -16,7 +16,7 @@
   "version": "independent",
   "npmClient": "yarn",
   "registry": "https://registry.npmjs.org/",
-  "useWorkspaces": true,
+  "useNx": false,
   "ignoreChanges": [
     "CHANGELOG.md",
     "**/__tests__/**",
