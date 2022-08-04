@@ -7,7 +7,6 @@
     "@babel/node": "^7.20.7",
     "@babel/plugin-transform-typescript": "^7.20.13",
     "@babel/runtime": "^7.20.13",
-    "@lerna/prompt": "3.18.5",
     "@types/babel__code-frame": "^7.0.3",
     "@types/better-queue": "^3.8.3",
     "@types/bluebird": "^3.5.38",
@@ -55,7 +54,7 @@
     "jest-silent-reporter": "^0.5.0",
     "joi": "^14.3.1",
     "js-yaml": "^3.14.1",
-    "lerna": "^3.22.1",
+    "lerna": "^8.2.4",
     "lint-staged": "^10.5.4",
     "markdown-magic": "^2.6.1",
     "node-notifier": "^10.0.1",
@@ -83,15 +82,12 @@
   "private": true,
   "scripts": {
     "bootstrap": "cross-env COMPILER_OPTIONS=\"GATSBY_MAJOR=5\" npm-run-all -s \"lerna-prepare -- --{@}\" --",
-    "check-repo-fields": "node scripts/check-repo-fields.js",
-    "check-versions": "node scripts/check-versions.js",
     "format": "npm run format:code && npm run format:other",
     "format:code": "npm run lint:code -- --fix",
     "format:other": "npm run prettier -- --write",
     "jest": "jest",
     "jest:inspect": "node --inspect node_modules/.bin/jest --runInBand",
     "jest:inspect-brk": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "lerna": "lerna",
     "lerna-prepare": "lerna run prepare --ignore gatsby-core-utils",
     "lint": "npm-run-all --continue-on-error -p lint:code lint:other",
     "lint:code": "eslint --ext .js,.jsx,.ts,.tsx --quiet .",
@@ -115,7 +111,7 @@
     "test:watch": "jest --watch",
     "typecheck": "node ./scripts/check-ts",
     "version": "node ./scripts/gatsby-changelog-generator/lerna-version-lifecycle.js && prettier --write \"**/CHANGELOG.md\"",
-    "watch": "lerna run watch --no-sort --stream --concurrency 999"
+    "watch": "lerna run watch --stream --parallel"
   },
   "workspaces": [
     "packages/*"
