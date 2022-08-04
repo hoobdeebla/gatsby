@@ -1,0 +1,1 @@
+yarn lint-staged || node scripts/on-lint-error.js
