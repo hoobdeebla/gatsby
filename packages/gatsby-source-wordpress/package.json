@@ -38,6 +38,7 @@
     "lodash": "^4.17.21",
     "node-fetch": "^2.7.0",
     "p-queue": "^6.6.2",
+    "markdown-toc": "^1.2.0",
     "prettier": "^2.8.8",
     "read-chunk": "^3.2.0",
     "replaceall": "^0.1.6",
