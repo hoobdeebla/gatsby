@@ -1,5 +1,5 @@
 import * as fs from "fs-extra"
-import execa from "execa"
+import { execa } from "execa"
 import { debounce, groupBy } from "lodash"
 import {
   readConfigFile,
