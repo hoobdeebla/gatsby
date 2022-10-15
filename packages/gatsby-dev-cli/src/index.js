@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const Configstore = require(`configstore`)
+import Configstore from "configstore"
 const pkg = require(`../package.json`)
 const { isEmpty, merge } = require(`lodash`)
 const { join, resolve } = require(`node:path`)

@@ -1,12 +1,19 @@
-import { execSync } from "child_process"
-import execa, { Options } from "execa"
-import fs from "fs-extra"
-import path from "path"
+import { execSync } from "node:child_process"
+import { execa, Options as execaOptions, ExecaReturnBase } from "execa"
+import {
+  existsSync,
+  readJson,
+  remove,
+  removeSync,
+  writeFile,
+  writeJson,
+} from "fs-extra"
+import { join, resolve } from "node:path"
 import { reporter } from "./utils/reporter"
 import { spin } from "tiny-spin"
 import { getConfigStore } from "./utils/get-config-store"
 type PackageManager = "yarn" | "npm"
-import colors from "ansi-colors"
+import { blueBright, symbols } from "ansi-colors"
 import { clearLine } from "./utils/clear-line"
 
 const packageManagerConfigKey = `cli.packageManager`
@@ -46,19 +53,17 @@ const checkForYarn = (): boolean => {
 }
 
 // Initialize newly cloned directory as a git repo
-const gitInit = async (
-  rootPath: string
-): Promise<execa.ExecaReturnBase<string>> =>
+const gitInit = async (rootPath: string): Promise<ExecaReturnBase<string>> =>
   await execa(`git`, [`init`], { cwd: rootPath })
 
 // Create a .gitignore file if it is missing in the new directory
 const maybeCreateGitIgnore = async (rootPath: string): Promise<void> => {
-  if (fs.existsSync(path.join(rootPath, `.gitignore`))) {
+  if (existsSync(join(rootPath, `.gitignore`))) {
     return
   }
 
-  await fs.writeFile(
-    path.join(rootPath, `.gitignore`),
+  await writeFile(
+    join(rootPath, `.gitignore`),
     `.cache\nnode_modules\npublic\n`
   )
 }
@@ -75,7 +80,7 @@ const createInitialGitCommit = async (rootPath: string): Promise<void> => {
   } catch {
     // Remove git support if initial commit fails
     reporter.info(`Initial git commit failed - removing git support\n`)
-    fs.removeSync(path.join(rootPath, `.git`))
+    removeSync(join(rootPath, `.git`))
   }
 }
 
@@ -83,8 +88,8 @@ const setNameInPackage = async (
   sitePath: string,
   npmSafeSiteName: string
 ): Promise<void> => {
-  const packageJsonPath = path.join(sitePath, `package.json`)
-  const packageJson = await fs.readJSON(packageJsonPath)
+  const packageJsonPath = join(sitePath, `package.json`)
+  const packageJson = await readJson(packageJsonPath)
   packageJson.name = npmSafeSiteName
   packageJson.description = npmSafeSiteName
   delete packageJson.license
@@ -99,7 +104,7 @@ const setNameInPackage = async (
     delete packageJson.author
   }
 
-  await fs.writeJSON(packageJsonPath, packageJson, { spaces: 2 })
+  await writeJson(packageJsonPath, packageJson, { spaces: 2 })
 }
 
 // Executes `npm install` or `yarn install` in rootPath.
@@ -109,9 +114,7 @@ const install = async (
 ): Promise<void> => {
   const prevDir = process.cwd()
 
-  reporter.info(
-    `${colors.blueBright(colors.symbols.pointer)} Installing Gatsby...`
-  )
+  reporter.info(`${blueBright(symbols.pointer)} Installing Gatsby...`)
 
   process.chdir(rootPath)
 
@@ -120,7 +123,7 @@ const install = async (
   try {
     const pm = getPackageManager(npmConfigUserAgent)
 
-    const options: Options = {
+    const options: execaOptions = {
       stderr: `inherit`,
     }
 
@@ -138,17 +141,15 @@ const install = async (
         ? [`add`, `--silent`, ...packages]
         : [`--silent`]
 
-      await fs.remove(`package-lock.json`)
+      await remove(`package-lock.json`)
       await execa(`yarnpkg`, args, options)
     } else {
-      await fs.remove(`yarn.lock`)
+      await remove(`yarn.lock`)
       await execa(`npm`, [`install`, ...npmAdditionalCliArgs], options)
       await clearLine()
 
       reporter.success(`Installed Gatsby`)
-      reporter.info(
-        `${colors.blueBright(colors.symbols.pointer)} Installing plugins...`
-      )
+      reporter.info(`${blueBright(symbols.pointer)} Installing plugins...`)
 
       await execa(
         `npm`,
@@ -193,9 +194,9 @@ const clone = async (
   }
 
   stop()
-  await fs.remove(path.join(rootPath, `.git`))
+  await remove(join(rootPath, `.git`))
 
-  await fs.remove(path.join(rootPath, `LICENSE`))
+  await remove(join(rootPath, `LICENSE`))
 }
 
 export async function gitSetup(rootPath: string): Promise<void> {
@@ -213,7 +214,7 @@ export async function initStarter(
   packages: Array<string>,
   npmSafeSiteName: string
 ): Promise<void> {
-  const sitePath = path.resolve(rootPath)
+  const sitePath = resolve(rootPath)
 
   await clone(starter, sitePath)
 

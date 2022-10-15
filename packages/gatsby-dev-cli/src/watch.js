@@ -1,5 +1,5 @@
 const { watch: chokidarWatch } = require(`chokidar`)
-const del = require(`del`)
+import { delete as del } from "del"
 const { chmodSync, copy, existsSync } = require(`fs-extra`)
 const { join, relative } = require(`node:path`)
 const findWorkspaceRoot = require(`find-yarn-workspace-root`)

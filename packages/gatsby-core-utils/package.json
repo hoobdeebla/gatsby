@@ -63,11 +63,11 @@
   "dependencies": {
     "@babel/runtime": "^7.24.7",
     "ci-info": "^4.0.0",
-    "configstore": "^5.0.1",
+    "configstore": "^6.0.0",
     "fastq": "^1.17.1",
-    "file-type": "^16.5.4",
+    "file-type": "^19.0.0",
     "fs-extra": "^11.2.0",
-    "got": "^11.8.6",
+    "got": "^13.0.0",
     "hash-wasm": "^4.11.0",
     "import-from": "^4.0.0",
     "lmdb": "^2.9.4",
@@ -76,7 +76,7 @@
     "proper-lockfile": "^4.1.2",
     "resolve-from": "^5.0.0",
     "tmp": "^0.2.3",
-    "xdg-basedir": "^4.0.0"
+    "xdg-basedir": "^5.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.7",

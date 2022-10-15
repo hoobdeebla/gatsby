@@ -1,6 +1,6 @@
-const fs = require(`fs-extra`)
-const path = require(`path`)
-const fileType = require(`file-type`)
+const { writeFile, ensureDir } = require(`fs-extra`)
+const { join, dirname } = require(`node:path`)
+import { fileTypeFromBuffer } from "file-type"
 
 const { createFileNode } = require(`./create-file-node`)
 const { createContentDigest, createFilePath } = require(`gatsby-core-utils`)
@@ -39,7 +39,7 @@ const cacheId = hash => `create-file-node-from-buffer-${hash}`
  */
 const writeBuffer = (filename, buffer) =>
   new Promise((resolve, reject) => {
-    fs.writeFile(filename, buffer, err => (err ? reject(err) : resolve()))
+    writeFile(filename, buffer, err => (err ? reject(err) : resolve()))
   })
 
 /**
@@ -69,11 +69,11 @@ async function processBufferNode({
     // If the user did not provide an extension and we couldn't get
     // one from remote file, try and guess one
     if (typeof ext === `undefined`) {
-      const filetype = await fileType.fromBuffer(buffer)
+      const filetype = await fileTypeFromBuffer(buffer)
       ext = filetype ? `.${filetype.ext}` : `.bin`
     }
-    filename = createFilePath(path.join(pluginCacheDir, hash), name, ext)
-    await fs.ensureDir(path.dirname(filename))
+    filename = createFilePath(join(pluginCacheDir, hash), name, ext)
+    await ensureDir(dirname(filename))
 
     // Cache the buffer contents
     await writeBuffer(filename, buffer)

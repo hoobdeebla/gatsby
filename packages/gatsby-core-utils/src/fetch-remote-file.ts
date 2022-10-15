@@ -1,6 +1,6 @@
-import fileType from "file-type"
-import path from "path"
-import fs from "fs-extra"
+import { fileTypeFromFile } from "file-type"
+import { join, resolve } from "node:path"
+import { pathExists, copy, ensureDir, move, remove } from "fs-extra"
 import Queue from "fastq"
 import { createContentDigest } from "./create-content-digest"
 import {
@@ -43,10 +43,10 @@ export async function fetchRemoteFile(
     ) as string
 
     if (info?.cacheKey === args.cacheKey && fileDirectory) {
-      const cachedPath = path.join(info.directory, info.path)
-      const downloadPath = path.join(fileDirectory, info.path)
+      const cachedPath = join(info.directory, info.path)
+      const downloadPath = join(fileDirectory, info.path)
 
-      if (await fs.pathExists(cachedPath)) {
+      if (await pathExists(cachedPath)) {
         // If the cached directory is not part of the public directory, we don't need to copy it
         // as it won't be part of the build.
         if (isPublicPath(downloadPath) && cachedPath !== downloadPath) {
@@ -63,7 +63,7 @@ export async function fetchRemoteFile(
 
 function isPublicPath(downloadPath: string): boolean {
   return downloadPath.startsWith(
-    path.join(global.__GATSBY?.root ?? process.cwd(), `public`)
+    join(global.__GATSBY?.root ?? process.cwd(), `public`)
   )
 }
 
@@ -82,7 +82,7 @@ async function copyCachedPathToDownloadPath({
     )
     await copyFileMutex.acquire()
     if (!alreadyCopiedFiles.has(downloadPath)) {
-      await fs.copy(cachedPath, downloadPath, {
+      await copy(cachedPath, downloadPath, {
         overwrite: true,
       })
     }
@@ -158,8 +158,8 @@ async function fetchFile({
   try {
     const digest = createContentDigest(url)
     const finalDirectory = excludeDigest
-      ? path.resolve(fileDirectory)
-      : path.join(fileDirectory, digest)
+      ? resolve(fileDirectory)
+      : join(fileDirectory, digest)
 
     if (!name) {
       name = getRemoteFileName(url)
@@ -186,13 +186,16 @@ async function fetchFile({
 
     // Add htaccess authentication if passed in. This isn't particularly
     // extensible. We should define a proper API that we validate.
-    const httpOptions: Options = {}
+    const httpOptions: {
+      username?: string
+      password?: string
+    } = {}
     if (auth && (auth.htaccess_pass || auth.htaccess_user)) {
       httpOptions.username = auth.htaccess_user
       httpOptions.password = auth.htaccess_pass
     }
 
-    await fs.ensureDir(finalDirectory)
+    await ensureDir(finalDirectory)
 
     const tmpFilename = createFilePath(fileDirectory, `tmp-${digest}`, ext)
     let filename = createFilePath(finalDirectory, name, ext)
@@ -201,7 +204,7 @@ async function fetchFile({
     // from a previous request.
     const headers = { ...httpHeaders }
 
-    if (cachedEntry?.headers?.etag && (await fs.pathExists(filename))) {
+    if (cachedEntry?.headers?.etag && (await pathExists(filename))) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       headers[`If-None-Match`] = cachedEntry.headers.etag
     }
@@ -210,7 +213,7 @@ async function fetchFile({
       url,
       headers,
       tmpFilename,
-      httpOptions
+      httpOptions as Options
     )
 
     if (response.statusCode === 200) {
@@ -218,7 +221,7 @@ async function fetchFile({
       // If the user did not provide an extension and we couldn't get one from remote file, try and guess one
       if (!ext) {
         // if this is fresh response - try to guess extension and cache result for future
-        const filetype = await fileType.fromFile(tmpFilename)
+        const filetype = await fileTypeFromFile(tmpFilename)
         if (filetype) {
           ext = `.${filetype.ext}`
 
@@ -226,7 +229,7 @@ async function fetchFile({
         }
       }
 
-      await fs.move(tmpFilename, filename, { overwrite: true })
+      await move(tmpFilename, filename, { overwrite: true })
 
       const slashedDirectory = slash(finalDirectory)
       await setInFlightObject(url, BUILD_ID, {
@@ -237,7 +240,7 @@ async function fetchFile({
         path: slash(filename).replace(`${slashedDirectory}/`, ``),
       })
     } else if (response.statusCode === 304) {
-      await fs.remove(tmpFilename)
+      await remove(tmpFilename)
     }
 
     return filename
@@ -255,7 +258,7 @@ function getInFlightObject(key: string, buildId?: string): string | undefined {
   const remoteFile = getStorage(getDatabaseDir()).remoteFileInfo.get(key)
   // if buildId match we know it's the same build and it already processed this url this build
   if (remoteFile && remoteFile.buildId === buildId) {
-    return path.join(remoteFile.directory, remoteFile.path)
+    return join(remoteFile.directory, remoteFile.path)
   }
 
   return undefined
@@ -271,7 +274,7 @@ async function setInFlightObject(
   >
 ): Promise<void> {
   if (!buildId) {
-    inFlightMap.set(key, path.join(value.directory, value.path))
+    inFlightMap.set(key, join(value.directory, value.path))
   }
 
   await getStorage(getDatabaseDir()).remoteFileInfo.put(key, {

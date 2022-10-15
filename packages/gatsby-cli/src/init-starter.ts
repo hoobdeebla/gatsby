@@ -1,30 +1,38 @@
 import opn from "better-opn"
-import { execSync } from "child_process"
-import execa from "execa"
+import { execSync } from "node:child_process"
+import {
+  execa,
+  Options as execaOptions,
+  ExecaChildProcess,
+  ExecaReturnBase,
+} from "execa"
 import { sync as existsSync } from "fs-exists-cached"
-import fs from "fs-extra"
+import {
+  copy as fsCopy,
+  ensureDir,
+  readJson,
+  remove,
+  removeSync,
+  writeFile,
+} from "fs-extra"
 import { trackCli, trackError } from "gatsby-telemetry"
 import hostedGitInfo from "hosted-git-info"
 import isValid from "is-valid-path"
-import sysPath from "path"
-import prompts from "prompts"
-import url from "url"
+import { join, basename, resolve } from "node:path"
+import { prompt } from "prompts"
+import { parse } from "node:url"
 import { updateInternalSiteMetadata } from "gatsby-core-utils"
 import report from "./reporter"
 import { getPackageManager, setPackageManager } from "./util/package-manager"
-import reporter from "./reporter"
 
 const spawnWithArgs = (
   file: string,
   args: Array<string>,
-  options?: execa.Options
-): execa.ExecaChildProcess =>
+  options?: execaOptions
+): ExecaChildProcess =>
   execa(file, args, { stdio: `inherit`, preferLocal: false, ...options })
 
-const spawn = (
-  cmd: string,
-  options?: execa.Options
-): execa.ExecaChildProcess => {
+const spawn = (cmd: string, options?: execaOptions): ExecaChildProcess => {
   // Split on spaces, tabs, new lines
   const [file, ...args] = cmd.split(/\s+/)
   return spawnWithArgs(file, args, options)
@@ -52,9 +60,7 @@ const isAlreadyGitRepository = async (): Promise<boolean> => {
 }
 
 // Initialize newly cloned directory as a git repo
-const gitInit = async (
-  rootPath: string
-): Promise<execa.ExecaReturnBase<string>> => {
+const gitInit = async (rootPath: string): Promise<ExecaReturnBase<string>> => {
   report.info(`Initialising git in ${rootPath}`)
 
   return await spawn(`git init`, { cwd: rootPath })
@@ -62,13 +68,13 @@ const gitInit = async (
 
 // Create a .gitignore file if it is missing in the new directory
 const maybeCreateGitIgnore = async (rootPath: string): Promise<void> => {
-  if (existsSync(sysPath.join(rootPath, `.gitignore`))) {
+  if (existsSync(join(rootPath, `.gitignore`))) {
     return
   }
 
   report.info(`Creating minimal .gitignore in ${rootPath}`)
-  await fs.writeFile(
-    sysPath.join(rootPath, `.gitignore`),
+  await writeFile(
+    join(rootPath, `.gitignore`),
     `.cache\nnode_modules\npublic\n`
   )
 }
@@ -90,7 +96,7 @@ const createInitialGitCommit = async (
   } catch {
     // Remove git support if initial commit fails
     report.info(`Initial git commit failed - removing git support\n`)
-    fs.removeSync(sysPath.join(rootPath, `.git`))
+    removeSync(join(rootPath, `.git`))
   }
 }
 
@@ -112,10 +118,10 @@ const install = async (rootPath: string): Promise<void> => {
       }
     }
     if (getPackageManager() === `yarn` && checkForYarn()) {
-      await fs.remove(`package-lock.json`)
+      await remove(`package-lock.json`)
       await spawn(`yarnpkg`)
     } else {
-      await fs.remove(`yarn.lock`)
+      await remove(`yarn.lock`)
       await spawn(
         `npm install --loglevel error --color always --legacy-peer-deps --no-audit`
       )
@@ -125,8 +131,7 @@ const install = async (rootPath: string): Promise<void> => {
   }
 }
 
-const ignored = (path: string): boolean =>
-  !/^\.(git|hg)$/.test(sysPath.basename(path))
+const ignored = (path: string): boolean => !/^\.(git|hg)$/.test(basename(path))
 
 // Copy starter from file system.
 const copy = async (
@@ -135,7 +140,7 @@ const copy = async (
 ): Promise<boolean> => {
   // Chmod with 755.
   // 493 = parseInt('755', 8)
-  await fs.ensureDir(rootPath, { mode: 493 })
+  await ensureDir(rootPath, { mode: 493 })
 
   if (!existsSync(starterPath)) {
     throw new Error(`starter ${starterPath} doesn't exist`)
@@ -154,7 +159,7 @@ const copy = async (
 
   report.log(`Copying local starter to ${rootPath} ...`)
 
-  await fs.copy(starterPath, rootPath, { filter: ignored })
+  await fsCopy(starterPath, rootPath, { filter: ignored })
 
   report.success(`Created starter directory layout`)
 
@@ -194,7 +199,7 @@ const clone = async (
 
   report.success(`Created starter directory layout`)
 
-  await fs.remove(sysPath.join(rootPath, `.git`))
+  await remove(join(rootPath, `.git`))
 
   await install(rootPath)
   const isGit = await isAlreadyGitRepository()
@@ -217,7 +222,7 @@ const getPaths = async (
 
   // if no args are passed, prompt user for path and starter
   if (!starterPath && !rootPath) {
-    const response = await prompts.prompt([
+    const response = await prompt([
       {
         type: `text`,
         name: `path`,
@@ -280,7 +285,7 @@ export async function initStarter(
     root
   )
 
-  const urlObject = url.parse(rootPath)
+  const urlObject = parse(rootPath)
 
   if (selectedOtherStarter) {
     report.info(
@@ -293,7 +298,7 @@ export async function initStarter(
     trackError(`NEW_PROJECT_NAME_MISSING`)
 
     const isStarterAUrl =
-      starter && !url.parse(starter).hostname && !url.parse(starter).protocol
+      starter && !parse(starter).hostname && !parse(starter).protocol
 
     if (/gatsby-starter/gi.test(rootPath) && isStarterAUrl) {
       report.panic({
@@ -318,13 +323,13 @@ export async function initStarter(
     report.panic({
       id: `11612`,
       context: {
-        path: sysPath.resolve(rootPath),
+        path: resolve(rootPath),
       },
     })
     return
   }
 
-  if (existsSync(sysPath.join(rootPath, `package.json`))) {
+  if (existsSync(join(rootPath, `package.json`))) {
     trackError(`NEW_PROJECT_IS_NPM_PROJECT`)
     report.panic({
       id: `11613`,
@@ -346,15 +351,13 @@ export async function initStarter(
     await copy(starterPath, rootPath)
   }
 
-  const sitePath = sysPath.resolve(rootPath)
+  const sitePath = resolve(rootPath)
 
-  const sitePackageJson = await fs
-    .readJSON(sysPath.join(sitePath, `package.json`))
-    .catch(() => {
-      reporter.verbose(
-        `Could not read "${sysPath.join(sitePath, `package.json`)}"`
-      )
-    })
+  const sitePackageJson = await readJson(join(sitePath, `package.json`)).catch(
+    () => {
+      report.verbose(`Could not read "${join(sitePath, `package.json`)}"`)
+    }
+  )
 
   await updateInternalSiteMetadata(
     {

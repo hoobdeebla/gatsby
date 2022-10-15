@@ -11,7 +11,7 @@ import {
 
 import { getStore } from "~/store"
 import { getTypeSettingsByType } from "~/steps/create-schema-customization/helpers"
-import prettier from "prettier"
+import { format } from "prettier"
 import { formatLogMessage } from "~/utils/format-log-message"
 import { findNamedTypeName } from "../../create-schema-customization/helpers"
 
@@ -318,7 +318,7 @@ const generateNodeQueriesFromIngestibleFields = async () => {
         // clipboardy is ESM-only package
         const { default: clipboardy } = await import(`clipboardy`)
         await clipboardy.write(
-          prettier.format(nodeListQueries[0], { parser: `graphql` })
+          format(nodeListQueries[0], { parser: `graphql` })
         )
         process.exit()
       } catch (e) {

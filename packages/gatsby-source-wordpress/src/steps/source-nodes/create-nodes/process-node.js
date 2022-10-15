@@ -1,14 +1,14 @@
 /* eslint-disable no-useless-escape */
 import { isWebUri } from "valid-url"
 import { GatsbyImage } from "gatsby-plugin-image"
-import React from "react"
-import ReactDOMServer from "react-dom/server"
+import { createElement } from "react"
+import { renderToString } from "react-dom/server"
 import stringify from "fast-json-stable-stringify"
-import execall from "execall"
-import cheerio from "cheerio"
-import url from "url"
-import path from "path"
-import fs from "fs-extra"
+import execAll from "execall"
+import { load } from "cheerio"
+import { parse } from "node:url"
+import { join, basename } from "node:path"
+import { existsSync, copy } from "fs-extra"
 import { supportedExtensions } from "gatsby-transformer-sharp/supported-extensions"
 import replaceAll from "replaceall"
 import { usingGatsbyV4OrGreater } from "~/utils/gatsby-version"
@@ -65,7 +65,7 @@ const findReferencedImageNodeIds = ({ nodeString, pluginOptions, node }) => {
   }
 
   // get an array of all referenced media file ID's
-  const matchedIds = execall(
+  const matchedIds = execAll(
     /"__typename":"MediaItem","id":"([^"]*)"/gm,
     nodeString
   )
@@ -114,7 +114,7 @@ const getCheerioImgRelayId = cheerioImg =>
   dbIdToMediaItemRelayId(getCheerioImgDbId(cheerioImg))
 
 export const ensureSrcHasHostname = ({ src, wpUrl }) => {
-  const { protocol, host } = url.parse(wpUrl)
+  const { protocol, host } = parse(wpUrl)
 
   if (src.startsWith(`/wp-content`)) {
     src = `${protocol}//${host}${src}`
@@ -289,7 +289,7 @@ const getCheerioElementFromMatch =
     const parsedMatch = JSON.parse(`"${match}"`)
 
     // load our matching img tag into cheerio
-    const $ = cheerio.load(parsedMatch, {
+    const $ = load(parsedMatch, {
       xml: {
         // make sure it's not wrapped in <body></body>
         withDomLvl1: false,
@@ -387,7 +387,7 @@ const getFileNodeRelativePathname = fileNode => {
 const getFileNodePublicPath = fileNode => {
   const fileName = getFileNodeRelativePathname(fileNode)
 
-  const publicPath = path.join(process.cwd(), `public`, `static`, fileName)
+  const publicPath = join(process.cwd(), `public`, `static`, fileName)
 
   return publicPath
 }
@@ -395,8 +395,8 @@ const getFileNodePublicPath = fileNode => {
 const copyFileToStaticAndReturnUrlPath = async (fileNode, helpers) => {
   const publicPath = getFileNodePublicPath(fileNode)
 
-  if (!fs.existsSync(publicPath)) {
-    await fs.copy(
+  if (!existsSync(publicPath)) {
+    await copy(
       fileNode.absolutePath,
       publicPath,
       { dereference: true },
@@ -433,7 +433,7 @@ const imgSrcRemoteFileRegex =
   /(?:src=\\")((?:(?:https?|ftp|file):\/\/|www\.|ftp\.|\/)(?:[^'"])*\.(?:jpeg|jpg|png|gif|ico|mpg|ogv|svg|bmp|tif|tiff))(\?[^\\" \.]*|)(?=\\"| |\.)/gim
 
 export const getImgSrcRemoteFileMatchesFromNodeString = nodeString =>
-  execall(imgSrcRemoteFileRegex, nodeString).filter(({ subMatches }) => {
+  execAll(imgSrcRemoteFileRegex, nodeString).filter(({ subMatches }) => {
     // if our match is json encoded, that means it's inside a JSON
     // encoded string field.
     const isInJSON = subMatches[0].includes(`\\/\\/`)
@@ -443,7 +443,7 @@ export const getImgSrcRemoteFileMatchesFromNodeString = nodeString =>
   })
 
 export const getImgTagMatches = ({ nodeString }) =>
-  execall(
+  execAll(
     /<img([\w\W]+?)[\/]?>/gim,
     nodeString
       // we don't want to match images inside pre
@@ -600,7 +600,7 @@ export const replaceNodeHtmlImages = async ({
                 mimeType: imageNode.mimeType,
                 width: imageNode.mediaDetails.width,
                 height: imageNode.mediaDetails.height,
-                filename: path.basename(imageNode.mediaDetails.file),
+                filename: basename(imageNode.mediaDetails.file),
                 internal: {
                   contentDigest: imageNode.modifiedGmt,
                 },
@@ -622,7 +622,7 @@ export const replaceNodeHtmlImages = async ({
               {
                 url: imageUrl,
                 mimeType: imageNode.mimeType,
-                filename: path.basename(imageNode.sourceUrl || imageNode.url),
+                filename: basename(imageNode.sourceUrl || imageNode.url),
                 internal: {
                   contentDigest: imageNode.modifiedGmt,
                 },
@@ -677,13 +677,13 @@ export const replaceNodeHtmlImages = async ({
           } inline-gatsby-image-wrapper`,
           "data-wp-inline-image": String(++replaceIndex),
         }
-        ReactGatsbyImage = React.createElement(
+        ReactGatsbyImage = createElement(
           GatsbyImage,
           gatsbyImageHydrationData,
           null
         )
       } else if (publicUrl) {
-        ReactGatsbyImage = React.createElement(
+        ReactGatsbyImage = createElement(
           `img`,
           {
             src: publicUrl,
@@ -698,8 +698,7 @@ export const replaceNodeHtmlImages = async ({
       }
 
       if (ReactGatsbyImage) {
-        let gatsbyImageStringRaw =
-          ReactDOMServer.renderToString(ReactGatsbyImage)
+        let gatsbyImageStringRaw = renderToString(ReactGatsbyImage)
 
         // gatsby-plugin-image needs hydration data to work on navigations - we add the hydration data to the DOM to use it in gatsby-browser.ts
         if (gatsbyImageHydrationData) {
@@ -745,12 +744,12 @@ const replaceFileLinks = async ({
 
   const hrefMatches = [
     // match url pathnames in html fields, for ex /wp-content/uploads/2019/01/image.jpg
-    ...(execall(
+    ...(execAll(
       /(\\"|\\'|\()([^'"()]*)(\/wp-content\/uploads\/[^'">()]+)(\\"|\\'|>|\))/gm,
       nodeString
     ) || []),
     // match full urls in json fields, for ex https://example.com/wp-content/uploads/2019/01/image.jpg
-    ...(execall(
+    ...(execAll(
       new RegExp(
         `(\\"|\\'|\\()([^'"()]*)(${wpUrl}\/wp-content\/uploads\/[^'">()]+)(\\"|\\'|>|\\))`,
         `gm`
@@ -855,7 +854,7 @@ export const getWpLinkRegex = wpUrl =>
 // replaces any url which is a front-end WP url with a relative path
 const replaceNodeHtmlLinks = ({ wpUrl, nodeString, node }) => {
   const wpLinkRegex = getWpLinkRegex(wpUrl)
-  const linkMatches = execall(wpLinkRegex, nodeString)
+  const linkMatches = execAll(wpLinkRegex, nodeString)
 
   if (linkMatches.length) {
     linkMatches.forEach(({ match, subMatches: [path] }) => {
@@ -901,7 +900,7 @@ export const searchAndReplaceNodeStrings = ({
     pluginOptions.searchAndReplace.forEach(({ search, replace }) => {
       const searchRegex = new RegExp(search, `g`)
 
-      const stringMatches = execall(searchRegex, nodeString)
+      const stringMatches = execAll(searchRegex, nodeString)
 
       if (stringMatches.length) {
         stringMatches.forEach(({ match }) => {

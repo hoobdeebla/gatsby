@@ -2,19 +2,19 @@
 
 import { IPluginOptions } from "~/models/gatsby-api"
 import { GatsbyReporter } from "./gatsby-types"
-import prettier from "prettier"
+import { format } from "prettier"
 import axios, {
   AxiosRequestConfig,
   AxiosResponse,
   RawAxiosRequestHeaders,
 } from "axios"
 import rateLimit, { RateLimitedAxiosInstance } from "axios-rate-limit"
-import { bold } from "chalk"
+import chalk from "chalk"
 import retry from "async-retry"
 import { formatLogMessage } from "./format-log-message"
 import { getStore } from "~/store"
 import { getPluginOptions } from "./get-gatsby-api"
-import urlUtil from "url"
+import { parse } from "node:url"
 import { CODES } from "./report"
 
 let http = null
@@ -62,7 +62,7 @@ const handleErrorOptions = async ({
   }
 
   try {
-    query = prettier.format(query, { parser: `graphql` })
+    query = format(query, { parser: `graphql` })
   } catch (e) {
     // do nothing
   }
@@ -238,7 +238,7 @@ const handleGraphQLErrors = async ({
               : ``
           } \n\t ${
             error.message
-          }  \n\n Error path: ${errorPath} \n\n If you haven't already, try adding ${bold(
+          }  \n\n Error path: ${errorPath} \n\n If you haven't already, try adding ${chalk.bold(
             `define( 'GRAPHQL_DEBUG', true );`
           )} to your wp-config.php for more detailed error messages.`
         )
@@ -257,13 +257,13 @@ const handleGraphQLErrors = async ({
   })
 }
 
-const ensureStatementsAreTrue = `${bold(
+const ensureStatementsAreTrue = `${chalk.bold(
   `Please ensure the following statements are true`
 )} \n  - your WordPress URL is correct in gatsby-config.js\n  - your server is responding to requests \n  - WPGraphQL and WPGatsby are installed and active in your WordPress backend\n  - Your WordPress debug.log does not contain critical errors`
 
 // @todo add a link to docs page for debugging
 const genericError = ({ url }: { url: string }): string =>
-  `GraphQL request to ${bold(url)} failed.\n\n${ensureStatementsAreTrue}`
+  `GraphQL request to ${chalk.bold(url)} failed.\n\n${ensureStatementsAreTrue}`
 
 const slackChannelSupportMessage = `If you're still having issues, please visit https://www.wpgraphql.com/community-and-support/\nand follow the link to join the WPGraphQL Slack.\nThere are a lot of folks there in the #gatsby channel who are happy to help with debugging.`
 
@@ -271,9 +271,9 @@ const getLowerRequestConcurrencyOptionMessage = (): string => {
   const { requestConcurrency, previewRequestConcurrency, perPage } =
     getStore().getState().gatsbyApi.pluginOptions.schema
 
-  return `Try reducing the ${bold(
+  return `Try reducing the ${chalk.bold(
     `requestConcurrency`
-  )} for content updates or the ${bold(
+  )} for content updates or the ${chalk.bold(
     `previewRequestConcurrency`
   )} for previews, and/or reducing the schema.perPage option:
 
@@ -353,7 +353,7 @@ const handleFetchErrors = async ({
       id: CODES.WordPress500ishError,
       context: {
         sourceMessage: formatLogMessage(
-          `Your WordPress server at ${bold(url)} appears to be overloaded.
+          `Your WordPress server at ${chalk.bold(url)} appears to be overloaded.
 
 ${getLowerRequestConcurrencyOptionMessage()}`,
           { useVerboseStyle: true }
@@ -512,11 +512,11 @@ ${slackChannelSupportMessage}`
             sourceMessage: formatLogMessage(
               `${
                 errorContext ? `${errorContext}` : ``
-              }\n\nThe supplied url ${bold(
+              }\n\nThe supplied url ${chalk.bold(
                 urlWithoutTrailingSlash
-              )} is invalid,\nhowever ${bold(
+              )} is invalid,\nhowever ${chalk.bold(
                 urlWithoutTrailingSlash + `/graphql`
-              )} works!\n\nFor this plugin to consume the wp-graphql schema, you'll need to specify the full URL\n(${bold(
+              )} works!\n\nFor this plugin to consume the wp-graphql schema, you'll need to specify the full URL\n(${chalk.bold(
                 urlWithoutTrailingSlash + `/graphql`
               )}) in your gatsby-config.\n\nYou can learn more about configuring the source plugin URL here:\n${docsLink}\n\n`
             ),
@@ -557,7 +557,7 @@ ${slackChannelSupportMessage}`
           } \n\nReceived HTML as a response. Are you sure ${url} is the correct URL and WPGraphQL is active?\n\nIf you're sure WPGraphQL is active, visit that URL in a browser - if it redirects to the correct URL,\nor you've entered the wrong URL in settings,\nyou might receive this error.\nVisit that URL in your browser and if it looks good copy/paste it from your URL bar to your gatsby-config.js.\n\n${ensureStatementsAreTrue}${
             copyHtmlResponseOnError
               ? `\n\nCopied HTML response to your clipboard.`
-              : `\n\n${bold(
+              : `\n\n${chalk.bold(
                   `Further debugging`
                 )}\nIf you still receive this error after following the steps above, this may be a problem with your WordPress instance.\nA plugin or theme may be adding additional output for some posts or pages.\nAdd the following plugin option to copy the html response to your clipboard for debugging.\nYou can paste the response into an html file to see what's being returned.\n
 {
@@ -762,7 +762,7 @@ const fetchGraphql = async ({
       throw new Error(`GraphQL request returned an empty string.`)
     }
 
-    const { path }: { path: string } = urlUtil.parse(url)
+    const { path }: { path: string } = parse(url)
 
     const responsePath = response.request.path
 
