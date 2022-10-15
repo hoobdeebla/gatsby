@@ -1,5 +1,5 @@
 import camelCase from "lodash/camelCase"
-import glob from "globby"
+import { globby } from "globby"
 import systemPath from "path"
 import { sync as existsSync } from "fs-exists-cached"
 import {
@@ -101,7 +101,7 @@ Please pick a path to an existing directory.`,
     const pagesGlob = `**/*.{${exts}}`
 
     // Get initial list of files.
-    const files = await glob(pagesGlob, { cwd: pagesPath })
+    const files = await globby(pagesGlob, { cwd: pagesPath })
     files.forEach(file => {
       createPage(
         file,
