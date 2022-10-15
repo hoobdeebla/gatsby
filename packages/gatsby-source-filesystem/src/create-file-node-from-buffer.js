@@ -1,6 +1,6 @@
 const fs = require(`fs-extra`)
 const path = require(`path`)
-const fileType = require(`file-type`)
+import { fileTypeFromBuffer } from "file-type"
 
 const { createFileNode } = require(`./create-file-node`)
 const { createContentDigest, createFilePath } = require(`gatsby-core-utils`)
@@ -69,7 +69,7 @@ async function processBufferNode({
     // If the user did not provide an extension and we couldn't get
     // one from remote file, try and guess one
     if (typeof ext === `undefined`) {
-      const filetype = await fileType.fromBuffer(buffer)
+      const filetype = await fileTypeFromBuffer(buffer)
       ext = filetype ? `.${filetype.ext}` : `.bin`
     }
     filename = createFilePath(path.join(pluginCacheDir, hash), name, ext)
