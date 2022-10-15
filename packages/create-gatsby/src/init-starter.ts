@@ -1,5 +1,5 @@
 import { execSync } from "child_process"
-import execa, { Options } from "execa"
+import { x, type Options, type Result } from "tinyexec"
 import fs from "fs"
 import path from "path"
 import { reporter } from "./utils/reporter"
@@ -46,10 +46,8 @@ const checkForYarn = (): boolean => {
 }
 
 // Initialize newly cloned directory as a git repo
-const gitInit = async (
-  rootPath: string
-): Promise<execa.ExecaReturnBase<string>> =>
-  await execa(`git`, [`init`], { cwd: rootPath })
+const gitInit = async (rootPath: string): Promise<Result> =>
+  await x(`git`, [`init`], { nodeOptions: { cwd: rootPath } })
 
 // Create a .gitignore file if it is missing in the new directory
 const maybeCreateGitIgnore = async (rootPath: string): Promise<void> => {
@@ -65,7 +63,7 @@ const maybeCreateGitIgnore = async (rootPath: string): Promise<void> => {
 
 // Create an initial git commit in the new directory
 const createInitialGitCommit = async (rootPath: string): Promise<void> => {
-  await execa(`git`, [`add`, `-A`], { cwd: rootPath })
+  await x(`git`, [`add`, `-A`], { nodeOptions: { cwd: rootPath } })
   // use execSync instead of spawn to handle git clients using
   // pgp signatures (with password)
   try {
@@ -91,8 +89,9 @@ const setNameInPackage = async (
   packageJson.description = npmSafeSiteName
   delete packageJson.license
   try {
-    const result = await execa(`git`, [`config`, `user.name`])
-    if (result.failed) {
+    const result = await x(`git`, [`config`, `user.name`])
+    // @ts-ignore
+    if (result.killed) {
       delete packageJson.author
     } else {
       packageJson.author = result.stdout
@@ -126,7 +125,10 @@ const install = async (
     const pm = getPackageManager(npmConfigUserAgent)
 
     const options: Options = {
-      stderr: `inherit`,
+      nodeOptions: {
+        // @ts-ignore
+        stderr: `inherit`,
+      },
     }
 
     const npmAdditionalCliArgs = [
@@ -147,10 +149,10 @@ const install = async (
         recursive: true,
         force: true,
       })
-      await execa(`yarnpkg`, args, options)
+      await x(`yarnpkg`, args, options)
     } else {
       await fs.promises.rm(`yarn.lock`, { recursive: true, force: true })
-      await execa(`npm`, [`install`, ...npmAdditionalCliArgs], options)
+      await x(`npm`, [`install`, ...npmAdditionalCliArgs], options)
       await clearLine()
 
       reporter.success(`Installed Gatsby`)
@@ -158,11 +160,7 @@ const install = async (
         `${colors.blueBright(colors.symbols.pointer)} Installing plugins...`
       )
 
-      await execa(
-        `npm`,
-        [`install`, ...npmAdditionalCliArgs, ...packages],
-        options
-      )
+      await x(`npm`, [`install`, ...npmAdditionalCliArgs, ...packages], options)
       await clearLine()
     }
 
@@ -193,7 +191,7 @@ const clone = async (
   ].filter(arg => Boolean(arg))
 
   try {
-    await execa(`git`, args)
+    await x(`git`, args)
 
     reporter.success(`Created site from template`)
   } catch (err) {
