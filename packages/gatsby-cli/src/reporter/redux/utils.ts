@@ -55,7 +55,7 @@ export const getActivity = (id: string): IActivity | null =>
  * @returns {Number} Milliseconds from activity start
  */
 export const getElapsedTimeMS = (activity: IActivity): number => {
-  const elapsed = process.hrtime(activity.startTime)
+  const elapsed = process.hrtime.bigint() - activity.startTime!
   return convertHrtime(elapsed).milliseconds
 }
 

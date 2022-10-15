@@ -1,7 +1,7 @@
 const path = require(`path`)
 const fs = require(`fs-extra`)
-const mime = require(`mime`)
-const prettyBytes = require(`pretty-bytes`)
+import mime from "mime"
+import prettyBytes from "pretty-bytes"
 
 const { createContentDigest, slash, md5File } = require(`gatsby-core-utils`)
 

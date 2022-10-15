@@ -11,7 +11,7 @@ export interface IProgressbarProps {
   message: string
   current: number
   total: number
-  startTime: [number, number]
+  startTime: bigint
 }
 
 export function ProgressBar({

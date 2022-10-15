@@ -1,5 +1,5 @@
 const chokidar = require(`chokidar`)
-const del = require(`del`)
+import { deleteAsync as del } from "del"
 const fs = require(`fs-extra`)
 const path = require(`path`)
 const findWorkspaceRoot = require(`find-yarn-workspace-root`)

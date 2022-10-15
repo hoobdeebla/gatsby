@@ -1,6 +1,6 @@
 const path = require(`path`)
 const { TraceMap } = require(`@jridgewell/trace-mapping`)
-const execa = require(`execa`)
+import { execa } from "execa"
 const fs = require(`fs-extra`)
 
 jest.setTimeout(60000)

@@ -8,11 +8,11 @@
 import path from "path"
 import tmp from "tmp"
 import fs from "fs-extra"
-import xdgBasedir from "xdg-basedir"
+import { xdgConfig } from "xdg-basedir"
 import { createContentDigest } from "./create-content-digest"
 import { isCI } from "./ci"
 
-const globalConfigPath = xdgBasedir.config || tmp.fileSync().name
+const globalConfigPath = xdgConfig || tmp.fileSync().name
 
 const getSiteDir = (programPath: string): string => {
   const hash = createContentDigest(programPath)

@@ -164,7 +164,7 @@ export const createPendingActivity = ({
       payload: {
         id,
         type: ActivityTypes.Pending,
-        startTime: process.hrtime(),
+        startTime: process.hrtime.bigint(),
         status,
       },
     },
@@ -201,7 +201,7 @@ export const startActivity = ({
         text,
         type,
         status,
-        startTime: process.hrtime(),
+        startTime: process.hrtime.bigint(),
         statusText: ``,
         current,
         total,

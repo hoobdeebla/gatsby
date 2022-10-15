@@ -3,7 +3,7 @@ import * as fs from "fs-extra"
 import { releaseAllMutexes } from "gatsby-core-utils/mutex"
 import { md5, md5File } from "gatsby-core-utils"
 import path from "path"
-import glob from "globby"
+import { globby } from "globby"
 
 import apiRunnerNode from "../utils/api-runner-node"
 import { getBrowsersList } from "../utils/browserslist"
@@ -274,7 +274,7 @@ export async function initialize({
       }
     )
     activity.start()
-    const files = await glob(
+    const files = await globby(
       [
         `public/**/*.{html,css,mdb}`,
         `!public/page-data/**/*`,
@@ -438,7 +438,7 @@ export async function initialize({
         deleteGlobs.push(`!.cache/caches/gatsby-source-filesystem`)
       }
 
-      const files = await glob(deleteGlobs, {
+      const files = await globby(deleteGlobs, {
         cwd: program.directory,
       })
 

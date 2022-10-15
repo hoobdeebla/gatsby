@@ -1,4 +1,4 @@
-import fileType from "file-type"
+import { fileTypeFromFile } from "file-type"
 import path from "path"
 import fs from "fs-extra"
 import Queue from "fastq"
@@ -218,7 +218,7 @@ async function fetchFile({
       // If the user did not provide an extension and we couldn't get one from remote file, try and guess one
       if (!ext) {
         // if this is fresh response - try to guess extension and cache result for future
-        const filetype = await fileType.fromFile(tmpFilename)
+        const filetype = await fileTypeFromFile(tmpFilename)
         if (filetype) {
           ext = `.${filetype.ext}`
 
