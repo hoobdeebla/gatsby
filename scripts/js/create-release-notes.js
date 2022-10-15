@@ -1,10 +1,10 @@
 require(`dotenv`).config()
 
 const yargs = require(`yargs`)
-const fs = require(`fs`)
-const path = require(`path`)
+const { readFileSync, mkdirSync, writeFileSync } = require(`node:fs`)
+const { join, dirname } = require(`node:path`)
 const { Octokit } = require(`@octokit/rest`)
-const childProcess = require(`child_process`)
+const { execSync } = require(`child_process`)
 
 yargs.parserConfiguration({
   "parse-numbers": false,
@@ -80,19 +80,19 @@ async function run() {
   // TODO check how many releases were already done this month
   const monthYearIndex = ` TODO`
 
-  childProcess.execSync(`git checkout -b "${releaseNotesBranchName}"`, {
+  execSync(`git checkout -b "${releaseNotesBranchName}"`, {
     stdio: `inherit`,
   })
 
-  const newReleaseNotesPath = path.join(
+  const newReleaseNotesPath = join(
     __dirname,
     `..`,
     `docs/docs/reference/release-notes/v${argv.release}/index.md`
   )
 
-  const template = fs
-    .readFileSync(path.join(__dirname, `create-release-notes.template.md`))
-    .toString()
+  const template = readFileSync(
+    join(__dirname, `create-release-notes.template.md`)
+  ).toString()
 
   const contents = template
     .replace(/\${VERSION}/g, argv.release)
@@ -102,18 +102,18 @@ async function run() {
     .replace(/\${YEAR}/g, year)
     .replace(/\${MONTH}/g, MONTH_NAMES[parseInt(month) - 1])
 
-  fs.mkdirSync(path.dirname(newReleaseNotesPath), { recursive: true })
-  fs.writeFileSync(newReleaseNotesPath, contents)
+  mkdirSync(dirname(newReleaseNotesPath), { recursive: true })
+  writeFileSync(newReleaseNotesPath, contents)
 
-  childProcess.execSync(`git add ${newReleaseNotesPath}`, {
+  execSync(`git add ${newReleaseNotesPath}`, {
     stdio: `inherit`,
   })
 
-  childProcess.execSync(`git commit -m "${commitMessage}"`, {
+  execSync(`git commit -m "${commitMessage}"`, {
     stdio: `inherit`,
   })
 
-  childProcess.execSync(`git push origin +${releaseNotesBranchName}`, {
+  execSync(`git push origin +${releaseNotesBranchName}`, {
     stdio: `inherit`,
   })
 

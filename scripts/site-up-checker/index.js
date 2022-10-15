@@ -1,5 +1,5 @@
 const request = require(`request-promise`)
-const Webhook = require(`webhook-discord`)
+const { Webhook } = require(`webhook-discord`)
 const Discord = require(`discord.js`)
 
 const client = new Discord.Client()

@@ -1,8 +1,8 @@
-const path = require(`path`)
+const { join } = require(`node:path`)
 const { globSync } = require(`glob`)
-const fs = require(`fs-extra`)
+const { readJSONSync, writeJSONSync } = require(`fs-extra`)
 
-const ROOT_DIR = path.join(__dirname, `..`)
+const ROOT_DIR = join(__dirname, `../..`)
 const packageRules = new Map()
 
 const globalPackageRules = [
@@ -253,8 +253,8 @@ const monorepoPackages = globSync(`packages/*/package.json`).map(
 monorepoPackages.forEach(pkg => {
   const preFirstMajorPackages = []
   try {
-    const pkgJson = fs.readJSONSync(
-      path.join(ROOT_DIR, `packages`, pkg, `package.json`)
+    const pkgJson = readJSONSync(
+      join(ROOT_DIR, `packages`, pkg, `package.json`)
     )
 
     for (const dep in pkgJson.dependencies) {
@@ -394,6 +394,6 @@ const renovateConfig = {
   },
 }
 
-fs.writeJSONSync(path.join(ROOT_DIR, `renovate.json5`), renovateConfig, {
+writeJSONSync(join(ROOT_DIR, `renovate.json5`), renovateConfig, {
   spaces: 2,
 })

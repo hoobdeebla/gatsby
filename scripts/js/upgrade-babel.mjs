@@ -1,6 +1,6 @@
 // Convenience script to bump all @babel dependencies of all packages to the latest version
-const { readdirSync, readFile, writeFileSync } = require(`node:fs`)
-const { sync: execaSync } = require(`execa`)
+import { readdirSync, readFile, writeFileSync } from "node:fs"
+import { execaSync } from "execa"
 
 const packages = readdirSync(`./packages`)
 const versions = {}

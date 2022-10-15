@@ -1,5 +1,5 @@
-const fs = require(`fs-extra`)
-const path = require(`path`)
+const { readFileSync, writeFileSync } = require(`fs-extra`)
+const { join } = require(`node:path`)
 
 const packagesToPin = [
   `@gatsbyjs/parcel-namer-relative-to-cwd`,
@@ -7,8 +7,8 @@ const packagesToPin = [
 ]
 
 function adjustDeps(packageDirectoryPath) {
-  const packageJsonPath = path.join(packageDirectoryPath, `package.json`)
-  const packageJsonString = fs.readFileSync(packageJsonPath, `utf-8`)
+  const packageJsonPath = join(packageDirectoryPath, `package.json`)
+  const packageJsonString = readFileSync(packageJsonPath, `utf-8`)
 
   let updatedPackageJson = packageJsonString
 
@@ -22,7 +22,7 @@ function adjustDeps(packageDirectoryPath) {
   }
 
   if (updatedPackageJson !== packageJsonString) {
-    fs.writeFileSync(packageJsonPath, updatedPackageJson)
+    writeFileSync(packageJsonPath, updatedPackageJson)
   }
 }
 

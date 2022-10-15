@@ -2,7 +2,7 @@ require(`dotenv`).config()
 
 const yargs = require(`yargs`)
 const { Octokit } = require(`@octokit/rest`)
-const childProcess = require(`child_process`)
+const { execSync } = require(`node:child_process`)
 
 yargs.parserConfiguration({
   "parse-numbers": false,
@@ -71,29 +71,29 @@ async function run() {
   const releaseBranchName = `release/${argv.release}`
   const backportReleaseBranchName = `backport-${argv.release}-${argv.pr}`
 
-  childProcess.execSync(`git fetch origin release/${argv.release}`, {
+  execSync(`git fetch origin release/${argv.release}`, {
     stdio: `inherit`,
   })
 
   try {
-    childProcess.execSync(`git branch -D "${backportReleaseBranchName}"`, {
+    execSync(`git branch -D "${backportReleaseBranchName}"`, {
       stdio: `inherit`,
     })
     // eslint-disable-next-line no-empty
   } catch {}
 
-  childProcess.execSync(
+  execSync(
     `git checkout -b "${backportReleaseBranchName}" "origin/${releaseBranchName}" --no-track`,
     {
       stdio: `inherit`,
     }
   )
 
-  childProcess.execSync(`git cherry-pick -x ${commitsha}`, {
+  execSync(`git cherry-pick -x ${commitsha}`, {
     stdio: `inherit`,
   })
 
-  childProcess.execSync(`git push origin +${backportReleaseBranchName}`, {
+  execSync(`git push origin +${backportReleaseBranchName}`, {
     stdio: `inherit`,
   })
 

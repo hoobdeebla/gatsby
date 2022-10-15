@@ -1,5 +1,5 @@
-const childProcess = require(`child_process`)
-const path = require(`path`)
+const { execFileSync } = require(`node:child_process`)
+const { join } = require(`node:path`)
 
 const IS_CI = !!(
   process.env.CI || // Travis CI, CircleCI, Cirrus CI, Gitlab CI, Appveyor, CodeShip, dsari
@@ -12,7 +12,7 @@ const IS_CI = !!(
 
 const shouldRecord = !!process.env.CYPRESS_RECORD_KEY && IS_CI
 
-const cypressBin = path.join(process.cwd(), `node_modules/.bin/cypress`)
+const cypressBin = join(process.cwd(), `node_modules/.bin/cypress`)
 
 // first arg is node binary itself
 // second arg is .js file entry point (as in - path to this file)
@@ -27,7 +27,7 @@ if (shouldRecord) {
   }
 }
 
-childProcess.execFileSync(cypressBin, cypressArgs, {
+execFileSync(cypressBin, cypressArgs, {
   cwd: process.cwd(),
   stdio: `inherit`,
 })

@@ -1,34 +1,34 @@
 // This file runs the typescript checker against packages.
 // you can run it against all:
-//   `node ./scripts/check-ts`
+//   `yarn typecheck`
 //
 // or even scope it to specific packages.
-//   `node ./scripts/check-ts gatsby-cli`
-"use strict"
-
-const fs = require(`fs`)
-const { globSync } = require(`glob`)
-const path = require(`path`)
-const chalk = require(`chalk`)
-const yargs = require(`yargs`)
-const execa = require(`execa`)
+//   `yarn typecheck gatsby-cli`
+import { readdirSync, lstatSync, existsSync } from "node:fs"
+import { join, resolve as resolvePath } from "node:path"
+import { globSync } from "glob"
+import chalk from "chalk"
+import yargs from "yargs"
+import { execaSync } from "execa"
+import { fileURLToPath } from "node:url"
+import { createRequire } from "node:module"
 
 console.log(`TS Check: Running...`)
 
-const toAbsolutePath = relativePath => path.join(__dirname, `..`, relativePath)
+const toAbsolutePath = relativePath =>
+  join(fileURLToPath(new URL(`.`, import.meta.url)), `../..`, relativePath)
 const PACKAGES_DIR = toAbsolutePath(`/packages`)
 
 const filterPackage = yargs.argv._[0]
 
-const packages = fs
-  .readdirSync(PACKAGES_DIR)
-  .map(file => path.resolve(PACKAGES_DIR, file))
-  .filter(f => fs.lstatSync(path.resolve(f)).isDirectory())
+const packages = readdirSync(PACKAGES_DIR)
+  .map(file => resolvePath(PACKAGES_DIR, file))
+  .filter(f => lstatSync(resolvePath(f)).isDirectory())
 
 // We only want to typecheck against packages that have a tsconfig.json
 // AND have some ts files in it's source code.
 let packagesWithTs = packages
-  .filter(p => fs.existsSync(path.resolve(p, `tsconfig.json`)))
+  .filter(p => existsSync(resolvePath(p, `tsconfig.json`)))
   .filter(
     project =>
       globSync(`/**/*.ts`, {
@@ -90,9 +90,11 @@ packagesWithTs.forEach(project => {
     `\n  - Percent Converted: ${percentConverted}%`
   )
 
+  const require = createRequire(import.meta.url)
+
   const args = [
     `--max-old-space-size=4096`,
-    path.resolve(
+    resolvePath(
       require.resolve(`typescript/package.json`),
       `..`,
       require(`typescript/package.json`).bin.tsc
@@ -103,7 +105,7 @@ packagesWithTs.forEach(project => {
   ]
 
   try {
-    execa.sync(`node`, args, { stdio: `inherit` })
+    execaSync(`node`, args, { stdio: `inherit` })
   } catch (e) {
     process.exit(1)
   }

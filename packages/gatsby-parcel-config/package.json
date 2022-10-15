@@ -31,6 +31,6 @@
     "@parcel/core": "^2.0.0"
   },
   "scripts": {
-    "version": "node ../../scripts/pin-version.js"
+    "version": "node ../../scripts/js/pin-version.js"
   }
 }

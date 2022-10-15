@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const getUnownedPackages = require(`../get-unowned-packages`)
+const getUnownedPackages = require(`./get-unowned-packages`)
 
 getUnownedPackages()
   .then(({ packages, user }) => {

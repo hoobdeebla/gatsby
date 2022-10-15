@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-// const util = require(`util`)
-// const exec = util.promisify(require(`child_process`).exec)
 const argv = require(`yargs`)
   .command(`$0`, `Add new owner to gatsby packages`, {
     user: {
@@ -8,9 +6,9 @@ const argv = require(`yargs`)
     },
   })
   .help().argv
-const getUnownedPackages = require(`../get-unowned-packages`)
+const getUnownedPackages = require(`./get-unowned-packages`)
 
-const user = argv.user
+const { user } = argv
 
 getUnownedPackages({ user }).then(async ({ packages }) => {
   if (!packages.length) {

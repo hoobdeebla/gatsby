@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Checks if our Gatsby example sites are up and pings Discord when one goes down",
   "main": "index.js",
+  "private": "true",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index"
@@ -10,11 +11,10 @@
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "discord.js": "^11.1.0",
-    "lodash": "^4.17.14",
-    "request": "^2.81.0",
-    "request-promise": "^4.2.0",
-    "webhook-discord": "^2.0.6"
+    "discord.js": "^11.6.4",
+    "lodash": "^4.17.21",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "webhook-discord": "^3.7.8"
   }
 }

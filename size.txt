@@ -29,6 +29,7 @@
  20K	node_modules/stable
  88K	node_modules/hyphenate-style-name
  20K	node_modules/system-architecture
+1.5M	node_modules/discord.js
  68K	node_modules/agentkeepalive
 744K	node_modules/zod
 180K	node_modules/regenerator-transform
@@ -67,11 +68,12 @@
  44K	node_modules/mdurl
  28K	node_modules/pinpoint
 172K	node_modules/zen-observable
+ 28K	node_modules/async-limiter
 228K	node_modules/algoliasearch
 304K	node_modules/sift
 784K	node_modules/chokidar-cli
  44K	node_modules/asn1
- 10M	node_modules/@types
+9.9M	node_modules/@types
 288K	node_modules/globals
  12K	node_modules/is-regexp
 520K	node_modules/opentracing
@@ -101,7 +103,7 @@
  28K	node_modules/micromark-util-sanitize-uri
  20K	node_modules/on-headers
  60K	node_modules/istanbul-lib-source-maps
-564K	node_modules/@cypress
+672K	node_modules/@cypress
  56K	node_modules/symbol-observable
  76K	node_modules/dns-packet
  64K	node_modules/jest-junit
@@ -134,7 +136,7 @@
 124K	node_modules/normalize-package-data
  20K	node_modules/is-wsl
 224K	node_modules/colord
-1.8M	node_modules/ink
+2.0M	node_modules/ink
  48K	node_modules/functions-have-names
  72K	node_modules/event-source-polyfill
 200K	node_modules/jest-serializer-path
@@ -261,7 +263,7 @@
  24K	node_modules/micromark-util-normalize-identifier
  24K	node_modules/postcss-reduce-transforms
  16K	node_modules/bail
-120K	node_modules/cacheable-request
+132K	node_modules/cacheable-request
 132K	node_modules/he
  28K	node_modules/p-cancelable
  20K	node_modules/require-main-filename
@@ -305,7 +307,7 @@
 108K	node_modules/dotenv
  60K	node_modules/wordwrap
  20K	node_modules/is-root
-864K	node_modules/htmlparser2
+340K	node_modules/htmlparser2
  20K	node_modules/escape-string-regexp
  16K	node_modules/lodash.isstring
  20K	node_modules/indent-string
@@ -337,7 +339,7 @@
  32K	node_modules/detect-node-es
 524K	node_modules/@yarnpkg
 152K	node_modules/eslint-scope
- 32K	node_modules/npm-packlist
+200K	node_modules/npm-packlist
  20K	node_modules/chownr
 320K	node_modules/type-fest
 1.3M	node_modules/validator
@@ -443,7 +445,7 @@
 144K	node_modules/asciidoctor
  56K	node_modules/@trysound
  16K	node_modules/unc-path-regex
-596K	node_modules/ignore-walk
+ 76K	node_modules/ignore-walk
 276K	node_modules/browser-resolve
  24K	node_modules/base64-js
 1.8M	node_modules/@opentelemetry
@@ -497,7 +499,7 @@
  24K	node_modules/hast-util-whitespace
  20K	node_modules/change-case-all
 792K	node_modules/express
- 20K	node_modules/cli-truncate
+220K	node_modules/cli-truncate
 844K	node_modules/clean-css
  32K	node_modules/has-ansi
  64K	node_modules/sax
@@ -540,7 +542,7 @@
  64K	node_modules/whet.extend
  16K	node_modules/markdown-escapes
  48K	node_modules/gensync
-252K	node_modules/git-raw-commits
+280K	node_modules/git-raw-commits
 516K	node_modules/JSONStream
  11M	node_modules/prettier
  11M	node_modules/assetgraph
@@ -583,7 +585,7 @@
  28K	node_modules/contentful-resolve-response
  24K	node_modules/axios-rate-limit
  16K	node_modules/markdown-link
-824K	node_modules/log-update
+788K	node_modules/log-update
 516K	node_modules/common-tags
  16K	node_modules/resolve-alpn
  28K	node_modules/flush-write-stream
@@ -595,6 +597,7 @@
  48K	node_modules/is-invalid-path
  56K	node_modules/has-values
  28K	node_modules/esrecurse
+ 64K	node_modules/prism-media
 132K	node_modules/noms
 120K	node_modules/framesync
  80K	node_modules/argv
@@ -615,7 +618,7 @@
  24K	node_modules/md5-file
 120K	node_modules/tslib
 120K	node_modules/file-type
-464K	node_modules/listr2
+416K	node_modules/listr2
  52K	node_modules/typedarray
 384K	node_modules/magic-string
 392K	node_modules/graphql-request
@@ -757,7 +760,7 @@
  20K	node_modules/trim-newlines
  24K	node_modules/toggle-selection
  60K	node_modules/p-locate
-596K	node_modules/dom-serializer
+ 72K	node_modules/dom-serializer
  20K	node_modules/fresh
  16K	node_modules/ansi-red
  24K	node_modules/omit.js
@@ -769,13 +772,13 @@
  60K	node_modules/regenerate
  96K	node_modules/eslint-import-resolver-node
 2.0M	node_modules/pdf2json
-156K	node_modules/@technote-space
+108K	node_modules/@technote-space
 9.3M	node_modules/csvtojson
  28M	node_modules/@verdaccio
  28K	node_modules/requires-port
 116K	node_modules/node-object-hash
  84K	node_modules/object.entries
- 32K	node_modules/keyv
+ 36K	node_modules/keyv
  28K	node_modules/parse-numeric-range
 108K	node_modules/body
  16K	node_modules/setimmediate
@@ -918,7 +921,7 @@
 712K	node_modules/@contentful
  20K	node_modules/is-typedarray
  24K	node_modules/css-list-helpers
-156K	node_modules/@isaacs
+316K	node_modules/@isaacs
 2.0M	node_modules/hash-wasm
  20K	node_modules/is-module
  24K	node_modules/markdown-table
@@ -960,7 +963,7 @@
 3.3M	node_modules/eslint-webpack-plugin
  12K	node_modules/static-extend
  76K	node_modules/lodash.mapvalues
-232K	node_modules/split2
+ 28K	node_modules/split2
  32K	node_modules/iterator.prototype
  16K	node_modules/universalify
  88K	node_modules/mdast-util-inject
@@ -972,7 +975,7 @@
 484K	node_modules/coa
  28K	node_modules/safe-identifier
  64K	node_modules/esutils
-4.3M	node_modules/@vue
+4.0M	node_modules/@vue
  80K	node_modules/find-up
  12K	node_modules/path-is-inside
 212K	node_modules/del-cli
@@ -1031,7 +1034,7 @@
  44K	node_modules/unbox-primitive
  48K	node_modules/conventional-changelog
  44K	node_modules/html-escaper
- 60K	node_modules/http-signature
+ 80K	node_modules/http-signature
  48K	node_modules/is-shared-array-buffer
  24K	node_modules/micromark-util-chunked
  52K	node_modules/xml
@@ -1087,7 +1090,7 @@
 304K	node_modules/foreground-child
 124K	node_modules/schema-utils
  24K	node_modules/fill-range
-6.3M	node_modules/jsdom
+5.8M	node_modules/jsdom
  28K	node_modules/add-stream
  52K	node_modules/weak-lru-cache
 376K	node_modules/styletron-react
@@ -1106,7 +1109,7 @@
 236K	node_modules/netlify
  20K	node_modules/import-from
  24K	node_modules/class-utils
- 36M	node_modules/@lerna
+ 35M	node_modules/@lerna
  28K	node_modules/binary-extensions
 1.5M	node_modules/svgo
  20K	node_modules/gzip-size
@@ -1126,7 +1129,7 @@
 168K	node_modules/saxes
 400K	node_modules/make-fetch-happen
  16K	node_modules/path-parse
-2.4M	node_modules/postcss-svgo
+2.5M	node_modules/postcss-svgo
  32K	node_modules/createerror
  28K	node_modules/remark-math
 716K	node_modules/remark-rehype
@@ -1166,6 +1169,7 @@
  12K	node_modules/@tokenizer
  20K	node_modules/ieee754
 140K	node_modules/xml-parser
+ 40K	node_modules/request-promise-core
  48K	node_modules/internal-slot
  36K	node_modules/lodash.get
  16K	node_modules/web-namespaces
@@ -1183,6 +1187,7 @@
  20K	node_modules/slash
 6.6M	node_modules/@npmcli
  20K	node_modules/is-absolute-url
+188K	node_modules/long
  40K	node_modules/safe-json-parse
  72K	node_modules/safe-array-concat
  80K	node_modules/faye-websocket
@@ -1259,7 +1264,7 @@
  32K	node_modules/accepts
 104K	node_modules/webpack-merge
 168K	node_modules/jest-haste-map
- 20K	node_modules/widest-line
+220K	node_modules/widest-line
  32K	node_modules/subarg
  56K	node_modules/is-ssh
 1.3M	node_modules/socket.io
@@ -1326,7 +1331,7 @@
  64K	node_modules/babel-jsx-utils
  52K	node_modules/conventional-changelog-express
  16K	node_modules/retext-english
-840K	node_modules/renderkid
+948K	node_modules/renderkid
 232K	node_modules/del
  20K	node_modules/defer-to-connect
  24K	node_modules/babel-plugin-dev-expression
@@ -1344,7 +1349,7 @@
 6.2M	node_modules/@asciidoctor
 200K	node_modules/@adobe
 272K	node_modules/tr46
-676K	node_modules/markdown-it
+784K	node_modules/markdown-it
  18M	node_modules/@babel
 420K	node_modules/data-urls
 192K	node_modules/prom-client
@@ -1421,6 +1426,7 @@
  36K	node_modules/denque
  44K	node_modules/side-channel
  28K	node_modules/concat-map
+228K	node_modules/snekfetch
  92K	node_modules/gauge
  40K	node_modules/strong-log-transformer
  36K	node_modules/get-package-type
@@ -1478,7 +1484,7 @@
 852K	node_modules/sigstore
 248K	node_modules/mdast-util-mdx-jsx
 132K	node_modules/acorn-loose
-296K	node_modules/conventional-commits-parser
+324K	node_modules/conventional-commits-parser
 104K	node_modules/xmldom
 388K	node_modules/react-error-overlay
  20K	node_modules/browser-process-hrtime
@@ -1573,7 +1579,7 @@
  16K	node_modules/git-config-path
  36K	node_modules/jest-message-util
  40K	node_modules/domelementtype
-872K	node_modules/request
+744K	node_modules/request
 217M	node_modules/@parcel
  84K	node_modules/jest-validate
  52K	node_modules/micromark-util-symbol
@@ -1583,7 +1589,7 @@
 184K	node_modules/babel-plugin-polyfill-corejs2
 204K	node_modules/promise
  80K	node_modules/lodash.find
-1.4M	node_modules/parse5-htmlparser2-tree-adapter
+876K	node_modules/parse5-htmlparser2-tree-adapter
  24K	node_modules/micromark-extension-mdxjs
 632K	node_modules/yargs
  32K	node_modules/clone-response
@@ -1594,6 +1600,7 @@
  20K	node_modules/section-matter
  64K	node_modules/eslint-config-prettier
  88K	node_modules/pac-proxy-agent
+156K	node_modules/request-promise
  20K	node_modules/is-generator-fn
  11M	node_modules/rxjs
 144K	node_modules/engine.io-parser
@@ -1619,6 +1626,7 @@
 124K	node_modules/glob
  20K	node_modules/map-obj
 1.0M	node_modules/esquery
+ 52K	node_modules/webhook-discord
  36K	node_modules/import-fresh
 648K	node_modules/popmotion
  36K	node_modules/cookie
@@ -1731,7 +1739,7 @@
  80K	node_modules/workbox-range-requests
 380K	node_modules/es6-promise
  24K	node_modules/jest-pnp-resolver
-200K	node_modules/string-width
+ 84K	node_modules/string-width
  12K	node_modules/get-value
  20K	node_modules/is-interactive
  76K	node_modules/symbol-tree
@@ -1879,7 +1887,7 @@
  16K	node_modules/unherit
  56K	node_modules/error
  52K	node_modules/create-jest
-632K	node_modules/boxen
+792K	node_modules/boxen
 516K	node_modules/es-iterator-helpers
  24K	node_modules/estree-util-attach-comments
  20K	node_modules/cli-cursor
@@ -1898,7 +1906,7 @@
  24K	node_modules/concat-with-sourcemaps
  20K	node_modules/is-relative-url
  20K	node_modules/p-any
-316K	node_modules/pino-abstract-transport
+288K	node_modules/pino-abstract-transport
  52K	node_modules/hoek
 344K	node_modules/@lezer
  28K	node_modules/color-support
@@ -1961,7 +1969,7 @@
  60K	node_modules/capital-case
  28K	node_modules/postcss-normalize-repeat-style
 1.2M	node_modules/yaml-loader
-2.1M	node_modules/cheerio
+1.6M	node_modules/cheerio
  72K	node_modules/array.prototype.flatmap
 268K	node_modules/conventional-recommended-bump
  24K	node_modules/oauth-sign
@@ -1978,14 +1986,14 @@
 140K	node_modules/p-queue
 404K	node_modules/dom-accessibility-api
  16K	node_modules/hast-util-to-string
- 20K	node_modules/string-width-cjs
+ 84K	node_modules/string-width-cjs
 2.7M	node_modules/danger
  28K	node_modules/mdast-util-frontmatter
  92K	node_modules/dashdash
 1.1M	node_modules/ajv
 464K	node_modules/graphiql-code-exporter
  56K	node_modules/base
- 64K	node_modules/emoji-regex
+ 48K	node_modules/emoji-regex
  80K	node_modules/open
 196K	node_modules/object-inspect
  28K	node_modules/tunnel-agent
@@ -2008,6 +2016,7 @@
  52K	node_modules/lodash.omit
  16K	node_modules/object.pick
  36K	node_modules/type-check
+ 24K	node_modules/stealthy-require
  68K	node_modules/object.fromentries
 148K	node_modules/@n1ru4l
  20K	node_modules/locate-path
@@ -2028,7 +2037,7 @@
 108K	node_modules/css-font-parser
  20K	node_modules/walker
  56K	node_modules/character-entities
-108K	node_modules/entities
+568K	node_modules/entities
 148K	node_modules/event-stream
 180K	node_modules/stylehacks
  32K	node_modules/detect-port

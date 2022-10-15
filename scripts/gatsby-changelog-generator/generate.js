@@ -1,5 +1,5 @@
-const fs = require(`fs`)
-const path = require(`path`)
+const { readdirSync, readFileSync, writeFileSync } = require(`node:fs`)
+const { join } = require(`node:path`)
 const execa = require(`execa`)
 const { compare, prerelease, patch, gt, parse, valid } = require(`semver`)
 const gitRawCommits = require(`git-raw-commits`)
@@ -14,10 +14,10 @@ function getDirnameFromPackageName(packageName) {
 }
 
 const changelogRelativePath = packageName =>
-  path.join(`packages`, getDirnameFromPackageName(packageName), `CHANGELOG.md`)
+  join(`packages`, getDirnameFromPackageName(packageName), `CHANGELOG.md`)
 
 const changelogPath = packageName =>
-  path.join(monorepoRoot(), changelogRelativePath(packageName))
+  join(monorepoRoot(), changelogRelativePath(packageName))
 
 // Tags are lerna-style: package@version
 // But scoped packages start with `@gatsbyjs/` so in these cases the second part is the version
@@ -36,14 +36,15 @@ const packageNameToDirname = new Map()
 // Return list of package names (tries name in package.json first and falls back to directory name)
 // Also fills the packageNameToDirname map
 function getAllPackageNames() {
-  return fs
-    .readdirSync(path.join(monorepoRoot(), `packages`), { withFileTypes: true })
+  return readdirSync(join(monorepoRoot(), `packages`), {
+    withFileTypes: true,
+  })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => {
       try {
         const localPkg = JSON.parse(
-          fs.readFileSync(
-            path.join(monorepoRoot(), `packages`, dirent.name, `package.json`)
+          readFileSync(
+            join(monorepoRoot(), `packages`, dirent.name, `package.json`)
           )
         )
 
@@ -247,7 +248,7 @@ async function generateChangelog(packageName, fromVersion = null) {
 async function regenerateChangelog(packageName) {
   const path = changelogPath(packageName)
   const separator = `<a name="before-release-process"></a>`
-  const contents = String(fs.readFileSync(path))
+  const contents = String(readFileSync(path))
   const parts = contents.split(separator)
 
   if (parts.length !== 2) {
@@ -264,22 +265,19 @@ async function regenerateChangelog(packageName) {
     parts[1],
   ]
 
-  fs.writeFileSync(path, updatedChangelogParts.join(``))
+  writeFileSync(path, updatedChangelogParts.join(``))
   console.log(`Updated ${path}`)
 }
 
 function addChangelogEntries(packageName, entries, contents) {
-  contents = contents || String(fs.readFileSync(changelogPath(packageName)))
+  contents = contents || String(readFileSync(changelogPath(packageName)))
   const header = renderHeader(packageName)
   const updatedChangelogParts = [
     header,
     entries.trimRight(),
     contents.slice(header.length).trimStart(),
   ]
-  fs.writeFileSync(
-    changelogPath(packageName),
-    updatedChangelogParts.join(`\n\n`)
-  )
+  writeFileSync(changelogPath(packageName), updatedChangelogParts.join(`\n\n`))
 }
 
 /**
@@ -288,7 +286,7 @@ function addChangelogEntries(packageName, entries, contents) {
  */
 async function updateChangelog(packageName) {
   const path = changelogPath(packageName)
-  const contents = String(fs.readFileSync(path))
+  const contents = String(readFileSync(path))
   const match = contents.match(/([0-9]+\.[0-9]+\.[0-9]+)/)
   const latestVersion = match ? match[1] : undefined
 
@@ -369,8 +367,8 @@ async function onNewVersion() {
   }
 
   function resolvePackageVersion(packageName) {
-    const packagePath = path.join(`packages`, packageName, `package.json`)
-    return JSON.parse(fs.readFileSync(packagePath)).version
+    const packagePath = join(`packages`, packageName, `package.json`)
+    return JSON.parse(readFileSync(packagePath)).version
   }
 }
 

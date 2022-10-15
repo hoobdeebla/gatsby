@@ -1,1 +1,1 @@
-yarn lint-staged || node scripts/on-lint-error.js
+yarn lint-staged || node scripts/js/on-lint-error.js

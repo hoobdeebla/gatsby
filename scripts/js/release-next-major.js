@@ -12,12 +12,12 @@
  * - Publish premajor
  * - cleanup patch commit
  */
-const path = require(`path`)
-const { spawn, execSync } = require(`child_process`)
+const { join, resolve } = require(`node:path`)
+const { spawn, execSync } = require(`node:child_process`)
 const yargs = require(`yargs`)
 const { globSync } = require(`glob`)
 
-const gatsbyPKG = require(`../packages/gatsby/package.json`)
+const gatsbyPKG = require(`../../packages/gatsby/package.json`)
 const nextMajor = String(Number(gatsbyPKG.version.match(/[^.]+/)[0]) + 1)
 
 const argv = yargs
@@ -59,7 +59,7 @@ function promiseSpawn(command, args, options) {
 }
 
 const patchFiles = globSync(`patches/v${nextMajor}/*.patch`, {
-  cwd: path.join(__dirname, `..`),
+  cwd: join(__dirname, `..`),
 })
 let commitCreated = false
 let currentGitHash = null
@@ -69,9 +69,9 @@ let currentGitHash = null
     // check access
     await promiseSpawn(
       process.execPath,
-      [`./scripts/check-publish-access/index.js`],
+      [`./scripts/js/check-publish-access.js`],
       {
-        cwd: path.resolve(__dirname, `../`),
+        cwd: resolve(__dirname, `../`),
       }
     )
 
@@ -109,9 +109,9 @@ let currentGitHash = null
     // Remove all dist files so we can recompile cleanly
     await promiseSpawn(
       process.execPath,
-      [`./scripts/clear-package-dir.js`, bumpType],
+      [`./scripts/js/clear-package-dir.js`, bumpType],
       {
-        cwd: path.resolve(__dirname, `../`),
+        cwd: resolve(__dirname, `../`),
         stdio: [`inherit`, `inherit`, `inherit`],
       }
     )
@@ -123,7 +123,7 @@ let currentGitHash = null
       console.log(`Applying patch ${file}`)
       try {
         execSync(`git apply ${file}`, {
-          cwd: path.join(__dirname, `..`),
+          cwd: join(__dirname, `..`),
           stdio: `pipe`,
         })
       } catch (err) {
@@ -146,7 +146,7 @@ let currentGitHash = null
         `git`,
         [`commit`, `-am`, `Comitting patch files changes`, `--no-verify`],
         {
-          cwd: path.resolve(__dirname, `../`),
+          cwd: resolve(__dirname, `../`),
           stdio: [`inherit`, `inherit`, `inherit`],
         }
       )
@@ -173,7 +173,7 @@ let currentGitHash = null
         `git`,
         [`commit`, `-am`, `Comitting yarn changes`, `--no-verify`],
         {
-          cwd: path.resolve(__dirname, `../`),
+          cwd: resolve(__dirname, `../`),
           stdio: [`inherit`, `inherit`, `inherit`],
         }
       )
@@ -202,7 +202,7 @@ let currentGitHash = null
         argv.registry,
       ],
       {
-        cwd: path.resolve(__dirname, `../`),
+        cwd: resolve(__dirname, `../`),
         stdio: [`inherit`, `inherit`, `inherit`],
       }
     )
@@ -217,7 +217,7 @@ let currentGitHash = null
       console.log(`REMOVING PATCH COMMIT`)
       try {
         await promiseSpawn(`git`, [`reset`, `--hard`, currentGitHash], {
-          cwd: path.resolve(__dirname, `../`),
+          cwd: resolve(__dirname, `../`),
           stdio: [`inherit`, `inherit`, `inherit`],
         })
       } catch (err) {

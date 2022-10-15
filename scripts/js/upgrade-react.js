@@ -4,7 +4,7 @@
 //
 // This file intentionally does not use in node-packages because it is
 // ran before we do an install.
-const fs = require(`fs`)
+const { readFile, writeFileSync } = require(`node:fs`)
 
 function replace(deps, library) {
   if (deps && deps[library]) {
@@ -14,7 +14,7 @@ function replace(deps, library) {
 
 const path = `${process.cwd()}/${process.env.TEST_PATH}/package.json`
 
-fs.readFile(path, (err, json) => {
+readFile(path, (err, json) => {
   if (err) return
   const pkg = JSON.parse(json)
 
@@ -25,5 +25,5 @@ fs.readFile(path, (err, json) => {
 
   console.log(`updating ${path}`)
 
-  fs.writeFileSync(path, JSON.stringify(pkg, null, 2))
+  writeFileSync(path, JSON.stringify(pkg, null, 2))
 })
