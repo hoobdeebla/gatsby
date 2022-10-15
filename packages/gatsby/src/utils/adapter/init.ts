@@ -2,7 +2,7 @@ import reporter from "gatsby-cli/lib/reporter"
 import { createRequire } from "module"
 import { join, dirname } from "path"
 import { mkdir, rm, writeFile } from "fs/promises"
-import execa, { Options as ExecaOptions } from "execa"
+import { x, type Options as ExecOptions } from "tinyexec"
 import { version as gatsbyVersionFromPackageJson } from "gatsby/package.json"
 import { satisfies } from "semver"
 import type { AdapterInit } from "./types"
@@ -230,9 +230,12 @@ export async function getAdapterInit(
       installTimer.start()
       await createAdaptersCacheDir()
 
-      const options: ExecaOptions = {
-        stderr: `inherit`,
-        cwd: getAdaptersCacheDir(),
+      const options: ExecOptions = {
+        nodeOptions: {
+          // @ts-ignore
+          stderr: `inherit`,
+          cwd: getAdaptersCacheDir(),
+        },
       }
 
       const npmAdditionalCliArgs = [
@@ -247,7 +250,7 @@ export async function getAdapterInit(
         `--save-exact`,
       ]
 
-      await execa(
+      await x(
         `npm`,
         [
           `install`,

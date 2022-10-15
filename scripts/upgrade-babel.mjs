@@ -1,6 +1,6 @@
 // Convenience script to bump all @babel dependencies of all packages to the latest version
-const fs = require(`fs`)
-const { sync: execaSync } = require(`execa`)
+import fs from "node:fs"
+import { xSync } from "tinyexec"
 
 const packages = fs.readdirSync(`./packages`)
 const versions = {}
@@ -8,7 +8,7 @@ const versions = {}
 function getLatest(pkg) {
   let version
   if (!versions[pkg]) {
-    version = execaSync(`npm`, [`show`, pkg, `version`]).stdout
+    version = xSync(`npm`, [`show`, pkg, `version`]).stdout.trimEnd()
     versions[pkg] = version
     console.log(`latest ${pkg}: `, version)
   } else {
