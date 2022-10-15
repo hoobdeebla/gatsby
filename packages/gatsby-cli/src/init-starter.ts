@@ -1,6 +1,11 @@
 import opn from "better-opn"
 import { execSync } from "child_process"
-import execa from "execa"
+import {
+  execa,
+  type Options as ExecaOptions,
+  type ExecaChildProcess,
+  type ExecaReturnBase,
+} from "execa"
 import { sync as existsSync } from "fs-exists-cached"
 import fs from "fs-extra"
 import hostedGitInfo from "hosted-git-info"
@@ -11,19 +16,15 @@ import url from "url"
 import { updateInternalSiteMetadata } from "gatsby-core-utils"
 import report from "./reporter"
 import { getPackageManager, setPackageManager } from "./util/package-manager"
-import reporter from "./reporter"
 
 const spawnWithArgs = (
   file: string,
   args: Array<string>,
-  options?: execa.Options
-): execa.ExecaChildProcess =>
+  options?: ExecaOptions
+): ExecaChildProcess =>
   execa(file, args, { stdio: `inherit`, preferLocal: false, ...options })
 
-const spawn = (
-  cmd: string,
-  options?: execa.Options
-): execa.ExecaChildProcess => {
+const spawn = (cmd: string, options?: ExecaOptions): ExecaChildProcess => {
   // Split on spaces, tabs, new lines
   const [file, ...args] = cmd.split(/\s+/)
   return spawnWithArgs(file, args, options)
@@ -51,9 +52,7 @@ const isAlreadyGitRepository = async (): Promise<boolean> => {
 }
 
 // Initialize newly cloned directory as a git repo
-const gitInit = async (
-  rootPath: string
-): Promise<execa.ExecaReturnBase<string>> => {
+const gitInit = async (rootPath: string): Promise<ExecaReturnBase<string>> => {
   report.info(`Initialising git in ${rootPath}`)
 
   return await spawn(`git init`, { cwd: rootPath })
@@ -344,7 +343,7 @@ export async function initStarter(
   const sitePackageJson = await fs
     .readJSON(sysPath.join(sitePath, `package.json`))
     .catch(() => {
-      reporter.verbose(
+      report.verbose(
         `Could not read "${sysPath.join(sitePath, `package.json`)}"`
       )
     })
