@@ -1,6 +1,6 @@
-const path = require("path")
-const documentation = require("documentation")
-const fs = require("fs-extra")
+import path from 'path'
+import { build } from 'documentation'
+import fs from 'fs-extra'
 
 const OUTPUT_FILE_NAME = `apis.json`
 
@@ -13,8 +13,7 @@ async function outputFile() {
     ].map(filePath => {
       const resolved = path.resolve(filePath)
       const [, api] = path.basename(filePath).split("-")
-      return documentation
-        .build(resolved, {
+      return build(resolved, {
           shallow: true
         })
         .then(contents => {
