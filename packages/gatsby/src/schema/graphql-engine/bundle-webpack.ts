@@ -2,7 +2,7 @@ import path from "path" // must use for regular and posix
 import { existsSync, readFileSync } from "fs"
 import { mkdir, readFile, copyFile } from "fs/promises"
 import { emptyDir, outputJson } from "fs-extra" // must use
-import execa, { Options as ExecaOptions } from "execa"
+import { x, Options as ExecOptions } from "tinyexec"
 import webpack, { Module, NormalModule, Compilation } from "webpack"
 import ConcatenatedModule from "webpack/lib/optimize/ConcatenatedModule"
 import { dependencies } from "gatsby/package.json"
@@ -277,16 +277,19 @@ async function installMissing(
 
   const cacheDir = getInternalPackagesCacheDir(functionsTarget)
 
-  const options: ExecaOptions = {
-    stderr: `inherit`,
-    cwd: cacheDir,
-    env: {
-      npm_config_arch: functionsTarget.arch,
-      npm_config_platform: functionsTarget.platform,
-      // force sharp to download vendored libvips and not skip it if globally installed libvips matches sharp requirements
-      // so that produced function is self-sufficient and doesn't rely on function execution environment having (same)
-      // globally available libvips
-      SHARP_IGNORE_GLOBAL_LIBVIPS: `1`,
+  const options: ExecOptions = {
+    nodeOptions: {
+      // @ts-ignore
+      stderr: `inherit`,
+      cwd: cacheDir,
+      env: {
+        npm_config_arch: functionsTarget.arch,
+        npm_config_platform: functionsTarget.platform,
+        // force sharp to download vendored libvips and not skip it if globally installed libvips matches sharp requirements
+        // so that produced function is self-sufficient and doesn't rely on function execution environment having (same)
+        // globally available libvips
+        SHARP_IGNORE_GLOBAL_LIBVIPS: `1`,
+      },
     },
   }
 
@@ -304,7 +307,7 @@ async function installMissing(
     `--force`,
   ]
 
-  await execa(
+  await x(
     `npm`,
     [
       `install`,

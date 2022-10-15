@@ -1,8 +1,8 @@
 import { isAbsolute } from "path"
-import hasha from "hasha"
+import { hashFileSync } from "hasha"
 import { existsSync } from "fs"
 import { mkdir } from "fs/promises"
-import pDefer from "p-defer"
+import pDefer, { type DeferredPromise } from "p-defer"
 import isPlainObject from "lodash/isPlainObject"
 import { createContentDigest, slash, uuid } from "gatsby-core-utils"
 import reporter from "gatsby-cli/lib/reporter"
@@ -33,11 +33,11 @@ let hasShownIPCDisabledWarning = false
 
 const jobsInProcess: Map<
   string,
-  { id: string; deferred: pDefer.DeferredPromise<Record<string, unknown>> }
+  { id: string; deferred: DeferredPromise<Record<string, unknown>> }
 > = new Map()
 const externalJobsMap: Map<
   string,
-  { job: InternalJob; deferred: pDefer.DeferredPromise<any> }
+  { job: InternalJob; deferred: DeferredPromise<any> }
 > = new Map()
 
 /**
@@ -54,10 +54,10 @@ function convertPathsToAbsolute(filePath: string): string {
  * Get contenthash of a file
  */
 function createFileHash(path: string): string {
-  return hasha.fromFileSync(path, { algorithm: `sha1` })
+  return hashFileSync(path, { algorithm: `sha1` })
 }
 
-let hasActiveJobs: pDefer.DeferredPromise<void> | null = null
+let hasActiveJobs: DeferredPromise<void> | null = null
 
 function hasExternalJobsEnabled(): boolean {
   return (

@@ -3,7 +3,7 @@ import { createRequireFromPath } from "gatsby-core-utils/create-require-from-pat
 import { join } from "path"
 import { mkdir } from "fs/promises"
 import { emptyDir, outputJson } from "fs-extra" // must use
-import execa, { Options as ExecaOptions } from "execa"
+import { x, type Options as ExecOptions } from "tinyexec"
 import { version as gatsbyVersionFromPackageJson } from "gatsby/package.json"
 import { satisfies } from "semver"
 import type { AdapterInit } from "./types"
@@ -225,9 +225,12 @@ export async function getAdapterInit(
       installTimer.start()
       await createAdaptersCacheDir()
 
-      const options: ExecaOptions = {
-        stderr: `inherit`,
-        cwd: getAdaptersCacheDir(),
+      const options: ExecOptions = {
+        nodeOptions: {
+          // @ts-ignore
+          stderr: `inherit`,
+          cwd: getAdaptersCacheDir(),
+        },
       }
 
       const npmAdditionalCliArgs = [
@@ -242,7 +245,7 @@ export async function getAdapterInit(
         `--save-exact`,
       ]
 
-      await execa(
+      await x(
         `npm`,
         [
           `install`,

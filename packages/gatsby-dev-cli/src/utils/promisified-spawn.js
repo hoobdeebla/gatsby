@@ -1,4 +1,4 @@
-const execa = require(`execa`)
+import { x } from "tinyexec"
 
 const defaultSpawnArgs = {
   cwd: process.cwd(),
@@ -15,7 +15,7 @@ exports.promisifiedSpawn = async ([cmd, args = [], spawnArgs = {}]) => {
     ...spawnArgs,
   }
   try {
-    return await execa(cmd, args, spawnOptions)
+    return await x(cmd, args, { nodeOptions: { spawnOptions } })
   } catch (e) {
     if (spawnOptions.stdio === `ignore`) {
       console.log(

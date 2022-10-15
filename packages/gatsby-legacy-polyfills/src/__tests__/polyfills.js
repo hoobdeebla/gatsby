@@ -1,6 +1,6 @@
 const { resolve, join } = require(`path`)
 const { TraceMap } = require(`@jridgewell/trace-mapping`)
-const execa = require(`execa`)
+import { x } from "tinyexec"
 const { existsSync, readFileSync } = require(`fs`)
 const { rm } = require(`fs/promises`)
 
@@ -17,7 +17,7 @@ describe(`polyfills`, () => {
       ``
     )
 
-    await execa(
+    await x(
       `yarn`,
       [
         ...buildScript.split(` `),
@@ -25,7 +25,7 @@ describe(`polyfills`, () => {
         `-o`,
         join(tmpDir, `polyfills.js`),
       ],
-      { cwd: packageRoot }
+      { nodeOptions: { cwd: packageRoot } }
     )
   })
 

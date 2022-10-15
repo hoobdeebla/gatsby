@@ -1,6 +1,6 @@
-const { join, resolve, basename } = require("path")
-const { build } = require("documentation")
-const { writeFile } = require("fs/promises")
+import { join, resolve, basename } from "path"
+import { build } from "documentation"
+import { writeFile } from "fs/promises"
 
 const OUTPUT_FILE_NAME = `apis.json`
 

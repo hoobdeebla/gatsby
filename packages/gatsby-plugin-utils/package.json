@@ -53,12 +53,11 @@
     "graphql-compose": "^9.1.0",
     "import-from": "^4.0.0",
     "joi": "^17.13.3",
-    "mime": "^3.0.0"
+    "mime": "^4.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.20.7",
     "@babel/core": "^7.20.12",
-    "@types/mime": "^3.0.4",
     "babel-preset-gatsby-package": "^3.17.0-next.0",
     "cross-env": "^7.0.3",
     "msw": "^1.3.5",

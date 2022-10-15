@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { execSync } from "child_process"
-import execa from "execa"
+import { x } from "tinyexec"
 import { rm } from "fs/promises"
 import fs from "fs-extra" // must use for test
 import path from "path"
@@ -14,7 +14,7 @@ jest.mock(`tiny-spin`, () => {
 })
 jest.mock(`../utils/clear-line`)
 jest.mock(`../utils/make-npm-safe`)
-jest.mock(`execa`)
+jest.mock(`tinyexec`)
 jest.mock(`child_process`)
 jest.mock(`fs/promises`)
 jest.mock(`fs-extra`)
@@ -52,7 +52,7 @@ describe(`init-starter`, () => {
   describe(`initStarter / cloning`, () => {
     it(`reports an error when it s not possible to clone the repo`, async () => {
       ;(path as any).join.mockImplementation(() => `/somewhere-here`)
-      ;(execa as any).mockImplementation(() => {
+      ;(x as any).mockImplementation(() => {
         throw new Error(`Not possible to clone the repo`)
       })
 
@@ -64,7 +64,7 @@ describe(`init-starter`, () => {
           `A site`
         )
       } catch (e) {
-        expect(execa).toBeCalledWith(`git`, [
+        expect(x).toBeCalledWith(`git`, [
           `clone`,
           `gatsby-starter-hello-world`,
           `--recursive`,
@@ -81,7 +81,7 @@ describe(`init-starter`, () => {
 
     it(`reports a success when everything is going ok`, async () => {
       ;(path as any).join.mockImplementation(() => `/somewhere-here`)
-      ;(execa as any).mockImplementation(() => Promise.resolve())
+      ;(x as any).mockImplementation(() => Promise.resolve())
       ;(fs as any).readJSON.mockImplementation(() => {
         return { name: `gatsby-project` }
       })
@@ -93,7 +93,7 @@ describe(`init-starter`, () => {
         `A site`
       )
 
-      expect(execa).toBeCalledWith(`git`, [
+      expect(x).toBeCalledWith(`git`, [
         `clone`,
         `gatsby-starter-hello-world`,
         `--recursive`,
@@ -110,7 +110,7 @@ describe(`init-starter`, () => {
     it(`process package installation with yarn`, async () => {
       process.env.npm_config_user_agent = `yarn`
       ;(path as any).join.mockImplementation(() => `/somewhere-here`)
-      ;(execa as any).mockImplementation(() => Promise.resolve())
+      ;(x as any).mockImplementation(() => Promise.resolve())
       ;(fs as any).readJSON.mockImplementation(() => {
         return { name: `gatsby-project` }
       })
@@ -125,7 +125,7 @@ describe(`init-starter`, () => {
       expect(rm).toBeCalledWith(`package-lock.json`)
       expect(reporter.success).toBeCalledWith(`Installed plugins`)
       expect(reporter.panic).not.toBeCalled()
-      expect(execa).toBeCalledWith(`yarnpkg`, [`--silent`], {
+      expect(x).toBeCalledWith(`yarnpkg`, [`--silent`], {
         stderr: `inherit`,
       })
     })
@@ -133,7 +133,7 @@ describe(`init-starter`, () => {
     it(`process package installation with NPM`, async () => {
       process.env.npm_config_user_agent = `npm`
       ;(path as any).join.mockImplementation(() => `/somewhere-here`)
-      ;(execa as any).mockImplementation(() => Promise.resolve())
+      ;(x as any).mockImplementation(() => Promise.resolve())
       ;(fs as any).readJSON.mockImplementation(() => {
         return { name: `gatsby-project` }
       })
@@ -149,7 +149,7 @@ describe(`init-starter`, () => {
       expect(reporter.success).toBeCalledWith(`Installed Gatsby`)
       expect(reporter.success).toBeCalledWith(`Installed plugins`)
       expect(reporter.panic).not.toBeCalled()
-      expect(execa).toBeCalledWith(
+      expect(x).toBeCalledWith(
         `npm`,
         [
           `install`,
@@ -162,7 +162,7 @@ describe(`init-starter`, () => {
         ],
         { stderr: `inherit` }
       )
-      expect(execa).toBeCalledWith(
+      expect(x).toBeCalledWith(
         `npm`,
         [
           `install`,
@@ -184,7 +184,7 @@ describe(`init-starter`, () => {
         throw new Error(`Something wrong occurred when trying to use yarn`)
       })
       ;(path as any).join.mockImplementation(() => `/somewhere-here`)
-      ;(execa as any).mockImplementation(() => Promise.resolve())
+      ;(x as any).mockImplementation(() => Promise.resolve())
       ;(fs as any).readJSON.mockImplementation(() => {
         return { name: `gatsby-project` }
       })

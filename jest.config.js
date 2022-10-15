@@ -51,6 +51,7 @@ const esModules = [
   `function-timeout`,
   `github-slugger`,
   `got`,
+  `hasha`,
   `hast-util-from-parse5`,
   `hast-util-is-element`,
   `hast-util-parse-selector`,

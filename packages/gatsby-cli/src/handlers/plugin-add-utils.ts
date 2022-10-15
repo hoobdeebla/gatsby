@@ -1,5 +1,5 @@
 import { writeFile } from "fs/promises"
-import execa from "execa"
+import { x } from "tinyexec"
 import { debounce, groupBy } from "lodash"
 import {
   readConfigFile,
@@ -156,8 +156,8 @@ const executeInstalls = async (root: string): Promise<void> => {
 
   const release = await lock(`package.json`)
   try {
-    await execa(PACKAGE_MANAGER, commands, {
-      cwd: root,
+    await x(PACKAGE_MANAGER, commands, {
+      nodeOptions: { cwd: root },
     })
   } catch (e) {
     // A package failed so call the rejects

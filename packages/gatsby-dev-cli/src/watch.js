@@ -1,5 +1,5 @@
 const { watch: chokidarWatch } = require(`chokidar`)
-const del = require(`del`)
+import { deleteAsync as del } from "del"
 const { chmodSync, existsSync } = require(`fs`)
 const { cp } = require(`fs/promises`)
 const { join, relative } = require(`path`)

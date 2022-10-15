@@ -1,5 +1,5 @@
-import path from "path"
-import execa from "execa"
+import { join } from "path"
+import { execaNode } from "execa"
 
 const codemods = [
   `gatsby-plugin-image`,
@@ -10,11 +10,11 @@ const codemods = [
   `sort-and-aggr-graphql`,
 ]
 
-export const transformerDirectory = path.join(__dirname, `../`, `transforms`)
+export const transformerDirectory = join(__dirname, `../`, `transforms`)
 export const jscodeshiftExecutable = require.resolve(`jscodeshift/bin/jscodeshift.js`)
 
 export function runTransform(transform, targetDir) {
-  const transformerPath = path.join(transformerDirectory, `${transform}.js`)
+  const transformerPath = join(transformerDirectory, `${transform}.js`)
 
   let args = []
 
@@ -27,7 +27,7 @@ export function runTransform(transform, targetDir) {
   args = args.concat([`--transform`, transformerPath, targetDir])
 
   console.log(`Executing command: jscodeshift ${args.join(` `)}`)
-  const result = execa.node(jscodeshiftExecutable, args, {
+  const result = execaNode(jscodeshiftExecutable, args, {
     stdio: `inherit`,
     stripEof: false,
   })

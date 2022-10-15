@@ -9,13 +9,15 @@ import axios, {
   RawAxiosRequestHeaders,
 } from "axios"
 import rateLimit, { RateLimitedAxiosInstance } from "axios-rate-limit"
-import { bold } from "chalk"
+import chalk from "chalk"
 import retry from "async-retry"
 import { formatLogMessage } from "./format-log-message"
 import { getStore } from "~/store"
 import { getPluginOptions } from "./get-gatsby-api"
-import urlUtil from "url"
+import { parse } from "url"
 import { CODES } from "./report"
+
+const { bold } = chalk
 
 let http = null
 
@@ -768,7 +770,7 @@ const fetchGraphql = async ({
       throw new Error(`GraphQL request returned an empty string.`)
     }
 
-    const { path }: { path: string } = urlUtil.parse(url)
+    const { path } = parse(url)
 
     const responsePath = response.request.path
 
