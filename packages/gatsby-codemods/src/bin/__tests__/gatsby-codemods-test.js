@@ -1,8 +1,6 @@
 let execaReturnValue
 
-jest.setMock("execa", {
-  node: () => execaReturnValue,
-})
+jest.mock("tinyexec")
 
 import process from "process"
 import path from "path"

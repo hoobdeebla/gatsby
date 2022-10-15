@@ -1,6 +1,6 @@
 const got = require(`got`)
 const { isEmpty, map, range } = require(`lodash`)
-const urlJoin = require(`url-join`)
+import urlJoin from "url-join"
 import { HttpAgent, HttpsAgent } from "agentkeepalive"
 
 // const http2wrapper = require(`http2-wrapper`)

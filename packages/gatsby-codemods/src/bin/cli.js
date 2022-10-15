@@ -1,5 +1,5 @@
 import path from "path"
-import execa from "execa"
+import { x } from "tinyexec"
 
 const codemods = [
   `gatsby-plugin-image`,
@@ -27,10 +27,11 @@ export function runTransform(transform, targetDir) {
   args = args.concat([`--transform`, transformerPath, targetDir])
 
   console.log(`Executing command: jscodeshift ${args.join(` `)}`)
-  const result = execa.node(jscodeshiftExecutable, args, {
-    stdio: `inherit`,
-    stripEof: false,
-  })
+  const result = x(jscodeshiftExecutable, args, {
+    nodeOptions: {
+      stdio: `inherit`,
+    }
+  }).process
 
   if (result.error) {
     throw result.error
