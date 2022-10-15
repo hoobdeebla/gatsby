@@ -1,6 +1,6 @@
-const path = require("path")
-const documentation = require("documentation")
-const fs = require("fs/promises")
+import path from "path"
+import documentation from "documentation"
+import fs from "fs/promises"
 
 const OUTPUT_FILE_NAME = `apis.json`
 

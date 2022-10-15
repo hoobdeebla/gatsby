@@ -22,7 +22,7 @@ export type ActionsUnion =
   | IRenderPageTree
 
 export interface IActivity {
-  startTime?: [number, number]
+  startTime?: bigint
   id: string
   uuid: string
   text: string
@@ -73,7 +73,7 @@ export interface IPendingActivity {
     id: string
     type: ActivityTypes
     status: ActivityStatuses
-    startTime?: [number, number]
+    startTime?: bigint
   }
 }
 

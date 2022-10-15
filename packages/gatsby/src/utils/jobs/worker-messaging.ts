@@ -1,4 +1,4 @@
-import pDefer from "p-defer"
+import pDefer, { type DeferredPromise } from "p-defer"
 
 import {
   MESSAGE_TYPES,
@@ -11,7 +11,7 @@ import { internalActions } from "../../redux/actions"
 import { GatsbyWorkerPool } from "../worker/types"
 import { isWorker, getMessenger } from "../worker/messaging"
 
-let hasActiveWorkerJobs: pDefer.DeferredPromise<void> | null = null
+let hasActiveWorkerJobs: DeferredPromise<void> | null = null
 let activeWorkerJobs = 0
 
 export function initJobsMessagingInMainProcess(
@@ -70,7 +70,7 @@ export const waitUntilWorkerJobsAreComplete = (): Promise<void> =>
  */
 const deferredWorkerPromises = new Map<
   InternalJob["id"],
-  pDefer.DeferredPromise<Record<string, unknown>>
+  DeferredPromise<Record<string, unknown>>
 >()
 const gatsbyWorkerMessenger = getMessenger()
 export function initJobsMessagingInWorker(): void {

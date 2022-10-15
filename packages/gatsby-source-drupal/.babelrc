@@ -1,3 +1,14 @@
 {
-  "presets": [["babel-preset-gatsby-package"], "@babel/preset-typescript"]
+  "presets": [
+    [
+      "babel-preset-gatsby-package",
+      {
+        "esm": true
+      }
+    ],
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    "@babel/plugin-transform-modules-commonjs"
+  ],
 }

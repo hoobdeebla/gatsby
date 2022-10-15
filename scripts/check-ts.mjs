@@ -1,21 +1,22 @@
 // This file runs the typescript checker against packages.
 // you can run it against all:
-//   `node ./scripts/check-ts`
+//   `yarn typecheck`
 //
 // or even scope it to specific packages.
-//   `node ./scripts/check-ts gatsby-cli`
-"use strict"
-
-const fs = require(`fs`)
-const { globSync } = require(`tinyglobby`)
-const path = require(`path`)
-const chalk = require(`chalk`)
-const yargs = require(`yargs`)
-const execa = require(`execa`)
+//   `yarn typecheck gatsby-cli`
+import fs from "node:fs"
+import { globSync } from "tinyglobby"
+import path from "node:path"
+import chalk from "chalk"
+import yargs from "yargs"
+import { xSync } from "tinyexec"
+import { fileURLToPath } from "node:url"
+import { createRequire } from "node:module"
 
 console.log(`TS Check: Running...`)
 
-const toAbsolutePath = relativePath => path.join(__dirname, `..`, relativePath)
+const toAbsolutePath = relativePath =>
+  path.join(fileURLToPath(new URL(`.`, import.meta.url)), `../..`, relativePath)
 const PACKAGES_DIR = toAbsolutePath(`/packages`)
 
 const filterPackage = yargs.argv._[0]
@@ -90,6 +91,8 @@ packagesWithTs.forEach(project => {
     `\n  - Percent Converted: ${percentConverted}%`
   )
 
+  const require = createRequire(import.meta.url)
+
   const args = [
     `--max-old-space-size=4096`,
     path.resolve(
@@ -103,7 +106,7 @@ packagesWithTs.forEach(project => {
   ]
 
   try {
-    execa.sync(`node`, args, { stdio: `inherit` })
+    xSync(`node`, args, { stdio: `inherit` })
   } catch (e) {
     process.exit(1)
   }

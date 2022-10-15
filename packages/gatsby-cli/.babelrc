@@ -3,8 +3,14 @@
     [
       "babel-preset-gatsby-package",
       {
-        "keepDynamicImports": ["./src/create-cli.ts"]
+        "keepDynamicImports": [
+          "./src/create-cli.ts"
+        ],
+        "esm": true
       }
     ]
+  ],
+  "plugins": [
+    "@babel/plugin-transform-modules-commonjs"
   ]
 }

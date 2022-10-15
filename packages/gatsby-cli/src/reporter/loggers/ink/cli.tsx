@@ -106,7 +106,7 @@ class CLI extends React.Component<ICLIProps, ICLIState> {
               message={activity.text}
               total={activity.total || 0}
               current={activity.current || 0}
-              startTime={activity.startTime || [0, 0]}
+              startTime={activity.startTime || 0n}
             />
           ))}
         </Box>
