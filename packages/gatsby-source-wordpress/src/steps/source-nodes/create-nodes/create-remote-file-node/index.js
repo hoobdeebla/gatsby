@@ -2,13 +2,13 @@ import { b64e } from "~/utils/string-encoding"
 import { withPluginKey } from "~/store"
 const fs = require(`fs-extra`)
 const { remoteFileDownloaderBarPromise } = require(`./progress-bar-promise`)
-const got = require(`got`)
+import got from "got"
 const { createContentDigest } = require(`gatsby-core-utils`)
 const path = require(`path`)
 const { isWebUri } = require(`valid-url`)
 const Queue = require(`better-queue`)
-const readChunk = require(`read-chunk`)
-const fileType = require(`file-type`)
+import { readChunkSync } from "read-chunk"
+import { fileTypeFromBuffer } from "file-type"
 
 const { createFileNode } = require(`gatsby-source-filesystem/create-file-node`)
 const {
@@ -290,8 +290,11 @@ async function processRemoteNode({
 
   // If the user did not provide an extension and we couldn't get one from remote file, try and guess one
   if (ext === ``) {
-    const buffer = readChunk.sync(tmpFilename, 0, fileType.minimumBytes)
-    const filetype = fileType(buffer)
+    const buffer = readChunkSync(tmpFilename, {
+      length: 4100,
+      startPosition: 0,
+    }) // fileType.minimumBytes = 4100
+    const filetype = fileTypeFromBuffer(buffer)
     if (filetype) {
       ext = `.${filetype.ext}`
     }
