@@ -1,14 +1,13 @@
 {
   "packageManager": "yarn@1.22.22",
   "devDependencies": {
-    "@babel/core": "^7.20.12",
-    "@babel/eslint-parser": "^7.21.8",
-    "@babel/eslint-plugin": "^7.19.1",
-    "@babel/node": "^7.20.7",
-    "@babel/plugin-transform-typescript": "^7.20.13",
-    "@babel/runtime": "^7.20.13",
+    "@babel/core": "^7.28.5",
+    "@babel/eslint-parser": "^7.28.5",
+    "@babel/eslint-plugin": "^7.27.1",
+    "@babel/node": "^7.28.0",
+    "@babel/plugin-transform-typescript": "^7.28.5",
+    "@babel/runtime": "^7.28.4",
     "@lerna/prompt": "3.18.5",
-    "@types/babel__code-frame": "^7.0.3",
     "@types/cache-manager": "^2.10.3",
     "@types/common-tags": "^1.8.1",
     "@types/fs-extra": "^9.0.13",
@@ -112,8 +111,5 @@
   },
   "workspaces": [
     "packages/*"
-  ],
-  "resolutions": {
-    "@babel/plugin-transform-modules-commonjs": "7.18.6"
-  }
+  ]
 }

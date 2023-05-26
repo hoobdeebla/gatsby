@@ -12,7 +12,7 @@ module.exports = {
   ],
   plugins: [
     [
-      `@babel/plugin-proposal-private-methods`,
+      `@babel/plugin-transform-private-methods`,
       {
         loose: true,
       },
@@ -26,7 +26,7 @@ module.exports = {
       },
     ],
     [
-      `@babel/plugin-proposal-class-properties`,
+      `@babel/plugin-transform-class-properties`,
       {
         loose: true,
       },
