@@ -52,7 +52,7 @@ function runParseSync(source: string, filePath: string): ParseResult | null {
   const ast = parseSync(source, {
     plugins: [
       `@babel/plugin-syntax-jsx`,
-      `@babel/plugin-proposal-class-properties`,
+      `@babel/plugin-transform-class-properties`,
     ],
     overrides: [
       {
