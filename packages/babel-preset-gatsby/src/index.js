@@ -76,8 +76,8 @@ export default function preset(_, options = {}) {
             `transform-typeof-symbol`,
             // we already have transforms for these
             `transform-spread`,
-            `proposal-nullish-coalescing-operator`,
-            `proposal-optional-chaining`,
+            `transform-nullish-coalescing-operator`,
+            `transform-optional-chaining`,
 
             ...polyfillsToExclude,
           ],
@@ -105,13 +105,13 @@ export default function preset(_, options = {}) {
         },
       ],
       [
-        resolve(`@babel/plugin-proposal-class-properties`),
+        resolve(`@babel/plugin-transform-class-properties`),
         {
           loose: true,
         },
       ],
-      [resolve(`@babel/plugin-proposal-nullish-coalescing-operator`)],
-      [resolve(`@babel/plugin-proposal-optional-chaining`)],
+      [resolve(`@babel/plugin-transform-nullish-coalescing-operator`)],
+      [resolve(`@babel/plugin-transform-optional-chaining`)],
       resolve(`babel-plugin-macros`),
       resolve(`@babel/plugin-syntax-dynamic-import`),
       [
