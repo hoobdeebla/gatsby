@@ -10,16 +10,16 @@ Object {
       },
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-class-properties/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-class-properties/lib/index.js",
       Object {
         "loose": true,
       },
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-nullish-coalescing-operator/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-nullish-coalescing-operator/lib/index.js",
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-optional-chaining/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-optional-chaining/lib/index.js",
     ],
     "<PROJECT_ROOT>/node_modules/babel-plugin-macros/dist/index.js",
     "<PROJECT_ROOT>/node_modules/@babel/plugin-syntax-dynamic-import/lib/index.js",
@@ -42,8 +42,8 @@ Object {
         "exclude": Array [
           "transform-typeof-symbol",
           "transform-spread",
-          "proposal-nullish-coalescing-operator",
-          "proposal-optional-chaining",
+          "transform-nullish-coalescing-operator",
+          "transform-optional-chaining",
           "es.symbol",
           "es.symbol.async-iterator",
           "es.symbol.has-instance",
@@ -269,16 +269,16 @@ Object {
       },
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-class-properties/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-class-properties/lib/index.js",
       Object {
         "loose": true,
       },
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-nullish-coalescing-operator/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-nullish-coalescing-operator/lib/index.js",
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-optional-chaining/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-optional-chaining/lib/index.js",
     ],
     "<PROJECT_ROOT>/node_modules/babel-plugin-macros/dist/index.js",
     "<PROJECT_ROOT>/node_modules/@babel/plugin-syntax-dynamic-import/lib/index.js",
@@ -319,8 +319,8 @@ Object {
         "exclude": Array [
           "transform-typeof-symbol",
           "transform-spread",
-          "proposal-nullish-coalescing-operator",
-          "proposal-optional-chaining",
+          "transform-nullish-coalescing-operator",
+          "transform-optional-chaining",
           "es.symbol",
           "es.symbol.async-iterator",
           "es.symbol.has-instance",
@@ -544,16 +544,16 @@ Object {
       },
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-class-properties/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-class-properties/lib/index.js",
       Object {
         "loose": true,
       },
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-nullish-coalescing-operator/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-nullish-coalescing-operator/lib/index.js",
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-optional-chaining/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-optional-chaining/lib/index.js",
     ],
     "<PROJECT_ROOT>/node_modules/babel-plugin-macros/dist/index.js",
     "<PROJECT_ROOT>/node_modules/@babel/plugin-syntax-dynamic-import/lib/index.js",
@@ -588,8 +588,8 @@ Object {
         "exclude": Array [
           "transform-typeof-symbol",
           "transform-spread",
-          "proposal-nullish-coalescing-operator",
-          "proposal-optional-chaining",
+          "transform-nullish-coalescing-operator",
+          "transform-optional-chaining",
           "es.symbol",
           "es.symbol.async-iterator",
           "es.symbol.has-instance",
@@ -813,16 +813,16 @@ Object {
       },
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-class-properties/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-class-properties/lib/index.js",
       Object {
         "loose": true,
       },
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-nullish-coalescing-operator/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-nullish-coalescing-operator/lib/index.js",
     ],
     Array [
-      "<PROJECT_ROOT>/node_modules/@babel/plugin-proposal-optional-chaining/lib/index.js",
+      "<PROJECT_ROOT>/node_modules/@babel/plugin-transform-optional-chaining/lib/index.js",
     ],
     "<PROJECT_ROOT>/node_modules/babel-plugin-macros/dist/index.js",
     "<PROJECT_ROOT>/node_modules/@babel/plugin-syntax-dynamic-import/lib/index.js",
@@ -845,8 +845,8 @@ Object {
         "exclude": Array [
           "transform-typeof-symbol",
           "transform-spread",
-          "proposal-nullish-coalescing-operator",
-          "proposal-optional-chaining",
+          "transform-nullish-coalescing-operator",
+          "transform-optional-chaining",
           "es.symbol",
           "es.symbol.async-iterator",
           "es.symbol.has-instance",
