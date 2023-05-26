@@ -26,11 +26,11 @@
   },
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-design-tokens#readme",
   "dependencies": {
-    "@babel/runtime": "^7.20.13",
+    "@babel/runtime": "^7.28.6",
     "hex2rgba": "^0.0.1"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.1.0",
     "microbundle": "^0.15.1",
     "preval.macro": "^5.0.0"
   },

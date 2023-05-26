@@ -33,7 +33,6 @@
  20K	node_modules/system-architecture
  56K	node_modules/agentkeepalive
 6.0M	node_modules/zod
-180K	node_modules/regenerator-transform
  32K	node_modules/xmlhttprequest-ssl
  44K	node_modules/acorn-private-class-elements
  60K	node_modules/sourcemap-codec
@@ -196,7 +195,7 @@
  20K	node_modules/mimic-fn
  20K	node_modules/strip-ansi
  16K	node_modules/parse-filepath
-8.9M	node_modules/documentation
+9.1M	node_modules/documentation
 516K	node_modules/tsconfig-paths
  32K	node_modules/apollo-upload-client
 676K	node_modules/got-cjs
@@ -306,7 +305,7 @@
  32K	node_modules/tiny-glob
  36K	node_modules/micromark-extension-footnote
  16K	node_modules/min-indent
- 11M	node_modules/@jest
+1.2M	node_modules/@jest
  52K	node_modules/node-releases
 108K	node_modules/dotenv
  60K	node_modules/wordwrap
@@ -327,7 +326,7 @@
 248K	node_modules/postcss-ordered-values
  20K	node_modules/strip-json-comments
 144K	node_modules/lru-cache
-704K	node_modules/core-js-compat
+860K	node_modules/core-js-compat
  24K	node_modules/imurmurhash
  36K	node_modules/resolve-url
 112K	node_modules/stringify-entities
@@ -521,7 +520,7 @@
  28K	node_modules/glob-to-regex.js
  48K	node_modules/configstore
  80K	node_modules/loader-utils
-9.7M	node_modules/@ardatan
+2.9M	node_modules/@ardatan
  16K	node_modules/real-require
 116K	node_modules/wrap-ansi
  20K	node_modules/micromark-util-html-tag-name
@@ -539,7 +538,7 @@
  60K	node_modules/bare-path
  16K	node_modules/lodash.isboolean
 208K	node_modules/@xmldom
- 13M	node_modules/core-js-pure
+ 15M	node_modules/core-js-pure
  24K	node_modules/@szmarczak
 140K	node_modules/headers-polyfill
  64K	node_modules/whet.extend
@@ -554,7 +553,7 @@
 268K	node_modules/counteraction
  16K	node_modules/global-modules
  12K	node_modules/copy-descriptor
- 64K	node_modules/regexpu-core
+152K	node_modules/regexpu-core
 156K	node_modules/jest-circus
  16K	node_modules/shellwords
  28K	node_modules/eslint-plugin-prettier
@@ -689,7 +688,6 @@
  68K	node_modules/color
  20K	node_modules/env-paths
  60K	node_modules/tree-dump
- 96K	node_modules/@ampproject
  23M	node_modules/typescript
  20K	node_modules/string-natural-compare
  36K	node_modules/ora
@@ -723,7 +721,7 @@
  92K	node_modules/jsonwebtoken
 204K	node_modules/workbox-routing
 412K	node_modules/conventional-changelog-core
- 72K	node_modules/do-sync
+116K	node_modules/do-sync
 208K	node_modules/exponential-backoff
  16K	node_modules/dir-glob
 1.4M	node_modules/@lmdb
@@ -837,6 +835,7 @@
  52K	node_modules/domexception
 348K	node_modules/jackspeak
 700K	node_modules/csso
+ 24K	node_modules/regjsgen
 172K	node_modules/url-loader
  48K	node_modules/call-bound
  32K	node_modules/rgb-regex
@@ -990,7 +989,7 @@
 484K	node_modules/coa
  28K	node_modules/safe-identifier
  64K	node_modules/esutils
- 15M	node_modules/@vue
+5.0M	node_modules/@vue
  80K	node_modules/find-up
 444K	node_modules/del-cli
  52K	node_modules/chalk
@@ -1051,7 +1050,7 @@
  48K	node_modules/is-shared-array-buffer
  24K	node_modules/micromark-util-chunked
  52K	node_modules/xml
- 13M	node_modules/core-js
+ 15M	node_modules/core-js
  24K	node_modules/fs-minipass
  68K	node_modules/stubborn-utils
  24K	node_modules/console-polyfill
@@ -1077,6 +1076,7 @@
 168K	node_modules/istanbul-lib-report
  20K	node_modules/spdx-license-ids
  28K	node_modules/trim
+ 20K	node_modules/@epic-web
  52K	node_modules/readdirp
  16K	node_modules/through2-filter
  16K	node_modules/longest-streak
@@ -1235,7 +1235,7 @@
  20K	node_modules/through2
  20K	node_modules/split-on-first
  16K	node_modules/minipass-collect
-116K	node_modules/regjsparser
+ 84K	node_modules/regjsparser
  52K	node_modules/rfdc
  52K	node_modules/is-finalizationregistry
  32K	node_modules/append-field
@@ -1252,7 +1252,7 @@
 124K	node_modules/expand-range
  56K	node_modules/node-abi
  40K	node_modules/clean-stack
- 12M	node_modules/jscodeshift
+844K	node_modules/jscodeshift
  40K	node_modules/camelcase-keys
 316K	node_modules/estree-util-to-js
  16K	node_modules/lead
@@ -1281,7 +1281,7 @@
 176K	node_modules/envinfo
 224K	node_modules/@sindresorhus
  24K	node_modules/postcss-normalize-timing-functions
- 36K	node_modules/unicode-match-property-value-ecmascript
+ 40K	node_modules/unicode-match-property-value-ecmascript
 1.0M	node_modules/immer
  20K	node_modules/repeat-string
  28K	node_modules/micromark-factory-destination
@@ -1356,7 +1356,7 @@
 184K	node_modules/@adobe
 272K	node_modules/tr46
 940K	node_modules/markdown-it
- 17M	node_modules/@babel
+ 26M	node_modules/@babel
 420K	node_modules/data-urls
 192K	node_modules/prom-client
  32K	node_modules/builtin-modules
@@ -1365,7 +1365,7 @@
  24K	node_modules/validate-npm-package-license
  48K	node_modules/w3c-hr-time
  40K	node_modules/process-warning
-196K	node_modules/babel-types
+180K	node_modules/babel-types
 296K	node_modules/better-opn
  60K	node_modules/is-number
  16K	node_modules/repeat-element
@@ -1395,7 +1395,7 @@
  20K	node_modules/yocto-queue
  44K	node_modules/pidtree
  64K	node_modules/react-compiler-runtime
-4.3M	node_modules/remark-mdx
+4.1M	node_modules/remark-mdx
  64K	node_modules/lodash.merge
 1.7M	node_modules/fork-ts-checker-webpack-plugin
  24K	node_modules/remark-frontmatter
@@ -1407,7 +1407,7 @@
 116K	node_modules/jest-util
  40K	node_modules/figures
  80K	node_modules/url-parse
-204K	node_modules/babel-plugin-polyfill-corejs3
+260K	node_modules/babel-plugin-polyfill-corejs3
  60K	node_modules/upper-case-first
  16K	node_modules/jest-get-type
  24K	node_modules/dezalgo
@@ -1572,7 +1572,7 @@
 180K	node_modules/ansi-escapes
 176K	node_modules/istanbul-lib-instrument
  56K	node_modules/p-event
- 56K	node_modules/cross-env
+ 64K	node_modules/cross-env
 332K	node_modules/convert-css-length
  40K	node_modules/cache-manager-fs-hash
 120K	node_modules/prop-types
@@ -1586,11 +1586,11 @@
 204K	node_modules/@pnpm
  36K	node_modules/jest-message-util
  40K	node_modules/domelementtype
- 65M	node_modules/@parcel
+ 64M	node_modules/@parcel
  84K	node_modules/jest-validate
  52K	node_modules/micromark-util-symbol
  20K	node_modules/convert-hrtime
-184K	node_modules/babel-plugin-polyfill-corejs2
+188K	node_modules/babel-plugin-polyfill-corejs2
 228K	node_modules/promise
 876K	node_modules/parse5-htmlparser2-tree-adapter
  24K	node_modules/micromark-extension-mdxjs
@@ -1948,7 +1948,7 @@
  36K	node_modules/unix-crypt-td-js
 368K	node_modules/react
  60K	node_modules/functional-red-black-tree
- 13M	node_modules/@graphql-tools
+3.4M	node_modules/@graphql-tools
  60K	node_modules/redux-thunk
  24K	node_modules/@aashutoshrathi
  16K	node_modules/is-unc-path
@@ -2046,7 +2046,7 @@
  68K	node_modules/idb-keyval
  16K	node_modules/to-fast-properties
  24K	node_modules/globalyzer
-2.1M	node_modules/regenerate-unicode-properties
+2.2M	node_modules/regenerate-unicode-properties
 764K	node_modules/http-response-object
  24K	node_modules/expand-template
  28K	node_modules/auto-bind
