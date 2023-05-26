@@ -74,8 +74,8 @@ function preset(context, options = {}) {
       r(`@babel/preset-flow`),
     ],
     plugins: [
-      r(`@babel/plugin-proposal-nullish-coalescing-operator`),
-      r(`@babel/plugin-proposal-optional-chaining`),
+      r(`@babel/plugin-transform-nullish-coalescing-operator`),
+      r(`@babel/plugin-transform-optional-chaining`),
       r(`@babel/plugin-transform-runtime`),
       r(`@babel/plugin-syntax-dynamic-import`),
       IS_TEST && r(`babel-plugin-dynamic-import-node`),
