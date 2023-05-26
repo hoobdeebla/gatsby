@@ -7,7 +7,7 @@
     "url": "https://github.com/gatsbyjs/gatsby/issues"
   },
   "dependencies": {
-    "@babel/runtime": "^7.20.13",
+    "@babel/runtime": "^8.0.0",
     "async": "^3.2.6",
     "debug": "^4.4.3",
     "gatsby-core-utils": "^4.17.0-next.0",
@@ -15,14 +15,14 @@
     "lodash": "^4.18.1",
     "probe-image-size": "^7.4.0",
     "semver": "^7.8.5",
-    "sharp": "^0.32.6"
+    "sharp": "^0.35.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.20.7",
-    "@babel/core": "^7.20.12",
+    "@babel/cli": "^8.0.4",
+    "@babel/core": "^8.0.1",
     "@types/lodash": "^4.17.25",
     "babel-preset-gatsby-package": "^3.17.0-next.0",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.1.0",
     "gatsby-plugin-image": "^3.17.0-next.0"
   },
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-plugin-sharp#readme",

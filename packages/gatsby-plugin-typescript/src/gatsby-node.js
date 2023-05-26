@@ -6,13 +6,15 @@ function onCreateBabelConfig({ actions }, options) {
     options,
   })
   actions.setBabelPlugin({
-    name: require.resolve(`@babel/plugin-proposal-optional-chaining`),
+    name: require.resolve(`@babel/plugin-transform-optional-chaining`),
   })
   actions.setBabelPlugin({
-    name: require.resolve(`@babel/plugin-proposal-nullish-coalescing-operator`),
+    name: require.resolve(
+      `@babel/plugin-transform-nullish-coalescing-operator`
+    ),
   })
   actions.setBabelPlugin({
-    name: require.resolve(`@babel/plugin-proposal-numeric-separator`),
+    name: require.resolve(`@babel/plugin-transform-numeric-separator`),
   })
 }
 

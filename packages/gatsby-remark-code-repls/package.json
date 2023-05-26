@@ -7,19 +7,19 @@
     "url": "https://github.com/gatsbyjs/gatsby/issues"
   },
   "dependencies": {
-    "@babel/runtime": "^7.20.13",
+    "@babel/runtime": "^8.0.0",
     "lz-string": "^1.5.0",
     "normalize-path": "^3.0.0",
-    "npm-package-arg": "^11.0.3",
+    "npm-package-arg": "^14.0.0",
     "recursive-readdir": "^2.2.3",
-    "unist-util-map": "^2.0.1",
+    "unist-util-map": "^4.0.0",
     "urijs": "^1.19.11"
   },
   "devDependencies": {
-    "@babel/cli": "^7.20.7",
-    "@babel/core": "^7.20.12",
+    "@babel/cli": "^8.0.4",
+    "@babel/core": "^8.0.1",
     "babel-preset-gatsby-package": "^3.17.0-next.0",
-    "cross-env": "^7.0.3"
+    "cross-env": "^10.1.0"
   },
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-remark-code-repls#readme",
   "keywords": [

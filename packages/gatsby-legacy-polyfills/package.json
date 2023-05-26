@@ -24,8 +24,8 @@
     "watch:polyfills": "microbundle -f iife -i src/polyfills.js --no-sourcemap --external=none --watch"
   },
   "dependencies": {
-    "@babel/runtime": "^7.20.13",
-    "core-js-compat": "3.31.0"
+    "@babel/runtime": "^8.0.0",
+    "core-js-compat": "^3.50.0"
   },
   "files": [
     "dist/"
@@ -34,12 +34,12 @@
     "@jridgewell/trace-mapping": "^0.3.31",
     "chokidar-cli": "^3.0.0",
     "codegen.macro": "^4.1.0",
-    "core-js": "3.31.0",
-    "cpy-cli": "^5.0.0",
-    "cross-env": "^7.0.3",
+    "core-js": "^3.50.0",
+    "cpy-cli": "^7.0.0",
+    "cross-env": "^10.1.0",
     "event-target-polyfill": "^0.0.4",
     "microbundle": "^0.15.1",
-    "npm-run-all2": "^6.2.6",
+    "npm-run-all2": "^9.0.3",
     "object-assign": "^4.1.1",
     "tinyexec": "^1.3.0",
     "url-polyfill": "^1.1.14",
