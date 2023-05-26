@@ -24,8 +24,8 @@
   },
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-plugin-page-creator#readme",
   "dependencies": {
-    "@babel/runtime": "^7.20.13",
-    "@babel/traverse": "^7.20.13",
+    "@babel/runtime": "^7.28.6",
+    "@babel/traverse": "^7.29.0",
     "@sindresorhus/slugify": "^2.2.1",
     "chokidar": "^3.6.0",
     "fs-exists-cached": "^1.0.0",
@@ -37,12 +37,12 @@
     "lodash": "^4.17.23"
   },
   "devDependencies": {
-    "@babel/cli": "^7.20.7",
-    "@babel/core": "^7.20.12",
+    "@babel/cli": "^7.28.6",
+    "@babel/core": "^7.29.0",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.24",
     "babel-preset-gatsby-package": "^3.17.0-next.0",
-    "cross-env": "^7.0.3"
+    "cross-env": "^10.1.0"
   },
   "peerDependencies": {
     "gatsby": "^5.0.0-next"
