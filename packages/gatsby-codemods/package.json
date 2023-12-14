@@ -28,8 +28,8 @@
     "@babel/plugin-syntax-jsx": "^7.28.6",
     "@babel/plugin-syntax-typescript": "^7.28.6",
     "@babel/plugin-transform-class-properties": "^7.28.6",
-    "@babel/runtime": "^7.29.2",
-    "execa": "^8.0.1",
+    "@babel/runtime": "^7.28.6",
+    "execa": "^9.6.1",
     "graphql": "^16.13.2",
     "jscodeshift": "^17.3.0",
     "recast": "^0.23.11"
