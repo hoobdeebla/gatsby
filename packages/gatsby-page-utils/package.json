@@ -26,23 +26,22 @@
   },
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-page-utils#readme",
   "dependencies": {
-    "@babel/runtime": "^7.20.13",
-    "bluebird": "^3.7.2",
-    "chokidar": "^3.5.3",
+    "@babel/runtime": "^7.25.6",
+    "chokidar": "^4.0.0",
     "fs-exists-cached": "^1.0.0",
     "gatsby-core-utils": "^4.14.0-next.2",
-    "glob": "^7.2.3",
+    "glob": "^11.0.0",
     "lodash": "^4.17.21",
-    "micromatch": "^4.0.5"
+    "micromatch": "^4.0.8"
   },
   "devDependencies": {
-    "@babel/cli": "^7.20.7",
-    "@babel/core": "^7.20.12",
-    "@types/micromatch": "^4.0.6",
+    "@babel/cli": "^7.25.6",
+    "@babel/core": "^7.25.2",
+    "@types/micromatch": "^4.0.9",
     "babel-preset-gatsby-package": "^3.14.0-next.2",
     "cross-env": "^7.0.3",
-    "rimraf": "^5.0.5",
-    "typescript": "^5.1.6"
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.2"
   },
   "files": [
     "dist/"

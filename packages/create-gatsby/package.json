@@ -19,20 +19,21 @@
   "devDependencies": {
     "@ascorbic/worker-threads-shim": "^1.0.0",
     "@lukeed/uuid": "^2.0.1",
-    "@types/configstore": "^4.0.0",
-    "@types/fs-extra": "^9.0.13",
-    "@types/node": "^14.18.52",
+    "@types/common-tags": "^1.8.4",
+    "@types/configstore": "^6.0.2",
+    "@types/fs-extra": "^11.0.4",
     "ansi-wordwrap": "^1.0.2",
     "common-tags": "^1.8.2",
-    "enquirer": "^2.3.6",
-    "execa": "^5.1.1",
+    "configstore": "^7.0.0",
+    "enquirer": "^2.4.1",
+    "execa": "^9.4.0",
     "fs-extra": "^11.2.0",
     "gatsby-plugin-utils": "^4.14.0-next.2",
-    "joi": "^17.9.2",
+    "joi": "^17.13.3",
     "microbundle": "^0.15.1",
-    "node-fetch": "^2.6.11",
-    "string-length": "^4.0.2",
-    "terminal-link": "^2.1.1",
+    "node-fetch": "^3.3.2",
+    "string-length": "^6.0.0",
+    "terminal-link": "^3.0.0",
     "tiny-spin": "^1.0.2"
   },
   "repository": {
@@ -42,6 +43,6 @@
   },
   "author": "Matt Kane <matt@gatsbyjs.com>",
   "dependencies": {
-    "@babel/runtime": "^7.20.13"
+    "@babel/runtime": "^7.25.6"
   }
 }
