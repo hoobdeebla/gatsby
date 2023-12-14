@@ -12,7 +12,7 @@
   "dependencies": {
     "@babel/runtime": "^7.27.4",
     "common-tags": "^1.8.2",
-    "minimatch": "^6.2.0",
+    "minimatch": "^10.0.1",
     "sitemap": "^8.0.0"
   },
   "devDependencies": {
