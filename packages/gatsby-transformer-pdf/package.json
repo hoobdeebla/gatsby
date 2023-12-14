@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.4",
-    "pdf2json": "~2.0.2"
+    "pdf2json": "^4.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.3",

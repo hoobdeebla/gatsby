@@ -24,7 +24,7 @@
   "devDependencies": {
     "@gatsbyjs/reach-router": "^2.0.1",
     "cross-env": "^10.1.0",
-    "del-cli": "^6.0.0",
+    "del-cli": "^7.0.0",
     "microbundle": "^0.15.1",
     "prepend-directive": "^1.1.0",
     "typescript": "^5.9.3"

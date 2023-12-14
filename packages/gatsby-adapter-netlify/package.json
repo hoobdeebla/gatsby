@@ -32,10 +32,10 @@
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-adapter-netlify#readme",
   "dependencies": {
     "@babel/runtime": "^7.28.4",
-    "@netlify/cache-utils": "^5.1.5",
-    "@netlify/config": "^20.10.0",
-    "@netlify/functions": "^1.6.0",
-    "cookie": "^0.7.2",
+    "@netlify/cache-utils": "^6.0.4",
+    "@netlify/config": "^24.0.9",
+    "@netlify/functions": "^5.1.0",
+    "cookie": "^1.0.2",
     "fastq": "^1.19.1",
     "fs-extra": "^11.3.2",
     "gatsby-core-utils": "^4.16.0-next.0"
@@ -43,12 +43,12 @@
   "devDependencies": {
     "@babel/cli": "^7.28.3",
     "@babel/core": "^7.28.5",
-    "@netlify/edge-functions": "^2.2.0",
+    "@netlify/edge-functions": "^3.0.2",
     "@types/fs-extra": "^11.0.4",
     "babel-preset-gatsby-package": "^3.16.0-next.0",
     "cross-env": "^10.1.0",
     "memfs": "^4.51.0",
-    "rimraf": "^5.0.10",
+    "rimraf": "^6.1.0",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
