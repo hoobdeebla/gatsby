@@ -7,14 +7,14 @@
     "url": "https://github.com/gatsbyjs/gatsby/issues"
   },
   "dependencies": {
-    "@apollo/client": "^3.14.0",
+    "@apollo/client": "^4.1.6",
     "@babel/runtime": "^7.28.6",
     "@graphql-tools/links": "^10.0.6",
     "@graphql-tools/utils": "^11.0.0",
     "@graphql-tools/wrap": "^11.1.8",
     "dataloader": "^2.2.3",
     "gatsby-core-utils": "^4.17.0-next.0",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.6",

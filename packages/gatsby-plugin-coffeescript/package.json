@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.28.6",
-    "coffee-loader": "^4.0.0",
+    "coffee-loader": "^5.0.0",
     "coffeescript": "^2.7.0"
   },
   "devDependencies": {
