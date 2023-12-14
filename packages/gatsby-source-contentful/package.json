@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.6",
-    "@contentful/rich-text-react-renderer": "^15.22.11",
+    "@contentful/rich-text-react-renderer": "^16.1.6",
     "@vercel/fetch-retry": "^5.1.3",
-    "chalk": "^4.1.2",
+    "chalk": "^5.6.2",
     "common-tags": "^1.8.2",
     "contentful": "^11.10.5",
     "fastq": "^1.20.1",
@@ -18,19 +18,20 @@
     "gatsby-core-utils": "^4.17.0-next.0",
     "gatsby-plugin-utils": "^4.17.0-next.0",
     "gatsby-source-filesystem": "^5.17.0-next.0",
-    "is-online": "^11.0.0",
+    "is-online": "^12.0.2",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.17.23",
-    "node-fetch": "^2.7.0",
+    "node-fetch": "^3.3.2",
     "semver": "^7.7.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.6",
     "@babel/core": "^7.29.0",
-    "@testing-library/react": "^11.2.7",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
     "babel-preset-gatsby-package": "^3.17.0-next.0",
     "cross-env": "^10.1.0",
-    "nock": "^13.5.6"
+    "nock": "^14.0.11"
   },
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-source-contentful#readme",
   "keywords": [
@@ -43,7 +44,7 @@
     "gatsby": "^5.0.0-next",
     "gatsby-plugin-image": "^3.0.0-next",
     "gatsby-plugin-sharp": "^5.0.0-next",
-    "sharp": "^0.32.6"
+    "sharp": "^0.34.5"
   },
   "repository": {
     "type": "git",

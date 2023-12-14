@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.6",
-    "retext": "^7.0.1",
-    "retext-smartypants": "^4.0.0",
-    "unist-util-visit": "^2.0.3"
+    "retext": "^9.0.0",
+    "retext-smartypants": "^6.2.0",
+    "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.6",

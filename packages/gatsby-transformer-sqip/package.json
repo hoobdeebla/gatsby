@@ -13,8 +13,8 @@
     "gatsby-plugin-sharp": "^5.17.0-next.0",
     "md5-file": "^5.0.0",
     "mini-svg-data-uri": "^1.4.4",
-    "p-queue": "^6.6.2",
-    "sqip": "^0.3.3"
+    "p-queue": "^9.1.0",
+    "sqip": "^1.0.0-alpha.51"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.6",

@@ -1,0 +1,471 @@
+776K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/pako
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/queue-microtask
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-docker
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/jws
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-inside-container
+276K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/http-status-codes
+ 68K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fast-safe-stringify
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/system-architecture
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/reusify
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-deflate
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/readable-web-to-node-stream
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/responselike
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-windows
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/destroy
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/jsesc
+100K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/hosted-git-info
+2.9M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/tldts
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/asn1
+2.6M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@types
+520K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/opentracing
+112K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/pino-std-serializers
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lodash.includes
+4.9M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lodash
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/quick-lru
+100K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/browserslist
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/on-headers
+164K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@cypress
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/process-nextick-args
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/shebang-regex
+1.3M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/pino
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/jwa
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/path-is-absolute
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/http-cache-semantics
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-wsl
+  0B	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/.bin
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/aws-sign2
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/toidentifier
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/typedarray-to-buffer
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/extend
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/path-type
+104K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/make-dir
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/mimic-fn
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/strip-ansi
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/content-type
+ 88K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/yarn-deduplicate
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/xdg-basedir
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-path-cwd
+ 84K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/jsonparse
+ 88K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/es-errors
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-obj
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/unique-string
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/agent-base
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fs-exists-cached
+100K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/chardet
+ 92K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/cacheable-request
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/text-decoder
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/p-cancelable
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/require-main-filename
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/os-tmpdir
+416K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/node-addon-api
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ms
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/strip-final-newline
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/content-disposition
+156K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/math-intrinsics
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/methods
+ 52K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/node-releases
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/wordwrap
+160K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/htmlparser2
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/escape-string-regexp
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lodash.isstring
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/indent-string
+ 64K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/has-tostringtag
+108K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/abort-controller
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/stream-shift
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lru-cache
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/imurmurhash
+284K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@yarnpkg
+224K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/type-fest
+1.4M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/validator
+204K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/commander
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/require-directory
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/proxy-addr
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/depd
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/core-util-is
+592K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/joi
+100K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/pretty-error
+256K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/duplexify
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ci-info
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/rimraf
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/escalade
+180K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/node-fetch
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/range-parser
+ 52K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/side-channel-list
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/steno
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/detect-libc
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/balanced-match
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/path-exists
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/progress
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/bcrypt-pbkdf
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lodash.once
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/bytes
+ 80K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/retry
+ 84K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/call-bind-apply-helpers
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/unc-path-regex
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/base64-js
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/aws4
+412K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/tldts-core
+ 68K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ncp
+152K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fast-redact
+376K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/express
+260K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@nodelib
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/encodeurl
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/signal-exit
+200K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/browserify-zlib
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/configstore
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/real-require
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/wrap-ansi
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/y18n
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/once
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/bare-path
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lodash.isboolean
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@szmarczak
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/gensync
+516K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/JSONStream
+ 68K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ignore
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/normalize-url
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/sisteransi
+516K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/common-tags
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/resolve-alpn
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/extsprintf
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-invalid-path
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/string_decoder
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/merge-descriptors
+148K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/sonic-boom
+124K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/tslib
+104K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/file-type
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/array-flatten
+184K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/argparse
+104K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ordered-binary
+112K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/picomatch
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/safe-buffer
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-relative
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/write-file-atomic
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lowercase-keys
+ 68K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/function-bind
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/caseless
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-glob
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/npm-run-path
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/getpass
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ee-first
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-fullwidth-code-point
+108K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/yargs-parser
+284K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/baseline-browser-mapping
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/inherits
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/jsonfile
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-ci
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lodash.isinteger
+ 92K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/jsonwebtoken
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/dir-glob
+2.0M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@lmdb
+396K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/iconv-lite
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/anymatch
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/read
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/color-name
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/es-define-property
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/stack-trace
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/decamelize
+1.1M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/async
+100K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/chokidar
+ 76K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lockfile
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/p-locate
+ 72K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/dom-serializer
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fresh
+ 68K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/get-intrinsic
+ 58M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@verdaccio
+128K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/node-object-hash
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/keyv
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/mute-stream
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/utila
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/decompress-response
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lock
+284K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/qs
+476K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/js-yaml
+ 72K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/whatwg-url
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/call-bound
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/pify
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/events-universal
+420K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/got
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lodash.isnumber
+192K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/css-select
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/cli-boxes
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-binary-path
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/combined-stream
+  0B	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/.hooks
+160K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/typanion
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/dunder-proto
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/path-to-regexp
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/hasown
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/safer-buffer
+428K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/clipanion
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/side-channel-weakmap
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/proper-lockfile
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-promise
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-path-inside
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/tar-stream
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/run-parallel
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/p-limit
+1.1M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/bare-fs
+244K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/mime-types
+236K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/undici-types
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/webidl-conversions
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/json-schema-traverse
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-typedarray
+2.0M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/hash-wasm
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/end-of-stream
+920K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/bare-os
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/type-is
+120K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/minimist
+1.5M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/bare-url
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/on-exit-leak-free
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-stream
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/xtend
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/split2
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/universalify
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/onetime
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/find-up
+ 52K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/chalk
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/bare-stream
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ansi-regex
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/mimic-response
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/through
+ 88K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/http2-wrapper
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/has-flag
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/supports-color
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/http-signature
+ 14M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/core-js
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/vary
+148K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fs-extra
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/quick-format-unescaped
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/color-convert
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/path-key
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/merge-stream
+ 72K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/msgpackr-extract
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/readdirp
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-valid-path
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/unpipe
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/resolve-cwd
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/brace-expansion
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fill-range
+ 52K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/weak-lru-cache
+148K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/css-what
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/import-from
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/binary-extensions
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/get-caller-file
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/util-deprecate
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-absolute
+ 72K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/has-symbols
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/cacheable-lookup
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/picocolors
+288K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/bcryptjs
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/node-gyp-build-optional-packages
+ 12K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@tokenizer
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ieee754
+2.4M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lmdb
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/json-buffer
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/slash
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/raw-body
+276K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/verdaccio-htpasswd
+264K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/semver
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/http-errors
+240K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/through2
+ 72K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/b4a
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ecdsa-sig-formatter
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/clean-stack
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/minimatch
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/crypto-random-string
+ 76K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/accepts
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/widest-line
+264K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/create-gatsby
+176K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/envinfo
+ 76K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@sindresorhus
+ 12K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/boolbase
+ 52K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/safe-stable-stringify
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ansi-styles
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/aggregate-error
+232K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fast-uri
+6.7M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/verdaccio
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/cookie-signature
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ansi-align
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/forwarded
+2.9M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/handlebars
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/js-tokens
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/peek-stream
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/negotiator
+288K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/renderkid
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/del
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/defer-to-connect
+208K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/body-parser
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/dom-converter
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/atomic-sleep
+272K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/tr46
+ 12M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@babel
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/process-warning
+264K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/better-opn
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-number
+ 64K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@msgpackr-extract
+636K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/yoga-layout-prebuilt
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fs.realpath
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/cli-width
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fast-fifo
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/express-rate-limit
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/peek-readable
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/jsprim
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/figures
+1.0M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/gatsby-cli
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/utils-merge
+144K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/gatsby-dev-cli
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/side-channel
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/concat-map
+152K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/compression
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/token-types
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/pump
+284K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/json5
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/cors
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/get-stream
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is64bit
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/update-browserslist-db
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/restore-cursor
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/serve-static
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/forever-agent
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/gunzip-maybe
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/pumpify
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/which-module
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lodash.isplainobject
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/convert-source-map
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/buffer-equal-constant-time
+376K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/prompts
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/cliui
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/object-assign
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ecc-jsbn
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/get-proto
+ 96K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/form-data
+532K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/verdaccio-audit
+292K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/sshpk
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/delayed-stream
+244K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/thread-stream
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/cross-spawn
+104K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/lowdb
+276K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ansi-escapes
+ 88K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/mime
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/domelementtype
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/convert-hrtime
+376K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/yargs
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/clone-response
+356K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/yurnalist
+156K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/mv
+ 17M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/rxjs
+ 84K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/asynckit
+208K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/event-target-shim
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ipaddr.js
+ 64K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/glob
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/cookie
+752K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/neo-async
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/to-regex-range
+1.9M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/dayjs
+824K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/source-map
+200K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/tweetnacl
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/array-union
+132K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@sideway
+468K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/gatsby-core-utils
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/gopd
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/escape-html
+136K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/inquirer
+1.3M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/uglify-js
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/statuses
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/https-proxy-agent
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/string-width
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/streamx
+156K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/events
+1.2M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/corepack
+ 80K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/execa
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/yallist
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/parseurl
+832K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@jridgewell
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/etag
+2.0M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/msgpackr
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/p-try
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/camelcase
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/isarray
+104K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/external-editor
+ 64K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/micromatch
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/wrappy
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/isstream
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/json-stringify-safe
+260K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fast-glob
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/resolve-from
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/verror
+276K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/send
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-extglob
+312K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/uuid
+ 84K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fastq
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/apache-md5
+156K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/finalhandler
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/tmp
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/boxen
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/cli-cursor
+1.4M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/clipboardy
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/set-blocking
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/pino-abstract-transport
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/run-async
+4.1M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/caniuse-lite
+224K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/redux
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/merge2
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/teex
+164K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/@hapi
+124K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/domutils
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/es-set-tostringtag
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/assert-plus
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/colorette
+308K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/tough-cookie
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/kleur
+ 32K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/find-yarn-workspace-root
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/unix-crypt-td-js
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-unc-path
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/buffer-from
+ 68K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/braces
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/compressible
+ 17M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/npm
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/which
+ 48K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/side-channel-map
+ 92K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/dashdash
+2.3M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/ajv
+ 64K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/emoji-regex
+100K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/open
+200K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/object-inspect
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/tunnel-agent
+112K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/nth-check
+ 96K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/strtok3
+296K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/readable-stream
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/locate-path
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/mkdirp
+ 52K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/graceful-fs
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/on-finished
+112K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/entities
+ 76K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/human-signals
+ 40K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/globby
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/normalize-path
+ 44K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/fast-deep-equal
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/shebang-command
+ 68K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/performance-now
+204K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/electron-to-chromium
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/require-from-string
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/pkginfo
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/json-schema
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/process
+ 56K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/bare-events
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/debug
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/dot-prop
+ 28K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/glob-parent
+ 60K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/domhandler
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/media-typer
+ 20K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/p-map
+104K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/buffer
+236K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/mime-db
+ 36K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/isexe
+ 64K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/es-object-atoms
+ 16K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/inflight
+ 12K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/is-gzip
+ 68K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/jsbn
+ 24K	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules/setprototypeof
+204M	/Users/hoob/.nodenv/versions/22.22.0/lib/node_modules

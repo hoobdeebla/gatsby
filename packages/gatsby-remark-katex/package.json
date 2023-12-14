@@ -8,10 +8,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.6",
-    "rehype-parse": "^7.0.1",
-    "remark-math": "^4.0.0",
-    "unified": "^9.2.2",
-    "unist-util-visit": "^2.0.3"
+    "rehype-parse": "^9.0.1",
+    "remark-math": "^6.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.6",
@@ -19,7 +19,7 @@
     "babel-preset-gatsby-package": "^3.17.0-next.0",
     "cross-env": "^10.1.0",
     "katex": "^0.16.33",
-    "remark": "^13.0.0"
+    "remark": "^15.0.1"
   },
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-remark-katex#readme",
   "keywords": [

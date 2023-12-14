@@ -9,7 +9,7 @@
   "dependencies": {
     "@babel/runtime": "^7.28.6",
     "resolve-url-loader": "^5.0.0",
-    "sass-loader": "^13.3.3"
+    "sass-loader": "^16.0.7"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.6",
