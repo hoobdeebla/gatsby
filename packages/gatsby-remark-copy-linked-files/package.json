@@ -8,19 +8,19 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.6",
-    "cheerio": "1.0.0-rc.12",
+    "cheerio": "^1.2.0",
     "fs-extra": "^11.3.3",
-    "is-relative-url": "^3.0.0",
+    "is-relative-url": "^4.1.0",
     "probe-image-size": "^7.2.3",
-    "unist-util-visit": "^2.0.3"
+    "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.6",
     "@babel/core": "^7.29.0",
     "babel-preset-gatsby-package": "^3.17.0-next.0",
     "cross-env": "^10.1.0",
-    "remark": "^13.0.0",
-    "remark-mdx": "^1.6.22"
+    "remark": "^15.0.1",
+    "remark-mdx": "^3.1.1"
   },
   "homepage": "https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-remark-copy-linked-files#readme",
   "keywords": [
