@@ -12,13 +12,13 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.27.0",
-    "chalk": "^4.1.2",
-    "date-fns": "^2.30.0",
+    "chalk": "^5.4.1",
+    "date-fns": "^4.1.0",
     "fs-extra": "^11.3.0",
     "gatsby-core-utils": "^4.15.0-next.0",
-    "graphql-request": "^6.1.0",
+    "graphql-request": "^7.1.2",
     "progress": "^2.0.3",
-    "puppeteer": "^22.15.0"
+    "puppeteer-core": "^24.6.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.27.0",
