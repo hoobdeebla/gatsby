@@ -11,17 +11,17 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.3",
-    "chokidar": "^3.6.0",
+    "chokidar": "^4.0.3",
     "configstore": "^7.0.0",
     "del": "^8.0.0",
-    "execa": "^8.0.1",
+    "execa": "^9.6.0",
     "find-yarn-workspace-root": "^2.0.0",
     "fs-extra": "^11.3.1",
-    "got": "^11.8.6",
+    "got": "^14.4.8",
     "lodash": "^4.17.21",
     "signal-exit": "^4.1.0",
     "verdaccio": "^6.1.6",
-    "yargs": "^15.4.1"
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.3",
