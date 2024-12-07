@@ -15,7 +15,7 @@
     "@babel/core": "^7.20.12",
     "babel-preset-gatsby-package": "^3.17.0-next.0",
     "cross-env": "^7.0.3",
-    "unist-util-find": "1.0.2"
+    "unist-util-find": "^1.0.4"
   },
   "files": [
     "index.js",
@@ -33,7 +33,6 @@
   "peerDependencies": {
     "gatsby": "^5.0.0-next"
   },
-  "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/gatsbyjs/gatsby.git",
