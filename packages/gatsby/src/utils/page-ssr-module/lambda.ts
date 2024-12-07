@@ -134,7 +134,7 @@ function setupFsWrapper(): string {
     for (const key in lfs) {
       if (
         typeof fs[key] === `function` &&
-        Object.hasOwnProperty.call(fs[key], `native`)
+        Object.hasOwn(fs[key], `native`)
       ) {
         lfs[key].native = fs[key].native
       }

@@ -94,10 +94,7 @@ function waitForResponse(response) {
       const result = response.readRoot()
       resolve(result)
     } catch (err) {
-      if (
-        Object.hasOwnProperty.call(err, `_response`) &&
-        Object.hasOwnProperty.call(err, `_status`)
-      ) {
+      if (Object.hasOwn(err, `_response`) && Object.hasOwn(err, `_status`)) {
         setTimeout(() => {
           waitForResponse(response).then(resolve)
         }, 200)
