@@ -111,7 +111,7 @@ async function resizeImageWithSharp(
     return writeFile(outputPath, pipeline)
   }
 
-  const resizedImage = pipeline
+  const resizedImage = (pipeline as Pipeline)
     .resize(width, height, {})
     .jpeg({ quality })
     .png({ quality })

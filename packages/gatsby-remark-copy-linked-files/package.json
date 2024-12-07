@@ -12,7 +12,6 @@
     "fs-extra": "^11.2.0",
     "is-relative-url": "^3.0.0",
     "lodash": "^4.17.21",
-    "path-is-inside": "^1.0.2",
     "probe-image-size": "^7.2.3",
     "unist-util-visit": "^2.0.3"
   },
