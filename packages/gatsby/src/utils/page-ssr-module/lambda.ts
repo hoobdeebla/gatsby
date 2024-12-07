@@ -116,7 +116,7 @@ function setupFsWrapper(): string {
 
     // linkfs doesn't pass across the `native` prop, which graceful-fs needs
     for (const key in lfs) {
-      if (Object.hasOwnProperty.call(fs[key], `native`)) {
+      if (Object.hasOwn(fs[key], `native`)) {
         lfs[key].native = fs[key].native
       }
     }
@@ -208,12 +208,14 @@ global.__GATSBY = {
   buildId: ``,
 }
 
+// @ts-ignore
 // eslint-disable-next-line no-constant-condition
 if (`%IMAGE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH%`) {
   global.__GATSBY.imageCDNUrlGeneratorModulePath = require.resolve(
     `%IMAGE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH%`
   )
 }
+// @ts-ignore
 // eslint-disable-next-line no-constant-condition
 if (`%FILE_CDN_URL_GENERATOR_MODULE_RELATIVE_PATH%`) {
   global.__GATSBY.fileCDNUrlGeneratorModulePath = require.resolve(
