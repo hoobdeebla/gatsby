@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
+    "lodash": "^4.17.21",
     "xlsx": "^0.18.3"
   },
   "devDependencies": {

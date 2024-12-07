@@ -25,22 +25,17 @@
   "dependencies": {
     "@babel/runtime": "^7.20.13",
     "gatsby-core-utils": "^4.17.0-next.0",
-    "gatsby-plugin-utils": "^4.17.0-next.0",
     "gatsby-source-filesystem": "^5.17.0-next.0",
     "node-fetch": "^2.6.11",
-    "sharp": "^0.32.6",
     "shift-left": "^0.1.5"
   },
   "devDependencies": {
-    "@types/node": "^18.17.19",
     "@types/node-fetch": "^2.6.4",
     "cross-env": "^7.0.3",
     "gatsby-plugin-image": "^3.17.0-next.0",
     "msw": "^1.2.2",
-    "prettier": "^2.8.8",
-    "prettier-check": "^2.0.0",
     "tsc-watch": "^6.0.4",
-    "typescript": "^5.1.6"
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "gatsby-plugin-image": "^3.0.0-next"

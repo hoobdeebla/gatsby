@@ -237,6 +237,7 @@ const gatsbyLayoutLoader: LoaderDefinition = async function (
           type: `Literal`,
           value: `react`,
         },
+        attributes: [],
       })
     }
 
