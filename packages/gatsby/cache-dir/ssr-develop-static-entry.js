@@ -194,7 +194,7 @@ export default async function staticPage({
 
         const childAssets = namedChunkGroups[chunkKey].childAssets
         for (const rel in childAssets) {
-          if (childAssets.hasownProperty(rel)) {
+          if (Object.hasOwn(childAssets, rel)) {
             chunks = concat(
               chunks,
               childAssets[rel].map(chunk => {
