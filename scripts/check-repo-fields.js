@@ -19,7 +19,7 @@ function insertKeyAvoidMergeConflict(pkgJson, key, value) {
     const newPkgJson = {}
     let inserted = false
     for (const pkgKey in pkgJson) {
-      if (pkgJson.hasOwnProperty(pkgKey)) {
+      if (Object.hasOwn(pkgJson, pkgKey)) {
         if (!inserted && /depend/i.test(pkgKey)) {
           inserted = true
           newPkgJson[key] = value

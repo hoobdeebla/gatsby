@@ -39,7 +39,6 @@
     "gray-matter": "^4.0.3",
     "mdast-util-mdx": "^2.0.1",
     "mdast-util-to-hast": "^10.2.0",
-    "mdast-util-to-markdown": "^1.5.0",
     "mdast-util-toc": "^6.1.1",
     "rehype-infer-description-meta": "^1.1.0",
     "remark-unwrap-images": "^3.0.1",
@@ -50,14 +49,14 @@
   "devDependencies": {
     "@babel/cli": "^7.20.7",
     "@babel/core": "^7.20.12",
-    "@types/estree": "^1.0.1",
+    "@types/estree": "^1.0.8",
     "@types/mdast": "^3.0.11",
     "@types/unist": "^2.0.6",
     "babel-preset-gatsby-package": "^3.17.0-next.0",
     "cross-env": "^7.0.3",
     "del-cli": "^5.0.0",
     "opentracing": "^0.14.7",
-    "typescript": "^5.1.6",
+    "typescript": "^5.9.3",
     "webpack": "~5.98.0"
   },
   "jest": {

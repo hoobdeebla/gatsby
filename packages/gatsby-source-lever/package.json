@@ -6,17 +6,11 @@
   "bugs": {
     "url": "https://github.com/gatsbyjs/gatsby/issues"
   },
-  "bundledDependencies": [],
   "dependencies": {
     "@babel/runtime": "^7.20.13",
     "axios": "^1.7.7",
-    "bluebird": "^3.7.2",
-    "deep-map": "^1.5.0",
-    "deep-map-keys": "^1.2.0",
-    "json-stringify-safe": "^5.0.1",
-    "lodash": "^4.17.21"
+    "deep-map-keys": "^1.2.0"
   },
-  "deprecated": false,
   "devDependencies": {
     "@babel/cli": "^7.20.7",
     "@babel/core": "^7.20.12",
