@@ -29,10 +29,7 @@
     "@babel/runtime": "^7.20.13",
     "bluebird": "^3.7.2",
     "chokidar": "^3.6.0",
-    "fs-exists-cached": "^1.0.0",
     "gatsby-core-utils": "^4.17.0-next.0",
-    "glob": "^7.2.3",
-    "lodash": "^4.17.21",
     "micromatch": "^4.0.5"
   },
   "devDependencies": {
@@ -42,7 +39,7 @@
     "babel-preset-gatsby-package": "^3.17.0-next.0",
     "cross-env": "^7.0.3",
     "rimraf": "^5.0.5",
-    "typescript": "^5.1.6"
+    "typescript": "^5.9.3"
   },
   "files": [
     "dist/"
