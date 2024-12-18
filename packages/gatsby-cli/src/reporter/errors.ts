@@ -6,7 +6,7 @@ import { IStructuredStackFrame } from "../structured-errors/types"
 import { readFileSync } from "fs-extra"
 import { codeFrameColumns } from "@babel/code-frame"
 
-const packagesToSkip = [`core-js`, `bluebird`, `regenerator-runtime`, `graphql`]
+const packagesToSkip = [`core-js`, `regenerator-runtime`, `graphql`]
 
 const packagesToSkipTest = new RegExp(
   `node_modules[\\/](${packagesToSkip.join(`|`)})`
