@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import fs from "fs-extra"
-import Bluebird from "bluebird"
+import { map as bluebirdMap } from "bluebird"
 import * as path from "path"
 import { generateHtmlPath } from "gatsby-core-utils/page-html"
 import { generatePageDataPath } from "gatsby-core-utils/page-data"
@@ -384,7 +384,7 @@ export const renderHTMLProd = async ({
     }
   }
 
-  await Bluebird.map(
+  await bluebirdMap(
     paths,
     async pagePath => {
       try {
@@ -480,7 +480,7 @@ export const renderHTMLDev = async ({
     lastSessionId = sessionId
   }
 
-  return Bluebird.map(
+  return bluebirdMap(
     paths,
     async pagePath => {
       try {
