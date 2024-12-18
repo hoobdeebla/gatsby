@@ -1,4 +1,4 @@
-const Promise = require(`bluebird`)
+const BluebirdPromise = require(`bluebird`)
 const _ = require(`lodash`)
 const chalk = require(`chalk`)
 const { bindActionCreators: origBindActionCreators } = require(`redux`)
@@ -63,7 +63,7 @@ if (!process.env.BLUEBIRD_DEBUG && !process.env.BLUEBIRD_LONG_STACK_TRACES) {
   // This is mainly for `gatsby develop` due to NODE_ENV being set to development
   // which cause bluebird to enable longStackTraces
   // `gatsby build` (with NODE_ENV=production) already doesn't enable longStackTraces
-  Promise.config({ longStackTraces: false })
+  BluebirdPromise.config({ longStackTraces: false })
 }
 
 const nodeMutationsWrappers = {
@@ -142,7 +142,7 @@ const deferredAction =
     // Regular createNode returns a Promise, but when deferred we need
     // to wrap it in another which we resolve when it's actually called
     if (type === `createNode`) {
-      return new Promise(resolve => {
+      return new BluebirdPromise(resolve => {
         emitter.emit(`ENQUEUE_NODE_MUTATION`, {
           type,
           payload: args,
@@ -485,7 +485,7 @@ const runAPI = async (plugin, api, args, activity) => {
     // If the plugin is using a callback use that otherwise
     // expect a Promise to be returned.
     if (gatsbyNode[api].length === 3) {
-      return Promise.fromCallback(callback => {
+      return BluebirdPromise.fromCallback(callback => {
         const cb = (err, val) => {
           pluginSpan.finish()
           apiFinished = true
@@ -536,7 +536,7 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
     return null
   }
 
-  return new Promise(resolve => {
+  return new BluebirdPromise(resolve => {
     const { parentSpan, traceId, traceTags, waitForCascadingActions } = args
     const apiSpanArgs = parentSpan ? { childOf: parentSpan } : {}
     const apiSpan = tracer.startSpan(`run-api`, apiSpanArgs)
@@ -615,10 +615,10 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
       api === `sourceNodes` &&
       process.env.GATSBY_EXPERIMENTAL_PARALLEL_SOURCING
     ) {
-      runPromise = Promise.map
+      runPromise = BluebirdPromise.map
       apiRunPromiseOptions.concurrency = 20
     } else {
-      runPromise = Promise.mapSeries
+      runPromise = BluebirdPromise.mapSeries
       apiRunPromiseOptions = undefined
     }
 
@@ -648,7 +648,7 @@ function apiRunnerNode(api, args = {}, { pluginSource, activity } = {}) {
             return null
           }
 
-          return new Promise(resolve => {
+          return new BluebirdPromise(resolve => {
             resolve(
               runAPI(plugin, api, { ...args, parentSpan: apiSpan }, activity)
             )
