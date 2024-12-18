@@ -1,4 +1,3 @@
-const Promise = require(`bluebird`)
 const queryString = require(`query-string`)
 const fetch = require(`node-fetch`)
 
@@ -6,18 +5,20 @@ const apiBase = `https://en.wikipedia.org/w/api.php?`
 
 const fetchNodesFromSearch = ({ query, limit = 15 }) =>
   search({ query, limit }).then(results =>
-    Promise.map(results, async (result, queryIndex) => {
-      const rendered = await getArticle(result.id)
-      const metadata = await getMetaData(result.id)
-      return {
-        id: result.id,
-        title: result.title,
-        description: result.description,
-        updatedAt: metadata.updated,
-        queryIndex: queryIndex + 1,
-        rendered,
-      }
-    })
+    Promise.all(
+      results.map(async (result, queryIndex) => {
+        const rendered = await getArticle(result.id)
+        const metadata = await getMetaData(result.id)
+        return {
+          id: result.id,
+          title: result.title,
+          description: result.description,
+          updatedAt: metadata.updated,
+          queryIndex: queryIndex + 1,
+          rendered,
+        }
+      })
+    )
   )
 
 const getMetaData = name =>
