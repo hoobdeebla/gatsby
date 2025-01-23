@@ -32,3 +32,6 @@ packages/gatsby-source-wordpress/test-site/**
 
 # coverage
 coverage
+
+# lerna
+/.nx/workspace-data
