@@ -36,7 +36,7 @@
     "jest-serializer-path": "^0.1.15",
     "jest-silent-reporter": "^0.6.0",
     "js-yaml": "^3.14.2",
-    "lerna": "^5.6.2",
+    "lerna": "^8.2.4",
     "lint-staged": "^15.5.2",
     "markdown-magic": "^2.6.1",
     "node-notifier": "^10.0.1",
