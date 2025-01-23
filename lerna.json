@@ -16,11 +16,11 @@
   "version": "independent",
   "npmClient": "yarn",
   "registry": "https://registry.npmjs.org/",
-  "useWorkspaces": true,
   "ignoreChanges": [
     "CHANGELOG.md",
     "**/__tests__/**",
     "**/__mocks__/**",
     "**/__testfixtures__/**"
-  ]
+  ],
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
