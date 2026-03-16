@@ -1,4 +1,4 @@
-const fs = require(`fs-extra`)
+const { readFileSync, writeFileSync } = require(`fs`)
 const path = require(`path`)
 
 function createEmptyCache() {
@@ -18,7 +18,7 @@ function load() {
   if (cache) return cache
 
   try {
-    const json = fs.readFileSync(cacheFile, `utf-8`)
+    const json = readFileSync(cacheFile, `utf-8`)
     cache = JSON.parse(json)
     return cache
   } catch (err) {
@@ -29,7 +29,7 @@ function load() {
 function save(data) {
   try {
     const json = JSON.stringify(data)
-    fs.writeFileSync(cacheFile, json, `utf-8`)
+    writeFileSync(cacheFile, json, `utf-8`)
     cache = data
   } catch (e) {
     console.log(

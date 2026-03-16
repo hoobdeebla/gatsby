@@ -1,5 +1,5 @@
 import sharp from "./safe-sharp"
-import fs from "fs-extra"
+import { readFile, mkdir, writeFile } from "fs/promises"
 import path from "path"
 import debug from "debug"
 import { createContentDigest } from "gatsby-core-utils/create-content-digest"
@@ -34,7 +34,7 @@ export const processFile = async (
 ): Promise<Array<ITransform>> => {
   let pipeline
   try {
-    const inputBuffer = await fs.readFile(file)
+    const inputBuffer = await readFile(file)
     pipeline = sharp(inputBuffer, { failOn: options.failOn })
 
     // Keep Metadata
@@ -50,7 +50,7 @@ export const processFile = async (
       try {
         const { outputPath, args } = transform
         log(`Start processing ${outputPath}`)
-        await fs.ensureDir(path.dirname(outputPath))
+        await mkdir(path.dirname(outputPath), { recursive: true })
 
         const transformArgs = healOptions(
           { defaultQuality: options.defaultQuality as number },
@@ -131,7 +131,7 @@ export const processFile = async (
 
         try {
           const buffer = await clonedPipeline.toBuffer()
-          await fs.writeFile(outputPath, buffer)
+          await writeFile(outputPath, buffer)
         } catch (err) {
           throw new Error(
             `Failed to write ${file} into ${outputPath}. (${err.message})`

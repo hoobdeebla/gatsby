@@ -1,5 +1,5 @@
 import path from "path"
-import fs from "fs-extra"
+import { readFile, access, rm } from "fs/promises"
 import { rest } from "msw"
 import { setupServer } from "msw/node"
 import { IMAGE_CDN } from "../gatsby-worker"
@@ -7,7 +7,7 @@ import getSharpInstance from "gatsby-sharp"
 
 const server = setupServer(
   rest.get(`https://example.com/another-file.jpg`, async (req, res, ctx) => {
-    const content = await fs.readFile(
+    const content = await readFile(
       path.join(__dirname, `../../__tests__/__fixtures__/dog-portrait.jpg`)
     )
 
@@ -42,14 +42,19 @@ describe(`gatsby-worker`, () => {
       })
 
       const outputFile = path.join(outputDir, `abc.jpg`)
-      expect(await fs.pathExists(outputFile)).toBe(true)
+      expect(
+        // inline fs-extra.pathExists()
+        await access(outputFile)
+          .then(() => true)
+          .catch(() => false)
+      ).toBe(true)
 
       const sharp = await getSharpInstance()
       const metadata = await sharp(outputFile).metadata()
       expect(metadata.width).toBe(100)
       expect(metadata.height).toBe(100)
 
-      await fs.remove(outputFile)
+      await rm(outputFile, { force: true })
     })
   })
 })

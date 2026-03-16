@@ -1,5 +1,5 @@
 import path from "path"
-import fs from "fs-extra"
+import { createReadStream } from "fs"
 import { fetchRemoteFile } from "gatsby-core-utils/fetch-remote-file"
 import { hasFeature } from "../has-feature"
 import { ImageCDNUrlKeys } from "./utils/url-generator"
@@ -39,7 +39,7 @@ export function addImageRoutes(app: Application, store?: Store): Application {
       httpHeaders: getRequestHeadersForUrl(url, store),
     })
 
-    fs.createReadStream(filePath).pipe(res)
+    createReadStream(filePath).pipe(res)
   })
 
   app.get(`/_gatsby/image/:url/:params/:filename`, async (req, res) => {
@@ -112,7 +112,7 @@ export function addImageRoutes(app: Application, store?: Store): Application {
       getFileExtensionFromMimeType(path.extname(filename))
     )
 
-    fs.createReadStream(filePath).pipe(res)
+    createReadStream(filePath).pipe(res)
   })
 
   return app

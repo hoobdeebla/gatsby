@@ -1,5 +1,5 @@
 import { createMD5 } from "hash-wasm"
-import * as fs from "fs-extra"
+import { createReadStream } from "fs"
 
 /**
  * Create a MD5 hash from a given filePath
@@ -12,7 +12,7 @@ export const md5File = async (filePath: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     md5hasher.init()
 
-    const fileInput = fs.createReadStream(filePath)
+    const fileInput = createReadStream(filePath)
 
     fileInput.on(`error`, err => {
       reject(err)

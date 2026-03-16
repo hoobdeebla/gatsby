@@ -1,4 +1,4 @@
-import * as fs from "fs-extra"
+import { writeFile } from "fs/promises"
 import { createServiceLock, getService } from "./service-lock"
 import { readConfigFile, getConfigPath } from "./utils"
 import { lock } from "./lock"
@@ -58,6 +58,6 @@ export async function addFieldToMinimalSiteMetadata(
 
   const code = addField(configSrc, { name, value })
 
-  await fs.writeFile(getConfigPath(root), code)
+  await writeFile(getConfigPath(root), code)
   release()
 }

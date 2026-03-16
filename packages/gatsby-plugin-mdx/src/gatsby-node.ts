@@ -2,7 +2,7 @@ import type { GatsbyNode, NodeInput } from "gatsby"
 import type { FileSystemNode } from "gatsby-source-filesystem"
 import type { Options } from "rehype-infer-description-meta"
 import path from "path"
-import fs from "fs-extra"
+import { readFile } from "fs/promises"
 import { getPathToContentComponent } from "gatsby-core-utils/parse-component-path"
 import { defaultOptions, enhanceMdxOptions } from "./plugin-options"
 import type { IGatsbyLayoutLoaderOptions } from "./gatsby-layout-loader"
@@ -132,7 +132,7 @@ export const preprocessSource: GatsbyNode["preprocessSource"] = async (
     return undefined
   }
 
-  const contents = await fs.readFile(mdxPath)
+  const contents = await readFile(mdxPath)
 
   const compileRes = await compileMDX(
     {
@@ -351,7 +351,7 @@ export const onCreatePage: GatsbyNode["onCreatePage"] = async (
 
   // Avoid loops
   if (!page.context?.frontmatter) {
-    const content = await fs.readFile(mdxPath, `utf8`)
+    const content = await readFile(mdxPath, `utf8`)
     const { frontmatter } = parseFrontmatter(
       fileNode.internal.contentDigest,
       content

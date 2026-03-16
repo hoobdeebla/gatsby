@@ -1,5 +1,5 @@
 import sharp from "./safe-sharp"
-import fs from "fs-extra"
+import { createReadStream } from "fs"
 
 export function rgbToHex(red, green, blue) {
   return `#${(blue | (green << 8) | (red << 16) | (1 << 24))
@@ -292,7 +292,7 @@ export const getDominantColor = async absolutePath => {
 
   const pipeline = sharp()
 
-  fs.createReadStream(absolutePath).pipe(pipeline)
+  createReadStream(absolutePath).pipe(pipeline)
 
   const { dominant } = await pipeline.stats()
 

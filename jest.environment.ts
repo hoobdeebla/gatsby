@@ -1,5 +1,5 @@
 const NodeEnvironment = require(`jest-environment-node`).TestEnvironment
-const fsExtra = require(`fs-extra`)
+
 
 const isWindows = process.platform === `win32`
 

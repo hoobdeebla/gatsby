@@ -1,12 +1,13 @@
 import * as path from "path"
-import { readFile, pathExistsSync } from "fs-extra"
+import { existsSync } from "fs"
+import { readFile } from "fs/promises"
 
 export function getConfigPath(root: string): string {
   const { js, ts } = {
     js: path.join(root, `gatsby-config.js`),
     ts: path.join(root, `gatsby-config.ts`),
   }
-  return pathExistsSync(ts) ? ts : js
+  return existsSync(ts) ? ts : js
 }
 
 export async function readConfigFile(root: string): Promise<string> {

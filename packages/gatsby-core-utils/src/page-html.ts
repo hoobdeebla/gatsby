@@ -1,4 +1,5 @@
-import fs from "fs-extra"
+import { existsSync } from "fs"
+import { rm } from "fs/promises"
 import path from "path"
 
 const checkForHtmlSuffix = (pagePath: string): boolean =>
@@ -19,8 +20,8 @@ export async function remove(
   pagePath: string
 ): Promise<void> {
   const filePath = generateHtmlPath(publicDir, pagePath)
-  if (fs.existsSync(filePath)) {
-    return await fs.remove(filePath)
+  if (existsSync(filePath)) {
+    return await rm(filePath, { force: true })
   }
   return Promise.resolve()
 }
